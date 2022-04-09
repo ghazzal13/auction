@@ -219,7 +219,9 @@ class AuctionCubit extends Cubit<AuctionStates> {
         element.reference.collection('likes').get().then((value) {
           likes.add(value.docs.length);
           postId.add(element.id);
+
           print(element.data()['postImage']);
+          print(element.data()['postId']);
           posts.add(PostModel.fromMap(
             element.data(),
           ));
