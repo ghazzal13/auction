@@ -1,10 +1,13 @@
-import 'package:auction/home_screen.dart';
-import 'package:auction/resources/auth_method.dart';
-import 'package:auction/signup_screen.dart';
-import 'package:auction/text_field_input.dart';
+import 'dart:typed_data';
+
+import 'package:auction/old/resources/auth_method.dart';
+import 'package:auction/old/screens/home_screen.dart';
+import 'package:auction/old/screens/signup_screen.dart';
+import 'package:auction/old/text_field_input.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -17,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  Uint8List? _file;
 
   @override
   void dispose() {
@@ -78,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 64,
                 ),
+
                 TextFieldInput(
                   hintText: 'Enter your email',
                   textInputType: TextInputType.emailAddress,
