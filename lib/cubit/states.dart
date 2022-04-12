@@ -105,3 +105,33 @@ class AuctionLikeTicketErrorState extends AuctionStates {
 
   AuctionLikeTicketErrorState(this.error);
 }
+
+class AuctionTradeItemImagePickedSuccessState extends AuctionStates {}
+
+class AuctionTradeItemImagePickedErrorState extends AuctionStates {}
+
+class AuctionRemoveTradeItemImageState extends AuctionStates {}
+
+class AuctionCreateTradeItemLoadingState extends AuctionStates {}
+
+class AuctionCreateTradeItemSuccessState extends AuctionStates {}
+
+class AuctionCreateTradeItemErrorState extends AuctionStates {}
+
+class AuctionGetTradeItemLoadingState extends AuctionStates {}
+
+class AuctionGetTradeItemSuccessState extends AuctionStates {}
+
+class AuctionGetTradeItemErrorState extends AuctionStates {
+  final String error;
+
+  AuctionGetTradeItemErrorState(this.error);
+}
+
+class AuctionLikeTradeItemSuccessState extends AuctionStates {}
+
+class AuctionLikeTradeItemErrorState extends AuctionStates {
+  final String error;
+
+  AuctionLikeTradeItemErrorState(this.error);
+}

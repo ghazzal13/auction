@@ -22,7 +22,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
   final TextEditingController _describtionController = TextEditingController();
   final TextEditingController _catigoryController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  var postdate;
+  var TradeItemdate;
   Uint8List? _image;
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
       listener: (context, state) {},
       builder: (context, state) {
         var userModel = AuctionCubit.get(context).model;
-        var postImage = AuctionCubit.get(context).postImage;
+        var TradeItemImage = AuctionCubit.get(context).TradeItemImage;
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -42,9 +42,9 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  AuctionCubit.get(context).uploadPostImage(
+                  AuctionCubit.get(context).uploadTradeItemImage(
                     category: _catigoryController.text,
-                    dateTime: postdate.toString(),
+                    dateTime: TradeItemdate.toString(),
                     description: _describtionController.text,
                     titel: _titleController.text,
                     price: _priceController.text,
@@ -72,9 +72,9 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    if (state is AuctionCreatePostLoadingState)
+                    if (state is AuctionCreateTradeItemLoadingState)
                       const LinearProgressIndicator(),
-                    if (state is AuctionCreatePostLoadingState)
+                    if (state is AuctionCreateTradeItemLoadingState)
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -130,13 +130,13 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    postImage != null
+                    TradeItemImage != null
                         ? SizedBox(
                             height: 200.0,
                             width: 200.0,
                             child: Container(
                               child: Image.file(
-                                postImage,
+                                TradeItemImage,
                                 fit: BoxFit.cover,
                               ),
                               //   AspectRatio(
@@ -145,7 +145,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                           )
                         : TextButton(
                             onPressed: () {
-                              AuctionCubit.get(context).getPostImage();
+                              AuctionCubit.get(context).getTradeItemImage();
                             },
                             child: Row(
                               children: const [
@@ -161,18 +161,20 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                         onPressed: () {
                           DatePicker.showDateTimePicker(context,
                               showTitleActions: true, onChanged: (date) {
-                            postdate = date;
+                            TradeItemdate = date;
                             print('change $date in time zone ' +
                                 date.timeZoneOffset.inHours.toString());
                           }, onConfirm: (date) {
                             print('confirm $date');
-                            postdate = date;
+                            setState(() {
+                              TradeItemdate = date;
+                            });
                           },
-                              currentTime: postdate ??
+                              currentTime: TradeItemdate ??
                                   DateTime(2022, 04, 10, 23, 12, 34));
                         },
-                        child: postdate != null
-                            ? Text('${postdate}',
+                        child: TradeItemdate != null
+                            ? Text('${TradeItemdate}',
                                 style: TextStyle(color: Colors.blue))
                             : const Text('select date',
                                 style: TextStyle(color: Colors.blue))),

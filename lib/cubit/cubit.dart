@@ -4,6 +4,7 @@ import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/resources/models/ticket.dart';
+import 'package:auction/old/resources/models/trade_model.dart';
 import 'package:auction/old/resources/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -409,11 +410,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
         element.reference.collection('likes').get().then((value) {
           ticketLikes.add(value.docs.length);
           ticketId.add(element.id);
-
-          print(element.data()['ticketImage']);
-          print(element.data());
-          print(element.data()['uid']);
-          print(element.data()['ticketId']);
           ticket.add(TicketModel.fromMap(
             element.data(),
           ));
@@ -423,6 +419,114 @@ class AuctionCubit extends Cubit<AuctionStates> {
       emit(AuctionGetTicketSuccessState());
     }).catchError((error) {
       emit(AuctionGetTicketErrorState(error.toString()));
+    });
+  }
+
+  File? TradeItemImage;
+  Future<void> getTradeItemImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      TradeItemImage = File(pickedFile.path);
+      print(pickedFile.path);
+      emit(AuctionTradeItemImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(AuctionTradeItemImagePickedErrorState());
+    }
+  }
+
+  void removeTradeItemImage() {
+    TradeItemImage = null;
+    emit(AuctionRemoveTradeItemImageState());
+  }
+
+  void createTradeItem({
+    String? name,
+    String? image,
+    String? tradeItemImage,
+    String? titel,
+    String? dateTime,
+    String? description,
+    String? price,
+  }) {
+    emit(AuctionCreateTradeItemLoadingState());
+    String tradeItemId = const Uuid().v1();
+    TradeItemModel imodel = TradeItemModel(
+      name: model.name,
+      image: model.image,
+      uid: model.uid,
+      description: description,
+      tradeItemImage: tradeItemImage,
+      tradeItemId: tradeItemId,
+      titel: titel,
+    );
+    FirebaseFirestore.instance
+        .collection('tradeitem')
+        .doc(tradeItemId)
+        .set(imodel.toMap())
+        .then((value) {
+      emit(AuctionCreateTradeItemSuccessState());
+    }).catchError((error) {
+      emit(AuctionCreateTradeItemErrorState());
+    });
+  }
+
+  void uploadTradeItemImage({
+    String? titel,
+    String? dateTime,
+    String? category,
+    String? description,
+    String? price,
+  }) {
+    emit(AuctionCreateTradeItemLoadingState());
+
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('tradeItems/${Uri.file(TradeItemImage!.path).pathSegments.last}')
+        .putFile(TradeItemImage!)
+        .then((p0) {
+      p0.ref.getDownloadURL().then((value) {
+        emit(AuctionUploadProfileImageSuccessState());
+        print(value);
+        createTradeItem(
+          dateTime: dateTime,
+          description: description,
+          tradeItemImage: value,
+          titel: titel,
+          price: price,
+        );
+      }).catchError((error) {
+        emit(AuctionCreateTradeItemErrorState());
+      });
+    }).catchError((error) {
+      emit(AuctionCreateTradeItemErrorState());
+    });
+  }
+
+  List<TradeItemModel> TradeItems = [];
+  List<String> TradeItemId = [];
+  List<int> TradeItemsLikes = [];
+  void getTradeItems() {
+    TradeItems.clear();
+    emit(AuctionGetTradeItemLoadingState());
+    FirebaseFirestore.instance.collection('tradeitem').get().then((value) {
+      value.docs.forEach((element) {
+        element.reference.collection('likes').get().then((value) {
+          TradeItemsLikes.add(value.docs.length);
+          TradeItemId.add(element.id);
+
+          TradeItems.add(TradeItemModel.fromMap(
+            element.data(),
+          ));
+        }).catchError((error) {});
+      });
+
+      emit(AuctionGetTradeItemSuccessState());
+    }).catchError((error) {
+      emit(AuctionGetTradeItemErrorState(error.toString()));
     });
   }
 }

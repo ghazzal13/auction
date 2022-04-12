@@ -60,7 +60,8 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => AuctionCubit()
             ..getUserData()
             ..getPosts()
-            ..getTickets(),
+            ..getTickets()
+            ..getTradeItems(),
         ),
       ],
       child: BlocConsumer<AuctionCubit, AuctionStates>(
