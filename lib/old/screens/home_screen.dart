@@ -1,6 +1,9 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
+import 'package:auction/old/screens/offline_screens/offline_home_screen.dart';
+import 'package:auction/old/screens/offline_screens/offline_manage_screen.dart';
 import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
+import 'package:auction/old/screens/trade/trade_manage_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,7 +64,7 @@ class HomeScreeen extends StatelessWidget {
                         InkWell(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const OnlineMangScreen(),
+                              builder: (context) => const OfflineMangScreen(),
                             ),
                           ),
                           child: Container(
@@ -87,7 +90,11 @@ class HomeScreeen extends StatelessWidget {
                           height: 50,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const TradeMangScreen(),
+                            ),
+                          ),
                           child: Container(
                             height: 80,
                             child: const Text('Trade',

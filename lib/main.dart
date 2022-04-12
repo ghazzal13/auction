@@ -8,6 +8,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'old/resources/reuse_component.dart';
+
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('on background message');
   print(message.data.toString());
@@ -26,7 +28,7 @@ void main() async {
     print('on message');
     print(event.data.toString());
 
-    // showToast(text: 'on message', state: ToastStates.SUCCESS,);
+    showToast(text: 'on message', state: ToastStates.SUCCESS);
   });
 
   // when click on notification to open app
@@ -34,7 +36,10 @@ void main() async {
     print('on message opened app');
     print(event.data.toString());
 
-    // showToast(text: 'on message opened app', state: ToastStates.SUCCESS,);
+    showToast(
+      text: 'on message opened app',
+      state: ToastStates.SUCCESS,
+    );
   });
 
   // background fcm
@@ -54,7 +59,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => AuctionCubit()
             ..getUserData()
-            ..getPosts(),
+            ..getPosts()
+            ..getTickets(),
         ),
       ],
       child: BlocConsumer<AuctionCubit, AuctionStates>(

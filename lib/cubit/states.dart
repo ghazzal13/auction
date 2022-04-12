@@ -75,3 +75,33 @@ class AuctionGetCommentErrorState extends AuctionStates {
 
   AuctionGetCommentErrorState(this.error);
 }
+
+class AuctionTicketImagePickedSuccessState extends AuctionStates {}
+
+class AuctionTicketImagePickedErrorState extends AuctionStates {}
+
+class AuctionRemoveTicketImageState extends AuctionStates {}
+
+class AuctionCreateTicketLoadingState extends AuctionStates {}
+
+class AuctionCreateTicketSuccessState extends AuctionStates {}
+
+class AuctionCreateTicketErrorState extends AuctionStates {}
+
+class AuctionGetTicketLoadingState extends AuctionStates {}
+
+class AuctionGetTicketSuccessState extends AuctionStates {}
+
+class AuctionGetTicketErrorState extends AuctionStates {
+  final String error;
+
+  AuctionGetTicketErrorState(this.error);
+}
+
+class AuctionLikeTicketSuccessState extends AuctionStates {}
+
+class AuctionLikeTicketErrorState extends AuctionStates {
+  final String error;
+
+  AuctionLikeTicketErrorState(this.error);
+}

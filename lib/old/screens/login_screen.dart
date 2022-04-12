@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:auction/old/resources/auth_method.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/signup_screen.dart';
-import 'package:auction/old/text_field_input.dart';
+import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

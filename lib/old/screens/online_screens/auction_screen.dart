@@ -12,6 +12,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.teal,
         title: const Text(
           'Auction',

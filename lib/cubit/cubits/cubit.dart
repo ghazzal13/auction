@@ -1,9 +1,5 @@
-import 'dart:io';
-
-import 'package:auction/cubits/states.dart';
-import 'package:flutter/material.dart';
+import 'package:auction/cubit/cubits/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());

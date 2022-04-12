@@ -6,7 +6,7 @@ import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../text_field_input.dart';
+import '../resources/text_field_input.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);

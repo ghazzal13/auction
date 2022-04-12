@@ -1,11 +1,9 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/screens/edit_profile_screen.dart';
+import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../text_field_input.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -24,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         var userModel = AuctionCubit.get(context).model;
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.teal,
             title: const Text(
               'Auction',

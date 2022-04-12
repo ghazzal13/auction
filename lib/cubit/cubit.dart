@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/resources/auth_method.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
+import 'package:auction/old/resources/models/ticket.dart';
 import 'package:auction/old/resources/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -60,11 +59,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
   UserModel model = UserModel();
   void getUserData() {
     emit(AuctionGetUserLoadingState());
-
     String? uid;
-
     User? user = FirebaseAuth.instance.currentUser;
-
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
@@ -192,36 +188,30 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
+  // snapshots().listen((event) {
+  //   event.docs.forEach((element) {
+  //     element.reference.collection('likes').get().then((value) {
+  //       likes.add(value.docs.length);
+  //       postId.add(element.id);
+  //       print(element.data()['postImage']);
+  //       posts.add(PostModel.fromMap(
+  //         element.data(),
+  //       ));
+  //     }).catchError((error) {});
+  //   });
+  // });
   List<PostModel> posts = [];
   List<String> postId = [];
   List<int> likes = [];
   void getPosts() {
     posts.clear();
     emit(AuctionGetPostLoadingState());
-    FirebaseFirestore.instance
-        .collection('posts')
-
-        // snapshots().listen((event) {
-        //   event.docs.forEach((element) {
-        //     element.reference.collection('likes').get().then((value) {
-        //       likes.add(value.docs.length);
-        //       postId.add(element.id);
-        //       print(element.data()['postImage']);
-        //       posts.add(PostModel.fromMap(
-        //         element.data(),
-        //       ));
-        //     }).catchError((error) {});
-        //   });
-        // });
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
       value.docs.forEach((element) {
         element.reference.collection('likes').get().then((value) {
           likes.add(value.docs.length);
           postId.add(element.id);
 
-          print(element.data()['postImage']);
-          print(element.data()['postId']);
           posts.add(PostModel.fromMap(
             element.data(),
           ));
@@ -317,5 +307,122 @@ class AuctionCubit extends Cubit<AuctionStates> {
     // }).catchError((error) {
     //   emit(AuctionGetCommentErrorState(error.toString()));
     // });
+  }
+
+  File? TicketImage;
+  Future<void> getTicketImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      TicketImage = File(pickedFile.path);
+      print(pickedFile.path);
+      emit(AuctionTicketImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(AuctionTicketImagePickedErrorState());
+    }
+  }
+
+  void removeTicketImage() {
+    TicketImage = null;
+    emit(AuctionRemoveTicketImageState());
+  }
+
+  void uploadTicketImage({
+    String? titel,
+    String? dateTime,
+    String? category,
+    String? description,
+    String? price,
+  }) {
+    emit(AuctionCreateTicketLoadingState());
+
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('tickets/${Uri.file(TicketImage!.path).pathSegments.last}')
+        .putFile(TicketImage!)
+        .then((p0) {
+      p0.ref.getDownloadURL().then((value) {
+        emit(AuctionUploadProfileImageSuccessState());
+        print(value);
+        createTicket(
+          dateTime: dateTime,
+          description: description,
+          ticketImage: value,
+          category: category,
+          titel: titel,
+          price: price,
+        );
+      }).catchError((error) {
+        emit(AuctionCreateTicketErrorState());
+      });
+    }).catchError((error) {
+      emit(AuctionCreateTicketErrorState());
+    });
+  }
+
+  void createTicket({
+    String? name,
+    String? image,
+    String? ticketImage,
+    String? titel,
+    String? dateTime,
+    String? category,
+    String? description,
+    String? price,
+  }) {
+    emit(AuctionCreateTicketLoadingState());
+    String ticketId = const Uuid().v1();
+    TicketModel tmodel = TicketModel(
+      name: model.name,
+      image: model.image,
+      uid: model.uid,
+      dateTime: dateTime,
+      description: description,
+      ticketImage: ticketImage,
+      ticketId: ticketId,
+      category: category,
+      titel: titel,
+    );
+
+    FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(ticketId)
+        .set(tmodel.toMap())
+        .then((value) {
+      emit(AuctionCreateTicketSuccessState());
+    }).catchError((error) {
+      emit(AuctionCreateTicketErrorState());
+    });
+  }
+
+  List<TicketModel> ticket = [];
+  List<String> ticketId = [];
+  List<int> ticketLikes = [];
+  void getTickets() {
+    ticket.clear();
+    emit(AuctionGetTicketLoadingState());
+    FirebaseFirestore.instance.collection('tickets').get().then((value) {
+      value.docs.forEach((element) {
+        element.reference.collection('likes').get().then((value) {
+          ticketLikes.add(value.docs.length);
+          ticketId.add(element.id);
+
+          print(element.data()['ticketImage']);
+          print(element.data());
+          print(element.data()['uid']);
+          print(element.data()['ticketId']);
+          ticket.add(TicketModel.fromMap(
+            element.data(),
+          ));
+        }).catchError((error) {});
+      });
+
+      emit(AuctionGetTicketSuccessState());
+    }).catchError((error) {
+      emit(AuctionGetTicketErrorState(error.toString()));
+    });
   }
 }

@@ -9,21 +9,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddPostScreeen extends StatefulWidget {
-  const AddPostScreeen({Key? key}) : super(key: key);
+class AddItemTradeScreen extends StatefulWidget {
+  const AddItemTradeScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPostScreeen> createState() => _AddPostScreeenState();
+  State<AddItemTradeScreen> createState() => _AddItemTradeScreenState();
 }
 
-class _AddPostScreeenState extends State<AddPostScreeen> {
+class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _describtionController = TextEditingController();
   final TextEditingController _catigoryController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  var postdate = null;
-
+  var postdate;
+  Uint8List? _image;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
@@ -158,30 +158,24 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
                             ),
                           ),
                     TextButton(
-                      onPressed: () {
-                        DatePicker.showDateTimePicker(context,
-                            showTitleActions: true, onChanged: (date) {
-                          postdate = date;
-                          print('change $date in time zone ' +
-                              date.timeZoneOffset.inHours.toString());
-                        }, onConfirm: (date) {
-                          print('confirm $date');
-
-                          setState(() {
+                        onPressed: () {
+                          DatePicker.showDateTimePicker(context,
+                              showTitleActions: true, onChanged: (date) {
                             postdate = date;
-                          });
+                            print('change $date in time zone ' +
+                                date.timeZoneOffset.inHours.toString());
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                            postdate = date;
+                          },
+                              currentTime: postdate ??
+                                  DateTime(2022, 04, 10, 23, 12, 34));
                         },
-                            currentTime:
-                                postdate ?? DateTime(2022, 04, 10, 23, 12, 34));
-                      },
-                      child: postdate != null
-                          ? Text('${postdate}',
-                              style: TextStyle(color: Colors.blue))
-                          : const Text(
-                              'select date',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                    ),
+                        child: postdate != null
+                            ? Text('${postdate}',
+                                style: TextStyle(color: Colors.blue))
+                            : const Text('select date',
+                                style: TextStyle(color: Colors.blue))),
                   ],
                 ),
               ),

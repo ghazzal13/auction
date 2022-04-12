@@ -2,7 +2,8 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/text_field_input.dart';
+import 'package:auction/old/resources/text_field_input.dart';
+import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,105 +47,87 @@ class _OnlineEventScreenState extends State<OnlineEventScreen> {
         var userModel = AuctionCubit.get(context).model;
         return Scaffold(
           appBar: AppBar(
-              title: Text('${AuctionCubit.get(context).posts[index].titel}')),
-          body: SingleChildScrollView(
+            backgroundColor: primaryColor,
+            title: Text('${AuctionCubit.get(context).posts[index].titel}'),
+          ),
+          body: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/222.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/222.jpg"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // if (state is AuctionGetCommentLoadingState)
+                //   const LinearProgressIndicator(),
+                // if (state is AuctionUserUpdateLoadingState)
+                SizedBox(
+                  width: 200,
+                  child: Row(
                     children: [
-                      // if (state is AuctionGetCommentLoadingState)
-                      //   const LinearProgressIndicator(),
-                      // if (state is AuctionUserUpdateLoadingState)
-                      SizedBox(
-                        width: 200,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.teal,
-                                backgroundImage: NetworkImage(
-                                    '${AuctionCubit.get(context).posts[index].image}'),
-                              ),
-                            ),
-                            Text(
-                              '${AuctionCubit.get(context).posts[index].name}',
-                              style: TextStyle(
-                                color: Colors.teal[600],
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.teal,
+                          backgroundImage: NetworkImage(
+                              '${AuctionCubit.get(context).posts[index].image}'),
                         ),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.99,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                '${AuctionCubit.get(context).posts[index].postImage}'),
+                      Text(
+                        '${AuctionCubit.get(context).posts[index].name}',
+                        style: TextStyle(
+                          color: Colors.teal[600],
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.99,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          '${AuctionCubit.get(context).posts[index].postImage}'),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 300,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(15.0),
+                    itemBuilder: (context, index) => buildCommentItem(
+                        AuctionCubit.get(context).comments1[index], index),
+                    itemCount: AuctionCubit.get(context).comments1.length,
+                  ),
+                ),
+                SizedBox(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _cccController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: 'comment',
+                            border: OutlineInputBorder(),
                           ),
                         ),
                       ),
-                      Container(
-                        height: 200,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(15.0),
-                          itemBuilder: (context, index) => buildCommentItem(
-                              AuctionCubit.get(context).comments1[index],
-                              index),
-                          itemCount: AuctionCubit.get(context).comments1.length,
-                        ),
+                      const SizedBox(
+                        height: 20,
                       ),
-                      SizedBox(
-                        width: 300,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _cccController,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  hintText: 'comment',
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-
-                            // TextField(
-                            //             decoration: InputDecoration(
-                            //               border: OutlineInputBorder(),
-                            //               hintText: 'Enter a search term',
-                            //             ),
-                            //           ),
-
-                            // TextFieldInput(
-                            //     textEditingController: _cccController,
-                            //     hintText: 'comment',
-                            //     textInputType: TextInputType.text),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  AuctionCubit.get(context).writeComment(postId,
-                                      comment: _cccController.text);
-                                },
-                                icon: const Icon(Icons.add_circle_sharp)),
-                          ],
-                        ),
-                      ),
+                      IconButton(
+                          onPressed: () {
+                            AuctionCubit.get(context).writeComment(postId,
+                                comment: _cccController.text);
+                          },
+                          icon: const Icon(Icons.add_circle_sharp)),
                     ],
                   ),
                 ),
@@ -157,87 +140,42 @@ class _OnlineEventScreenState extends State<OnlineEventScreen> {
   }
 }
 
-// Widget buildPost(PostModel postmodel, context) => Container(
-//       height: 50,
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(25),
-//         color: Colors.teal.withOpacity(0.2),
-//       ),
-//       child: Row(
-//         children: [
-//           Column(
-//             children: [
-//               Row(
-//                 children: [
-//                   Stack(
-//                     children: [
-//                       Padding(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: CircleAvatar(
-//                           radius: 30,
-//                           backgroundColor: Colors.teal,
-//                           backgroundImage: NetworkImage('${postmodel.image}'),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                   Text(
-//                     '${postmodel.name}',
-//                     style: TextStyle(
-//                       color: Colors.teal[600],
-//                       fontSize: 17,
-//                       fontWeight: FontWeight.w600,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               // Container(
-//               //   height: 200,
-//               //   child: ListView.builder(
-//               //     padding: const EdgeInsets.all(15.0),
-//               //     itemBuilder: (context, index) => buildComment(
-//               //         AuctionCubit.get(context).comments[index],
-//               //         context,
-//               //         index),
-//               //     itemCount: AuctionCubit.get(context).comments.length,
-//               //   ),
-//               // ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-
-Widget buildCommentItem(CommentModel commentModel, index) => Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        color: Colors.teal.withOpacity(0.2),
-      ),
-      height: 50,
-      width: 300,
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.teal,
-              backgroundImage: NetworkImage('${commentModel.image}'),
-            ),
-          ),
-          Column(
-            children: [
-              Text(
-                '${commentModel.name}',
-                style: TextStyle(
-                  color: Colors.teal[600],
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
+Widget buildCommentItem(CommentModel commentModel, index) => Padding(
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: Colors.teal.withOpacity(0.2),
+        ),
+        height: 50,
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.teal,
+                backgroundImage: NetworkImage('${commentModel.image}'),
               ),
-              Text('${commentModel.comment}')
-            ],
-          ),
-        ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${commentModel.name}',
+                    style: TextStyle(
+                      color: Colors.teal[600],
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text('${commentModel.comment}')
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );

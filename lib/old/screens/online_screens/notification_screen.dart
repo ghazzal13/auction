@@ -12,6 +12,7 @@ class _NotificationScreeenState extends State<NotificationScreeen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.teal,
         title: const Text(
           'Auction',
