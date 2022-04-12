@@ -1,6 +1,7 @@
 import 'package:auction/old/resources/models/post_model.dart';
+import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
-import 'package:auction/old/text_field_input.dart';
+import 'package:auction/old/resources/text_field_input.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +35,7 @@ class _OnlineHomeState extends State<OnlineHome> {
 
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.teal,
             title: const Text(
               'Auction',
@@ -69,9 +71,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) => buildPostItem(
                       AuctionCubit.get(context).posts[index], context, index),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 8.0,
-                  ),
+                  separatorBuilder: (context, index) => myDivider(),
                   itemCount: AuctionCubit.get(context).posts.length,
                 ),
               ),
@@ -137,193 +137,160 @@ Widget buildPostItem(PostModel postmodel, context, index) => GestureDetector(
         ),
       );
     },
-    child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        color: Colors.teal.withOpacity(0.2),
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: 5,
+        right: 5,
+        top: 5,
       ),
-      child: Row(
-        children: [
-          Column(
-            children: [
-              Row(
-                children: [
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.teal,
-                          backgroundImage: NetworkImage('${postmodel.image}'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    '${postmodel.name}',
-                    style: TextStyle(
-                      color: Colors.teal[600],
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  '${postmodel.titel}',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.teal[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  '${postmodel.dateTime}',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.teal[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // Container(
-              //   alignment: Alignment.topLeft,
-              //   //margin: EdgeInsets.fromLTRB(12,0,320,400),
-              //   child: Text(
-              //     'Duration',
-              //     style: TextStyle(
-              //       fontSize: 15,
-              //       color: Colors.teal[600],
-              //       fontWeight: FontWeight.w600,
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
-              Container(
-                alignment: Alignment.topLeft,
-                //margin: EdgeInsets.fromLTRB(12,0,320,400),
-                child: Text(
-                  '4 Days - 12 Hours',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.teal[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Text('${AuctionCubit.get(context).likes[index]}'),
-                  Container(
-                    height: 30,
-                    width: 40,
-                    child: IconButton(
-                      onPressed: () {
-                        AuctionCubit.get(context)
-                            .likePost(AuctionCubit.get(context).postId[index]);
-                      },
-                      icon: const Icon(
-                        Icons.favorite,
-                        color: Colors.black,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 35,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: Colors.teal.withOpacity(0.2),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 7,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: 140,
-                      //margin: new EdgeInsets.fromLTRB(200,0,0,0),
-                      // color: Colors.black87,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage('${postmodel.postImage}'),
+                    Row(
+                      children: [
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.teal,
+                              backgroundImage:
+                                  NetworkImage('${postmodel.image}'),
+                            ),
+                          ],
                         ),
-                      ),
+                        Text(
+                          '${postmodel.name}',
+                          style: TextStyle(
+                            color: Colors.teal[600],
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Container(
+                      alignment: Alignment.topLeft,
                       child: Text(
-                        '${postmodel.category}',
+                        '${postmodel.titel}',
                         style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.teal[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        '${postmodel.dateTime}',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.teal[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        '4 Days - 12 Hours',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.teal[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text('${AuctionCubit.get(context).likes[index]}'),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          child: IconButton(
+                            onPressed: () {
+                              AuctionCubit.get(context).likePost(
+                                  AuctionCubit.get(context).postId[index]);
+                            },
+                            icon: const Icon(
+                              Icons.favorite,
+                              color: Colors.black,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage('${postmodel.postImage}'),
+                              fit: BoxFit.cover),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                        width: 5,
+                      ),
+                      Text(
+                        '${postmodel.category}',
+                        style: const TextStyle(
                           fontSize: 20,
                           color: Colors.teal,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        // color: Colors.teal[400],
-                      ),
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Rate',
-                          style: TextStyle(
-                            color: Colors.teal,
-                            fontSize: 20,
-                          ),
-                        ),
-                        //color: Colors.teal,
-                      ),
-                    ),
-                  ],
-                ),
-                // Row(
-                //   children: [
-                //     Padding(
-                //       padding: const EdgeInsets.all(8.0),
-                //       child: TextFieldInput(
-                //         hintText: 'Enter your address',
-                //         textInputType: TextInputType.text,
-                //         textEditingController: _commentController,
-                //       ),
-                //     ),
-                //     IconButton(
-                //         onPressed: () {
-                //           //   AuctionCubit.get(context).writeComment(
-                //           //       AuctionCubit.get(context).postId[index]);
-                //         },
-                //         icon: const Icon(Icons.arrow_circle_right_outlined))
-                //   ],
-                // )
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ));
