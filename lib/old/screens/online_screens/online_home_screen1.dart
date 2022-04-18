@@ -1,8 +1,11 @@
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
-import 'package:auction/old/resources/text_field_input.dart';
+import 'package:auction/old/screens/search_screen.dart';
+import 'package:auction/old/screens/shopping_cart_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder/conditional_builder.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
@@ -18,14 +21,7 @@ class OnlineHome extends StatefulWidget {
 }
 
 class _OnlineHomeState extends State<OnlineHome> {
-  final TextEditingController _commentController = TextEditingController();
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-    AuctionCubit.get(context).posts.length > 0;
-  }
-
+  // CollectionReference postsss = FirebaseFirestore.instance.collection('posts');
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
@@ -46,11 +42,25 @@ class _OnlineHomeState extends State<OnlineHome> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingCartScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.shopping_cart_rounded),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SearchScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.search),
               ),
             ],
@@ -70,7 +80,10 @@ class _OnlineHomeState extends State<OnlineHome> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) => buildPostItem(
-                      AuctionCubit.get(context).posts[index], context, index),
+                    AuctionCubit.get(context).posts[index],
+                    context,
+                    index,
+                  ),
                   separatorBuilder: (context, index) => myDivider(),
                   itemCount: AuctionCubit.get(context).posts.length,
                 ),
@@ -80,60 +93,26 @@ class _OnlineHomeState extends State<OnlineHome> {
             ),
           ),
         );
-
-        // ConditionalBuilder(
-        //   condition: state is AuctionGetPostSuccessState,
-        //   builder: (context) => SingleChildScrollView(
-        //     physics: const BouncingScrollPhysics(),
-        //     child: Column(
-        //       children: [
-        //         ListView.separated(
-        //           shrinkWrap: true,
-        //           physics: const NeverScrollableScrollPhysics(),
-        //           itemBuilder: (context, index) => buildPostItem(
-        //               AuctionCubit.get(context).posts[index], context, index),
-        //           separatorBuilder: (context, index) => const SizedBox(
-        //             height: 8.0,
-        //           ),
-        //           itemCount: AuctionCubit.get(context).posts.length,
-        //         ),
-        //         const SizedBox(
-        //           height: 8.0,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        //   fallback: (context) =>
-        //       const Center(child: CircularProgressIndicator()),
-        // );
-
-        // Container(
-        //   decoration: const BoxDecoration(
-        //     image: DecorationImage(
-        //       image: AssetImage("assets/222.jpg"),
-        //       fit: BoxFit.cover,
-        //     ),
-        //   ),
-        //   child: ListView.builder(
-        //     padding: const EdgeInsets.all(15.0),
-        //     itemBuilder: (context, index) => buildPostItem(
-        //         AuctionCubit.get(context).posts[index], context, index),
-        //     itemCount: AuctionCubit.get(context).posts.length,
-        //   ),
-        // );
       },
     );
   }
 }
 
+int duration = 10;
+late int doo;
+
 Widget buildPostItem(PostModel postmodel, context, index) => GestureDetector(
     onTap: () {
-      AuctionCubit.get(context).getComments(postmodel.postId);
+      AuctionCubit.get(context).getComments(postmodel.postId, 'posts');
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              OnlineEventScreen(AuctionCubit.get(context).postId[index], index),
+          builder: (context) => OnlineEventScreen(
+            AuctionCubit.get(context).postId[index],
+            index,
+            doo = postmodel.dateTime!.difference(DateTime.now()).inSeconds,
+            duration: doo,
+          ),
         ),
       );
     },
@@ -169,13 +148,24 @@ Widget buildPostItem(PostModel postmodel, context, index) => GestureDetector(
                             ),
                           ],
                         ),
-                        Text(
-                          '${postmodel.name}',
-                          style: TextStyle(
-                            color: Colors.teal[600],
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        Column(
+                          children: [
+                            Text(
+                              '${postmodel.name}',
+                              style: TextStyle(
+                                color: Colors.teal[600],
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${postmodel.postTime}',
+                              style: TextStyle(
+                                color: Colors.teal[600],
+                                fontSize: 8,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

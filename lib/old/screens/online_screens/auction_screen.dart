@@ -1,3 +1,5 @@
+import 'package:auction/old/screens/search_screen.dart';
+import 'package:auction/old/screens/shopping_cart_screen.dart';
 import 'package:flutter/material.dart';
 
 class AuctionScreen extends StatefulWidget {
@@ -21,11 +23,25 @@ class _AuctionScreenState extends State<AuctionScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShoppingCartScreen(),
+                ),
+              );
+            },
             icon: const Icon(Icons.shopping_cart_rounded),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreen(),
+                ),
+              );
+            },
             icon: const Icon(Icons.search),
           ),
         ],

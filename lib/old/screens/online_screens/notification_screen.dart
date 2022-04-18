@@ -37,8 +37,12 @@ class _NotificationScreeenState extends State<NotificationScreeen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: const Center(
-          child: Text('notification'),
+        child: Column(
+          children: [
+            const Center(
+              child: Text('notification'),
+            ),
+          ],
         ),
       ),
     );

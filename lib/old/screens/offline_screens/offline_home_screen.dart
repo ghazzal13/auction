@@ -1,6 +1,8 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/ticket.dart';
+import 'package:auction/old/screens/offline_screens/ticket_details_screen.dart';
+import 'package:auction/old/screens/shopping_cart_screen.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +35,14 @@ class _OfflineHomeScreenState extends State<OfflineHomeScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingCartScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.shopping_cart_rounded),
               ),
               IconButton(
@@ -74,7 +83,17 @@ class _OfflineHomeScreenState extends State<OfflineHomeScreen> {
 
 Widget buildTicketItem(TicketModel ticketmodel, context, index) =>
     GestureDetector(
-        onTap: () {},
+        onTap: () {
+          AuctionCubit.get(context)
+              .getComments(ticketmodel.ticketId, 'tickets');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TicketDetailsScreen(
+                  AuctionCubit.get(context).ticketId[index], index),
+            ),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.only(
             left: 5,

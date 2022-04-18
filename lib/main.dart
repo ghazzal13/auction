@@ -93,10 +93,5 @@ class MyApp extends StatelessWidget {
             );
           }),
     );
-
-    // BlocConsumer<AppCubit, AppStates>(
-    //     listener: (context, state) {},
-    //     builder: (context, state) {
-    //       return
   }
 }

@@ -120,9 +120,40 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
+  void updatePostState(
+    index, {
+    bool? isStarted,
+  }) {
+    PostModel updatemodel = PostModel(
+      name: posts[index].name,
+      image: model.image,
+      uid: posts[index].uid,
+      dateTime: posts[index].dateTime,
+      postTime: posts[index].postTime,
+      description: posts[index].description,
+      postImage: posts[index].postImage,
+      postId: posts[index].postId,
+      category: posts[index].category,
+      titel: posts[index].titel,
+      price: posts[index].price,
+      isStarted: true,
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(posts[index].postId)
+        .update(updatemodel.toMap())
+        .then((value) {
+      getPosts();
+    }).catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
   void uploadPostImage({
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
+    DateTime? postTime,
     String? category,
     String? description,
     String? price,
@@ -139,6 +170,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         print(value);
         createPost(
           dateTime: dateTime,
+          postTime: postTime,
           description: description,
           postImage: value,
           category: category,
@@ -158,7 +190,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? postImage,
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
+    DateTime? postTime,
     String? category,
     String? description,
     String? price,
@@ -170,12 +203,14 @@ class AuctionCubit extends Cubit<AuctionStates> {
       image: model.image,
       uid: model.uid,
       dateTime: dateTime,
+      postTime: postTime,
       description: description,
       postImage: postImage,
       postId: postId,
       category: category,
       titel: titel,
       price: price,
+      isStarted: false,
     );
 
     FirebaseFirestore.instance
@@ -200,7 +235,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
   //       ));
   //     }).catchError((error) {});
   //   });
-  // });
+  // })
   List<PostModel> posts = [];
   List<String> postId = [];
   List<int> likes = [];
@@ -212,7 +247,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         element.reference.collection('likes').get().then((value) {
           likes.add(value.docs.length);
           postId.add(element.id);
-
+          print(element.data()['postImage']);
           posts.add(PostModel.fromMap(
             element.data(),
           ));
@@ -241,6 +276,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
   }
 
   void writeComment(
+    String collection,
     String postId, {
     String? name,
     String? image,
@@ -258,7 +294,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         commentId: commentId,
         postId: postId);
     FirebaseFirestore.instance
-        .collection('posts')
+        .collection(collection)
         .doc(postId)
         .collection('comments')
         .doc(commentId)
@@ -273,11 +309,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
   List<CommentModel> comments1 = [];
   // List<String> commentId = [];
   // List<int> comments = [];
-  void getComments(postId) {
+  void getComments(postId, String collection) {
     emit(AuctionGetCommentLoadingState());
 
     FirebaseFirestore.instance
-        .collection('posts')
+        .collection(collection)
         .doc(postId)
         .collection('comments')
         .snapshots()
@@ -529,4 +565,76 @@ class AuctionCubit extends Cubit<AuctionStates> {
       emit(AuctionGetTradeItemErrorState(error.toString()));
     });
   }
+
+  List<dynamic> search = [];
+  late String searchKey;
+  void getSearch(
+    String s,
+  ) {
+    search.clear();
+    // emit(AuctionGetSearchLoadingState());
+    // FirebaseFirestore.instance
+    //     .collection('posts')
+    //     .where(
+    //       'titel',
+    //       isEqualTo: s,
+    //     )
+    //     .snapshots()
+
+    searchKey = s;
+    FirebaseFirestore.instance
+        .collection('posts')
+        .where('titel', isGreaterThanOrEqualTo: searchKey)
+        .where('titel', isLessThan: searchKey + 'z')
+        .snapshots()
+        .listen((event) {
+      // search.clear();
+      event.docs.forEach((element) {
+        search.add(PostModel.fromMap(
+          element.data(),
+        ));
+
+        print(element.data()['titel']);
+      });
+      emit(AuctionGetCommentSuccessState());
+    });
+
+// TextField(
+//               onChanged: (value){
+//                   setState(() {
+//                     searchKey = value;
+//                     streamQuery = _firestore.collection('Col-Name')
+//                         .where('fieldName', isGreaterThanOrEqualTo: searchKey)
+//                         .where('fieldName', isLessThan: searchKey +'z')
+//                         .snapshots();
+//                   });
+//     }),
+
+    //     .get()
+    //     .then((value) {
+    //   value.docs.forEach((element) {
+    //     element.reference.collection('likes').get().then((value) {
+    //       likes.add(value.docs.length);
+    //       postId.add(element.id);
+    //       // if (element.data()['titel'].containsValue(s)) {
+    //       //   search.add(PostModel.fromMap(
+    //       //     element.data(), ));
+    //       //   print(element.data()['titel']);
+    //       // }
+    //       search.add(PostModel.fromMap(
+    //         element.data(),
+    //       ));
+    //       print(element.data()['titel']);
+    //     }).catchError((error) {});
+    //   });
+
+    //   emit(AuctionGetSearchSuccessState());
+    // })
+
+    // .catchError((error) {
+    //   emit(AuctionGetSearchErrorState(error.toString()));
+    // });
+  }
+
+  //
 }

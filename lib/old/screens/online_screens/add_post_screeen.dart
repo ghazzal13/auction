@@ -4,10 +4,12 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/theme.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class AddPostScreeen extends StatefulWidget {
   const AddPostScreeen({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
   final TextEditingController _describtionController = TextEditingController();
   final TextEditingController _catigoryController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  var postdate = null;
+  late DateTime postdate;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,15 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
+                  final formattedStr = DateTime.now();
+                  // formatDate(DateTime.now(),
+                  //     [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+
+                  DateTime now = DateTime.now();
                   AuctionCubit.get(context).uploadPostImage(
                     category: _catigoryController.text,
-                    dateTime: postdate.toString(),
+                    dateTime: postdate,
+                    postTime: now,
                     description: _describtionController.text,
                     titel: _titleController.text,
                     price: _priceController.text,
@@ -161,26 +169,53 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
                       onPressed: () {
                         DatePicker.showDateTimePicker(context,
                             showTitleActions: true, onChanged: (date) {
+                          formatDate(
+                              date, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+                          // postdate = date;
                           postdate = date;
+                          // formatDate(date, [
+                          //   dd,
+                          //   '/',
+                          //   mm,
+                          //   '/',
+                          //   yyyy,
+                          //   ' ',
+                          //   HH,
+                          //   ':',
+                          //   nn
+                          // ]) as DateTime;
+                          ;
                           print('change $date in time zone ' +
                               date.timeZoneOffset.inHours.toString());
                         }, onConfirm: (date) {
                           print('confirm $date');
-
+                          // formatDate(
+                          //     date, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
                           setState(() {
                             postdate = date;
+                            //  formatDate(date, [
+                            //   dd,
+                            //   '/',
+                            //   mm,
+                            //   '/',
+                            //   yyyy,
+                            //   ' ',
+                            //   HH,
+                            //   ':',
+                            //   nn
+                            // ]) as DateTime;
                           });
-                        },
-                            currentTime:
-                                postdate ?? DateTime(2022, 04, 10, 23, 12, 34));
+                        }, currentTime: DateTime.now());
                       },
-                      child: postdate != null
-                          ? Text('${postdate}',
-                              style: TextStyle(color: Colors.blue))
-                          : const Text(
-                              'select date',
-                              style: TextStyle(color: Colors.blue),
-                            ),
+                      child:
+                          // postdate != ''
+                          //     ? Text('${postdate}',
+                          //         style: TextStyle(color: Colors.blue))
+                          //     :
+                          const Text(
+                        'select date',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
                   ],
                 ),

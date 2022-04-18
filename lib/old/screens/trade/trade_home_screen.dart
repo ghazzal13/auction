@@ -2,6 +2,8 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/trade_model.dart';
 import 'package:auction/old/resources/reuse_component.dart';
+import 'package:auction/old/screens/shopping_cart_screen.dart';
+import 'package:auction/old/screens/trade/item_details_screen.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +34,14 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingCartScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.shopping_cart_rounded),
               ),
               IconButton(
@@ -75,7 +84,17 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
 
 Widget buildTicketItem(TradeItemModel trademodel, context, index) =>
     GestureDetector(
-        onTap: () {},
+        onTap: () {
+          AuctionCubit.get(context)
+              .getComments(trademodel.tradeItemId, 'tradeitem');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemDetailsScreen(
+                  AuctionCubit.get(context).TradeItemId[index], index),
+            ),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.only(
             left: 5,

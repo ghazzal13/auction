@@ -8,10 +8,11 @@ class PostModel {
   String? postId;
   String? price;
   String? titel;
-  String? dateTime;
+  DateTime? dateTime;
+  DateTime? postTime;
   String? category;
   String? description;
-  List? comments;
+  bool? isStarted = false;
 
   PostModel(
       {this.uid,
@@ -21,10 +22,11 @@ class PostModel {
       this.postId,
       this.category,
       this.dateTime,
+      this.postTime,
       this.titel,
       this.price,
       this.description,
-      this.comments});
+      this.isStarted});
 
   factory PostModel.fromMap(map) {
     return PostModel(
@@ -35,10 +37,11 @@ class PostModel {
       postImage: map['postImage'],
       postId: map['postId'],
       category: map['category'],
-      dateTime: map['dateTime'],
+      dateTime: DateTime.parse(map['dateTime'].toDate().toString()),
+      postTime: DateTime.parse(map['postTime'].toDate().toString()),
       titel: map['titel'],
       description: map['description'],
-      comments: map['comments'],
+      isStarted: map['isStarted'],
     );
   }
 
@@ -51,8 +54,9 @@ class PostModel {
         'price': price,
         'category': category,
         'dateTime': dateTime,
+        'postTime': postTime,
         'titel': titel,
         'description': description,
-        'comments': comments,
+        'isStarted': isStarted,
       };
 }

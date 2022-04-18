@@ -30,6 +30,8 @@ class AuctionUserUpdateErrorState extends AuctionStates {}
 
 //post
 
+class AuctionStartPostUpdateUpdateErrorState extends AuctionStates {}
+
 class AuctionPostImagePickedSuccessState extends AuctionStates {}
 
 class AuctionPostImagePickedErrorState extends AuctionStates {}
@@ -134,4 +136,14 @@ class AuctionLikeTradeItemErrorState extends AuctionStates {
   final String error;
 
   AuctionLikeTradeItemErrorState(this.error);
+}
+
+class AuctionGetSearchLoadingState extends AuctionStates {}
+
+class AuctionGetSearchSuccessState extends AuctionStates {}
+
+class AuctionGetSearchErrorState extends AuctionStates {
+  final String error;
+
+  AuctionGetSearchErrorState(this.error);
 }
