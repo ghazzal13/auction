@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => AuctionCubit()
             ..getUserData()
-            ..getPosts()
+            // ..getPosts()
             ..getTickets()
             ..getTradeItems(),
         ),

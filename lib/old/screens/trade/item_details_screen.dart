@@ -7,36 +7,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final String tradeItemId;
-  final int index;
+
+  final Map tradeitem1;
   const ItemDetailsScreen(
-    this.tradeItemId,
-    this.index, {
+    this.tradeItemId, {
     Key? key,
+    required this.tradeitem1,
   }) : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<ItemDetailsScreen> createState() =>
-      _ItemDetailsScreenState(tradeItemId: tradeItemId, index: index);
+  State<ItemDetailsScreen> createState() => _ItemDetailsScreenState(
+        tradeItemId: tradeItemId,
+        tradeitem1: tradeitem1,
+      );
 }
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   final TextEditingController _cccController = TextEditingController();
 
   String tradeItemId;
-  int index;
 
   _ItemDetailsScreenState({
     required this.tradeItemId,
-    required this.index,
+    required this.tradeitem1,
   });
 
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-    AuctionCubit.get(context).comments1.length > 0;
-  }
-
+  Map tradeitem1;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
@@ -46,7 +43,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: primaryColor,
-            title: Text('${AuctionCubit.get(context).TradeItems[index].titel}'),
+            title: Text('${tradeitem1['titel']}'),
           ),
           body: Container(
             decoration: const BoxDecoration(
@@ -58,11 +55,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // if (state is AuctionGetCommentLoadingState)
-                //   const LinearProgressIndicator(),
-                // if (state is AuctionUserUpdateLoadingState)
                 SizedBox(
-                  width: 200,
                   child: Row(
                     children: [
                       Padding(
@@ -70,18 +63,30 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         child: CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.teal,
-                          backgroundImage: NetworkImage(
-                              '${AuctionCubit.get(context).TradeItems[index].image}'),
+                          backgroundImage:
+                              NetworkImage('${tradeitem1['image']}'),
                         ),
                       ),
-                      Text(
-                        '${AuctionCubit.get(context).TradeItems[index].name}',
-                        style: TextStyle(
-                          color: Colors.teal[600],
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      Column(
+                        children: [
+                          Text(
+                            '${tradeitem1['name']}',
+                            style: TextStyle(
+                              color: Colors.teal[600],
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '${tradeitem1['datePublished']}',
+                            style: TextStyle(
+                              color: Colors.teal[600],
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -90,8 +95,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   height: 200,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(
-                          '${AuctionCubit.get(context).TradeItems[index].tradeItemImage}'),
+                      image: NetworkImage('${tradeitem1['tradeItemImage']}'),
                     ),
                   ),
                 ),
@@ -124,7 +128,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           onPressed: () {
                             AuctionCubit.get(context).writeComment(
                               'tradeitem',
-                              tradeItemId,
+                              tradeitem1['tradeItemId'],
                               comment: _cccController.text,
                             );
                           },

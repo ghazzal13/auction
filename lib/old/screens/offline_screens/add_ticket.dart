@@ -44,7 +44,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                 onPressed: () {
                   AuctionCubit.get(context).uploadTicketImage(
                     category: _catigoryController.text,
-                    dateTime: ticketdate.toString(),
+                    dateTime: ticketdate,
                     description: _describtionController.text,
                     titel: _titleController.text,
                     price: _priceController.text,

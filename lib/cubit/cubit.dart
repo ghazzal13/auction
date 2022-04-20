@@ -398,7 +398,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadTicketImage({
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
     String? category,
     String? description,
     String? price,
@@ -434,7 +434,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? ticketImage,
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
     String? category,
     String? description,
     String? price,
@@ -445,6 +445,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
+      datePublished: DateTime.now(),
       dateTime: dateTime,
       description: description,
       ticketImage: ticketImage,
@@ -513,7 +514,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? tradeItemImage,
     String? titel,
-    String? dateTime,
     String? description,
     String? price,
   }) {
@@ -523,6 +523,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
+      datePublished: DateTime.now(),
       description: description,
       tradeItemImage: tradeItemImage,
       tradeItemId: tradeItemId,
@@ -541,7 +542,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadTradeItemImage({
     String? titel,
-    String? dateTime,
     String? category,
     String? description,
     String? price,
@@ -557,7 +557,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
         emit(AuctionUploadProfileImageSuccessState());
         print(value);
         createTradeItem(
-          dateTime: dateTime,
           description: description,
           tradeItemImage: value,
           titel: titel,

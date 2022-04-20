@@ -5,24 +5,25 @@ class TicketModel {
   String? ticketImage;
   String? ticketId;
   String? titel;
-  String? dateTime;
+  DateTime? datePublished;
+  DateTime? dateTime;
   String? category;
   String? address;
   String? description;
-  List? comments;
 
-  TicketModel(
-      {this.uid,
-      this.name,
-      this.image,
-      this.ticketImage,
-      this.ticketId,
-      this.category,
-      this.address,
-      this.dateTime,
-      this.titel,
-      this.description,
-      this.comments});
+  TicketModel({
+    this.uid,
+    this.name,
+    this.image,
+    this.ticketImage,
+    this.ticketId,
+    this.category,
+    this.address,
+    this.datePublished,
+    this.dateTime,
+    this.titel,
+    this.description,
+  });
 
   factory TicketModel.fromMap(map) {
     return TicketModel(
@@ -33,10 +34,10 @@ class TicketModel {
       ticketId: map['ticketId'],
       category: map['category'],
       address: map['address'],
+      datePublished: map['datePublished'],
       dateTime: map['dateTime'],
       titel: map['titel'],
       description: map['description'],
-      comments: map['comments'],
     );
   }
 
@@ -48,9 +49,9 @@ class TicketModel {
         'ticketId': ticketId,
         'category': category,
         'address': address,
+        'datePublished': datePublished,
         'dateTime': dateTime,
         'titel': titel,
         'description': description,
-        'comments': comments,
       };
 }

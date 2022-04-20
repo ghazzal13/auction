@@ -7,7 +7,7 @@ class TradeItemModel {
   String? titel;
   String? description;
 
-  String? dateTime;
+  DateTime? datePublished;
 
   TradeItemModel({
     this.uid,
@@ -15,7 +15,7 @@ class TradeItemModel {
     this.image,
     this.tradeItemImage,
     this.tradeItemId,
-    this.dateTime,
+    this.datePublished,
     this.titel,
     this.description,
   });
@@ -25,9 +25,9 @@ class TradeItemModel {
       uid: map['uid'],
       name: map['name'],
       image: map['image'],
-      tradeItemImage: map['ticketImage'],
-      tradeItemId: map['ticketId'],
-      dateTime: map['dateTime'],
+      tradeItemImage: map['tradeItemImage'],
+      tradeItemId: map['tradeItemId'],
+      datePublished: map['datePublished'],
       titel: map['titel'],
       description: map['description'],
     );
@@ -37,9 +37,9 @@ class TradeItemModel {
         'uid': uid,
         'name': name,
         'image': image,
-        'ticketImage': tradeItemImage,
-        'ticketId': tradeItemId,
-        'dateTime': dateTime,
+        'tradeItemImage': tradeItemImage,
+        'tradeItemId': tradeItemId,
+        'datePublished': datePublished,
         'titel': titel,
         'description': description,
       };

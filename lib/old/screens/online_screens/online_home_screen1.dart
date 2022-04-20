@@ -107,6 +107,14 @@ class _OnlineHomeState extends State<OnlineHome> {
   int duration = 10;
   late int doo;
   late PostModel SelectedPost;
+  late Map post1 = {
+    'name': '',
+    'titel': '',
+    'postdate': '',
+    'image': '',
+    'postImage': '',
+    'isStarted': '',
+  };
   Widget PostCard3({required dynamic snap, context}) {
     return GestureDetector(
         onTap: () {
@@ -123,20 +131,19 @@ class _OnlineHomeState extends State<OnlineHome> {
                 builder: (context) => OnlineEventScreen(
                   snap['postId'].toString(),
                   doo = (snap['startAuction'].toDate())!
-                      .difference(snap['postTime'].toDate())
+                      .difference(DateTime.now())
                       .inSeconds,
                   duration: doo,
+                  post1: {
+                    'name': snap['name'].toString(),
+                    'titel': snap['titel'].toString(),
+                    'postdate': snap['postTime'].toDate(),
+                    'image': snap['image'].toString(),
+                    'postImage': snap['image'].toString(),
+                    'startAuction': snap['startAuction'].toDate(),
+                  },
                 ),
               ),
-              // MaterialPageRoute(
-              //   builder: (context) => AuctionScreen(
-              //     snap['postId'].toString(),
-              //     // doo = (snap['postTime'].toDate())!
-              //     //     .difference(DateTime.now())
-              //     //     .inSeconds,
-              //     // duration: doo,
-              //   ),
-              // ),
             );
           });
         },
@@ -222,7 +229,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                           alignment: Alignment.topLeft,
                           child: Countdown(
                             seconds: (snap['startAuction'].toDate())!
-                                .difference(snap['postTime'].toDate())
+                                .difference(DateTime.now())
                                 .inSeconds,
                             build: (BuildContext context, double time) => Text(
                               '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
@@ -236,7 +243,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                               print('Timer is done!');
                               AuctionCubit.get(context)
                                   .updatePostState(isStarted: true);
-                              Navigator.pop(context);
+                              // Navigator.pop(context);
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
