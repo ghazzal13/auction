@@ -153,7 +153,7 @@ Widget buildSearchCard(PostModel postmodel, context, index) => GestureDetector(
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${postmodel.dateTime}',
+                          '${postmodel.startAuction}',
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.teal[600],

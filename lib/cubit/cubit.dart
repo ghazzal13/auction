@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
+import 'package:auction/old/resources/models/event_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/resources/models/ticket.dart';
 import 'package:auction/old/resources/models/trade_model.dart';
@@ -120,28 +121,32 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void updatePostState(
-    index, {
+  void updatePostState({
     bool? isStarted,
+    bool? isFinish,
+    String? winner,
   }) {
     PostModel updatemodel = PostModel(
-      name: posts[index].name,
+      name: postByID.name,
       image: model.image,
-      uid: posts[index].uid,
-      dateTime: posts[index].dateTime,
-      postTime: posts[index].postTime,
-      description: posts[index].description,
-      postImage: posts[index].postImage,
-      postId: posts[index].postId,
-      category: posts[index].category,
-      titel: posts[index].titel,
-      price: posts[index].price,
-      isStarted: true,
+      uid: postByID.uid,
+      startAuction: postByID.startAuction,
+      endAuction: postByID.endAuction,
+      postTime: postByID.postTime,
+      description: postByID.description,
+      postImage: postByID.postImage,
+      postId: postByID.postId,
+      category: postByID.category,
+      titel: postByID.titel,
+      price: postByID.price,
+      isStarted: isStarted ?? postByID.isStarted,
+      isFinish: isFinish ?? postByID.isFinish,
+      winner: winner ?? postByID.winner,
     );
 
     FirebaseFirestore.instance
         .collection('posts')
-        .doc(posts[index].postId)
+        .doc(postByID.postId)
         .update(updatemodel.toMap())
         .then((value) {
       getPosts();
@@ -152,11 +157,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadPostImage({
     String? titel,
-    DateTime? dateTime,
+    DateTime? startAuction,
     DateTime? postTime,
     String? category,
     String? description,
-    String? price,
+    int? price,
   }) {
     emit(AuctionCreatePostLoadingState());
 
@@ -169,7 +174,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         emit(AuctionUploadProfileImageSuccessState());
         print(value);
         createPost(
-          dateTime: dateTime,
+          startAuction: startAuction,
           postTime: postTime,
           description: description,
           postImage: value,
@@ -190,11 +195,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? postImage,
     String? titel,
-    DateTime? dateTime,
+    DateTime? startAuction,
     DateTime? postTime,
     String? category,
     String? description,
-    String? price,
+    int? price,
   }) {
     emit(AuctionCreatePostLoadingState());
     String postId = const Uuid().v1();
@@ -202,7 +207,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
-      dateTime: dateTime,
+      startAuction: startAuction,
+      endAuction: startAuction!.add(const Duration(hours: 3)),
       postTime: postTime,
       description: description,
       postImage: postImage,
@@ -211,6 +217,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       titel: titel,
       price: price,
       isStarted: false,
+      isFinish: false,
+      winner: null,
     );
 
     FirebaseFirestore.instance
@@ -239,7 +247,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
   List<PostModel> posts = [];
   List<String> postId = [];
   List<int> likes = [];
-  void getPosts() {
+  Future<List<PostModel>> getPosts() async {
     posts.clear();
     emit(AuctionGetPostLoadingState());
     FirebaseFirestore.instance.collection('posts').get().then((value) {
@@ -258,6 +266,27 @@ class AuctionCubit extends Cubit<AuctionStates> {
     }).catchError((error) {
       emit(AuctionGetPostErrorState(error.toString()));
     });
+    return posts;
+  }
+
+  PostModel postByID = PostModel();
+  Future<dynamic> getPostById({required String id}) async {
+    emit(AuctionGetPostLoadingState());
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(id)
+        .get()
+        .then((value) {
+      // print(value.data()!['postImage']);
+      // print(value.data()!['image']);
+      print(value.data()!['uid']);
+      this.postByID = PostModel.fromMap(value.data());
+      // return postByID;
+      emit(AuctionGetPostSuccessState());
+    }).catchError((error) {
+      emit(AuctionGetPostErrorState(error.toString()));
+    });
+    return postByID;
   }
 
   void likePost(String postId) {
@@ -634,6 +663,90 @@ class AuctionCubit extends Cubit<AuctionStates> {
     // .catchError((error) {
     //   emit(AuctionGetSearchErrorState(error.toString()));
     // });
+  }
+
+  void encreasePrice(
+    String collection,
+    String postId, {
+    String? name,
+    String? image,
+    String? dateTime,
+    required int? price,
+  }) {
+    emit(AuctionWritePricesLoadingState());
+    String encreasePriceId = const Uuid().v1();
+    EventModel emodel = EventModel(
+        name: model.name,
+        image: model.image,
+        uid: model.uid,
+        dateTime: dateTime,
+        price: price,
+        encreasePriceId: encreasePriceId,
+        postId: postId);
+    FirebaseFirestore.instance
+        .collection(collection)
+        .doc(postId)
+        .collection('prices')
+        .doc(encreasePriceId)
+        .set(emodel.toMap())
+        .then((value) {
+      emit(AuctionWritePricesSuccessState());
+    }).catchError((error) {
+      emit(AuctionWritePricesErrorState());
+    });
+  }
+
+  List<EventModel> encreasePrices = [];
+  // List<String> commentId = [];
+  // List<int> comments = [];
+  void getprice(postId, String collection, {String? id}) {
+    emit(AuctionGetPricesLoadingState());
+
+    FirebaseFirestore.instance
+        .collection(collection)
+        .doc(postId)
+        .collection('prices')
+        .orderBy('price', descending: true)
+        .snapshots()
+        .listen((event) {
+      encreasePrices = [];
+      event.docs.forEach((element) {
+        encreasePrices.add(EventModel.fromMap(
+          element.data(),
+        ));
+      });
+      emit(AuctionGetPricesSuccessState());
+    });
+  }
+
+  void updatePostPrice(
+    int? price,
+  ) {
+    PostModel updatemodel = PostModel(
+      name: postByID.name,
+      image: model.image,
+      uid: postByID.uid,
+      startAuction: postByID.startAuction,
+      postTime: postByID.postTime,
+      description: postByID.description,
+      postImage: postByID.postImage,
+      postId: postByID.postId,
+      category: postByID.category,
+      titel: postByID.titel,
+      price: price,
+      isStarted: postByID.isStarted,
+      isFinish: postByID.isFinish,
+      winner: postByID.winner,
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postByID.postId)
+        .update(updatemodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
   }
 
   //

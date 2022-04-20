@@ -147,3 +147,19 @@ class AuctionGetSearchErrorState extends AuctionStates {
 
   AuctionGetSearchErrorState(this.error);
 }
+
+class AuctionWritePricesLoadingState extends AuctionStates {}
+
+class AuctionWritePricesSuccessState extends AuctionStates {}
+
+class AuctionWritePricesErrorState extends AuctionStates {}
+
+class AuctionGetPricesLoadingState extends AuctionStates {}
+
+class AuctionGetPricesSuccessState extends AuctionStates {}
+
+class AuctionGetPricesErrorState extends AuctionStates {
+  final String error;
+
+  AuctionGetPricesErrorState(this.error);
+}

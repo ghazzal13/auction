@@ -6,13 +6,16 @@ class PostModel {
   String? image;
   String? postImage;
   String? postId;
-  String? price;
+  int? price;
   String? titel;
-  DateTime? dateTime;
+  DateTime? startAuction;
+  DateTime? endAuction;
   DateTime? postTime;
   String? category;
   String? description;
+  String? winner = 'no one';
   bool? isStarted = false;
+  bool? isFinish = false;
 
   PostModel(
       {this.uid,
@@ -21,11 +24,14 @@ class PostModel {
       this.postImage,
       this.postId,
       this.category,
-      this.dateTime,
+      this.startAuction,
+      this.endAuction,
       this.postTime,
       this.titel,
       this.price,
       this.description,
+      this.winner,
+      this.isFinish,
       this.isStarted});
 
   factory PostModel.fromMap(map) {
@@ -37,11 +43,14 @@ class PostModel {
       postImage: map['postImage'],
       postId: map['postId'],
       category: map['category'],
-      dateTime: DateTime.parse(map['dateTime'].toDate().toString()),
+      startAuction: DateTime.parse(map['startAuction'].toDate().toString()),
+      endAuction: DateTime.parse(map['endAuction'].toDate().toString()),
       postTime: DateTime.parse(map['postTime'].toDate().toString()),
       titel: map['titel'],
       description: map['description'],
       isStarted: map['isStarted'],
+      isFinish: map['isFinish'],
+      winner: map['winner'],
     );
   }
 
@@ -53,10 +62,13 @@ class PostModel {
         'postId': postId,
         'price': price,
         'category': category,
-        'dateTime': dateTime,
+        'startAuction': startAuction,
+        'endAuction': endAuction,
         'postTime': postTime,
         'titel': titel,
         'description': description,
         'isStarted': isStarted,
+        'winner': winner,
+        'isFinish': isFinish,
       };
 }

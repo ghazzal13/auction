@@ -1,6 +1,9 @@
+import 'package:auction/cubit/cubit.dart';
 import 'package:auction/old/screens/search_screen.dart';
 import 'package:auction/old/screens/shopping_cart_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class AuctionScreen extends StatefulWidget {
   const AuctionScreen({Key? key}) : super(key: key);
@@ -47,16 +50,15 @@ class _AuctionScreenState extends State<AuctionScreen> {
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/222.jpg"),
-            fit: BoxFit.cover,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/222.jpg"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: const Center(
-          child: Text(' auction'),
-        ),
-      ),
+          child: Center(
+            child: Text('Auction'),
+          )),
     );
   }
 }
