@@ -108,13 +108,13 @@ class _OfflineHomeScreenState extends State<OfflineHomeScreen> {
     return GestureDetector(
         onTap: () {
           AuctionCubit.get(context)
-              .getComments(snap['tradeItemId'].toString(), 'tickets');
+              .getComments(snap['ticketId'].toString(), 'tickets');
 
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => TicketDetailsScreen(
-                      snap['postId'].toString(),
+                      snap['ticketId'].toString(),
                       doo = (snap['dateTime'].toDate())!
                           .difference(DateTime.now())
                           .inSeconds,
