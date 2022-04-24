@@ -1,9 +1,7 @@
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
-import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubit/cubit.dart';
 import '../../cubit/states.dart';
 import '../resources/reuse_component.dart';
@@ -55,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  ConditionalBuilder(
+                  /*ConditionalBuilder(
                     condition: state is! AuctionGetTicketLoadingState,
                     builder: (context) => SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -72,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     fallback: (context) =>
                         const Center(child: CircularProgressIndicator()),
-                  ),
+                  ),*/
                 ],
               ),
             ),
