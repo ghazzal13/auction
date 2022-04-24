@@ -175,6 +175,8 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
               ],
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+              onPressed: () {}, child: const Text('Buy Ticket')),
         );
       },
     );

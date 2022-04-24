@@ -18,12 +18,6 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  // @override
-  // void setState(VoidCallback fn) {
-  //   // TODO: implement setState
-  //   AuctionCubit.get(context).getSearch(_searchController.text);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(

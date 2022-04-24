@@ -6,7 +6,7 @@ class TradeItemModel {
   String? tradeItemId;
   String? titel;
   String? description;
-
+  bool? isEnd;
   DateTime? datePublished;
 
   TradeItemModel({
@@ -17,6 +17,7 @@ class TradeItemModel {
     this.tradeItemId,
     this.datePublished,
     this.titel,
+    this.isEnd,
     this.description,
   });
 
@@ -29,6 +30,7 @@ class TradeItemModel {
       tradeItemId: map['tradeItemId'],
       datePublished: map['datePublished'],
       titel: map['titel'],
+      isEnd: map['isEnd'],
       description: map['description'],
     );
   }
@@ -41,6 +43,7 @@ class TradeItemModel {
         'tradeItemId': tradeItemId,
         'datePublished': datePublished,
         'titel': titel,
+        'isEnd': isEnd,
         'description': description,
       };
 }

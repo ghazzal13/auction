@@ -102,6 +102,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
     'tradeItemImage': '',
     'datePublished': '',
     'tradeItemId': '',
+    'uid': '',
   };
   Widget PostCard5({required dynamic snap, context}) {
     return GestureDetector(
@@ -116,6 +117,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                         snap['tradeItemId'].toString(),
                         tradeitem1: {
                           'name': snap['name'].toString(),
+                          'uid': snap['uid'].toString(),
                           'titel': snap['titel'].toString(),
                           'image': snap['image'].toString(),
                           'tradeItemImage': snap['tradeItemImage'].toString(),
@@ -241,7 +243,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.3,
-                            height: 140,
+                            height: 180,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: NetworkImage(
