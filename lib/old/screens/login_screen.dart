@@ -73,56 +73,61 @@ class _LoginScreenState extends State<LoginScreen> {
                   flex: 2,
                 ),
                 Container(
-                    height: 150,
+                    height: 200,
                     child: const Image(
                       image: AssetImage('assets/logo1.png'),
                     )),
                 // SvgPicture.asset(
                 // ),
-                const SizedBox(
-                  height: 64,
-                ),
 
-                TextFieldInput(
-                  hintText: 'Enter your email',
-                  textInputType: TextInputType.emailAddress,
-                  textEditingController: _emailController,
+                Padding(
+                  padding: const EdgeInsets.only(top: 70,bottom: 8,left: 8,right: 8),
+                  child: TextFieldInput(
+                    hintText: 'Enter your email',
+                    textInputType: TextInputType.emailAddress,
+                    textEditingController: _emailController,
+                  ),
                 ),
-                const SizedBox(
-                  height: 24,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFieldInput(
+                    hintText: 'Enter your password',
+                    textInputType: TextInputType.text,
+                    textEditingController: _passwordController,
+                    isPass: true,
+                  ),
                 ),
-                TextFieldInput(
-                  hintText: 'Enter your password',
-                  textInputType: TextInputType.text,
-                  textEditingController: _passwordController,
-                  isPass: true,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                InkWell(
-                  child: Container(
-                    child: !_isLoading
-                        ? const Text(
-                            'Log in',
-                          )
-                        : const CircularProgressIndicator(
-                            color: (Colors.white),
-                          ),
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GestureDetector(
+                    onTap:(){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreeen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration:
+                      BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
                       ),
-                      color: primaryColor,
+                      child: !_isLoading
+                          ? const Text(
+                              'Log in',
+                        style: TextStyle(color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25),
+                            )
+                          : const CircularProgressIndicator(
+                              color: (Colors.white),
+                            ),
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
-                  onTap: loginUser,
-                ),
-                const SizedBox(
-                  height: 12,
                 ),
                 Flexible(
                   child: Container(),

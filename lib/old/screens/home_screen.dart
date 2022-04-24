@@ -41,53 +41,49 @@ class HomeScreeen extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Container(
-                            height: 80,
-                            child: const Text('Online Auction',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
                               ),
-                              color: primaryColor,
+
+                              child: const Text('Online Auction',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                      fontSize: 20, fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 50,
-                        ),
+
                         InkWell(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const OfflineMangScreen(),
                             ),
                           ),
-                          child: Container(
-                            height: 80,
-                            child: const Text(
-                              'Offline Auction',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'Offline Auction',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
-                              color: primaryColor,
+                              width: double.infinity,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 50,
                         ),
                         InkWell(
                           onTap: () => Navigator.of(context).push(
@@ -95,20 +91,21 @@ class HomeScreeen extends StatelessWidget {
                               builder: (context) => const TradeMangScreen(),
                             ),
                           ),
-                          child: Container(
-                            height: 80,
-                            child: const Text('Trade',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text('Trade',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                      fontSize: 20, fontWeight: FontWeight.bold)),
+                              width: double.infinity,
+                            //  width: 250,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
                               ),
-                              color: primaryColor,
                             ),
                           ),
                         ),
