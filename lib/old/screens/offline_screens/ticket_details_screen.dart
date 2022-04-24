@@ -4,31 +4,41 @@ import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
   final String ticketId;
-  final int index;
+  final int duration;
+  final Map ticket1;
+
   const TicketDetailsScreen(
     this.ticketId,
-    this.index, {
+    int i, {
     Key? key,
+    required this.ticket1,
+    required this.duration,
   }) : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<TicketDetailsScreen> createState() =>
-      _TicketDetailsScreenState(ticketId: ticketId, index: index);
+  State<TicketDetailsScreen> createState() => _TicketDetailsScreenState(
+        ticketId: ticketId,
+        duration: duration,
+        ticket1: ticket1,
+      );
 }
 
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   final TextEditingController _cccController = TextEditingController();
 
   String ticketId;
-  int index;
+  Map ticket1;
+  int duration;
 
   _TicketDetailsScreenState({
     required this.ticketId,
-    required this.index,
+    required this.ticket1,
+    required this.duration,
   });
 
   @override
@@ -46,7 +56,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: primaryColor,
-            title: Text('${AuctionCubit.get(context).ticket[index].titel}'),
+            title: Text('${ticket1['titel']}'),
           ),
           body: Container(
             decoration: const BoxDecoration(
@@ -58,11 +68,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // if (state is AuctionGetCommentLoadingState)
-                //   const LinearProgressIndicator(),
-                // if (state is AuctionUserUpdateLoadingState)
                 SizedBox(
-                  width: 200,
                   child: Row(
                     children: [
                       Padding(
@@ -70,17 +76,28 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                         child: CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.teal,
-                          backgroundImage: NetworkImage(
-                              '${AuctionCubit.get(context).ticket[index].image}'),
+                          backgroundImage: NetworkImage('${ticket1['image']}'),
                         ),
                       ),
-                      Text(
-                        '${AuctionCubit.get(context).ticket[index].name}',
-                        style: TextStyle(
-                          color: Colors.teal[600],
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Column(
+                        children: [
+                          Text(
+                            '${ticket1['name']}',
+                            style: TextStyle(
+                              color: Colors.teal[600],
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '${ticket1['datePublished']}',
+                            style: TextStyle(
+                              color: Colors.teal[600],
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -90,10 +107,33 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                   height: 200,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(
-                          '${AuctionCubit.get(context).ticket[index].ticketImage}'),
+                      image: NetworkImage('${ticket1['ticketImage']}'),
                     ),
                   ),
+                ),
+                Countdown(
+                  seconds: duration,
+                  build: (BuildContext context, double time) => Text(
+                    '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  interval: Duration(seconds: 1),
+                  onFinished: () {
+                    print('Timer is done!');
+                    // AuctionCubit.get(context)
+                    //     .updatePostState(isStarted: true);
+
+                    Navigator.pop(context);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => OnlineHome(),
+                    //   ),
+                    // );
+                  },
                 ),
                 Container(
                   height: 300,
@@ -135,6 +175,8 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
               ],
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+              onPressed: () {}, child: const Text('Buy Ticket')),
         );
       },
     );

@@ -46,3 +46,41 @@ Widget myDivider() => Padding(
         color: Colors.grey[300],
       ),
     );
+
+Widget defaultFormField({
+  required TextEditingController? controller,
+  required TextInputType type,
+  bool isPassword = false,
+  required Function validate,
+  required String label,
+  required IconData prefix,
+  IconData? suffix,
+  Function? suffixPressed,
+  bool isClickable = true,
+}) =>
+    TextFormField(
+      controller: controller,
+      keyboardType: type,
+      obscureText: isPassword,
+      enabled: isClickable,
+      validator: (s) {
+        validate(s);
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(
+          prefix,
+        ),
+        suffixIcon: suffix != null
+            ? IconButton(
+                onPressed: () {
+                  suffixPressed!();
+                },
+                icon: Icon(
+                  suffix,
+                ),
+              )
+            : null,
+        border: OutlineInputBorder(),
+      ),
+    );

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
+import 'package:auction/old/resources/models/event_model.dart';
+import 'package:auction/old/resources/models/offer_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/resources/models/ticket.dart';
 import 'package:auction/old/resources/models/trade_model.dart';
@@ -79,7 +81,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
   String? profileImageUrl;
   void upLoadProfileImage() {
     emit(AuctionUserUpdateLoadingState());
-
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('user/${Uri.file(profileImage!.path).pathSegments.last}')
@@ -120,28 +121,32 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void updatePostState(
-    index, {
+  void updatePostState({
     bool? isStarted,
+    bool? isFinish,
+    String? winner,
   }) {
     PostModel updatemodel = PostModel(
-      name: posts[index].name,
+      name: postByID.name,
       image: model.image,
-      uid: posts[index].uid,
-      dateTime: posts[index].dateTime,
-      postTime: posts[index].postTime,
-      description: posts[index].description,
-      postImage: posts[index].postImage,
-      postId: posts[index].postId,
-      category: posts[index].category,
-      titel: posts[index].titel,
-      price: posts[index].price,
-      isStarted: true,
+      uid: postByID.uid,
+      startAuction: postByID.startAuction,
+      endAuction: postByID.endAuction,
+      postTime: postByID.postTime,
+      description: postByID.description,
+      postImage: postByID.postImage,
+      postId: postByID.postId,
+      category: postByID.category,
+      titel: postByID.titel,
+      price: postByID.price,
+      isStarted: isStarted ?? postByID.isStarted,
+      isFinish: isFinish ?? postByID.isFinish,
+      winner: winner ?? postByID.winner,
     );
 
     FirebaseFirestore.instance
         .collection('posts')
-        .doc(posts[index].postId)
+        .doc(postByID.postId)
         .update(updatemodel.toMap())
         .then((value) {
       getPosts();
@@ -152,14 +157,13 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadPostImage({
     String? titel,
-    DateTime? dateTime,
+    DateTime? startAuction,
     DateTime? postTime,
     String? category,
     String? description,
-    String? price,
+    int? price,
   }) {
     emit(AuctionCreatePostLoadingState());
-
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('posts/${Uri.file(postImage!.path).pathSegments.last}')
@@ -169,7 +173,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         emit(AuctionUploadProfileImageSuccessState());
         print(value);
         createPost(
-          dateTime: dateTime,
+          startAuction: startAuction,
           postTime: postTime,
           description: description,
           postImage: value,
@@ -190,11 +194,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? postImage,
     String? titel,
-    DateTime? dateTime,
+    DateTime? startAuction,
     DateTime? postTime,
     String? category,
     String? description,
-    String? price,
+    int? price,
   }) {
     emit(AuctionCreatePostLoadingState());
     String postId = const Uuid().v1();
@@ -202,7 +206,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
-      dateTime: dateTime,
+      startAuction: startAuction,
+      endAuction: startAuction!.add(const Duration(hours: 3)),
       postTime: postTime,
       description: description,
       postImage: postImage,
@@ -211,6 +216,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       titel: titel,
       price: price,
       isStarted: false,
+      isFinish: false,
+      winner: null,
     );
 
     FirebaseFirestore.instance
@@ -224,22 +231,10 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  // snapshots().listen((event) {
-  //   event.docs.forEach((element) {
-  //     element.reference.collection('likes').get().then((value) {
-  //       likes.add(value.docs.length);
-  //       postId.add(element.id);
-  //       print(element.data()['postImage']);
-  //       posts.add(PostModel.fromMap(
-  //         element.data(),
-  //       ));
-  //     }).catchError((error) {});
-  //   });
-  // })
   List<PostModel> posts = [];
   List<String> postId = [];
   List<int> likes = [];
-  void getPosts() {
+  Future<List<PostModel>> getPosts() async {
     posts.clear();
     emit(AuctionGetPostLoadingState());
     FirebaseFirestore.instance.collection('posts').get().then((value) {
@@ -258,6 +253,27 @@ class AuctionCubit extends Cubit<AuctionStates> {
     }).catchError((error) {
       emit(AuctionGetPostErrorState(error.toString()));
     });
+    return posts;
+  }
+
+  PostModel postByID = PostModel();
+  Future<dynamic> getPostById({required String id}) async {
+    emit(AuctionGetPostLoadingState());
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(id)
+        .get()
+        .then((value) {
+      // print(value.data()!['postImage']);
+      // print(value.data()!['image']);
+      print(value.data()!['uid']);
+      this.postByID = PostModel.fromMap(value.data());
+      // return postByID;
+      emit(AuctionGetPostSuccessState());
+    }).catchError((error) {
+      emit(AuctionGetPostErrorState(error.toString()));
+    });
+    return postByID;
   }
 
   void likePost(String postId) {
@@ -311,7 +327,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
   // List<int> comments = [];
   void getComments(postId, String collection) {
     emit(AuctionGetCommentLoadingState());
-
     FirebaseFirestore.instance
         .collection(collection)
         .doc(postId)
@@ -326,24 +341,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
       });
       emit(AuctionGetCommentSuccessState());
     });
-
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     element.reference
-    //         .collection('comments')
-    //         .get()
-    //         .then((value) {
-    //       print(value);
-    //       comments1.add(CommentModel.fromMap(
-    //         element.data(),
-    //       ));
-    //     }).catchError((error) {});
-    //   });
-    //   emit(AuctionGetCommentSuccessState());
-    // }).catchError((error) {
-    //   emit(AuctionGetCommentErrorState(error.toString()));
-    // });
   }
 
   File? TicketImage;
@@ -369,7 +366,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadTicketImage({
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
     String? category,
     String? description,
     String? price,
@@ -405,7 +402,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? ticketImage,
     String? titel,
-    String? dateTime,
+    DateTime? dateTime,
     String? category,
     String? description,
     String? price,
@@ -416,6 +413,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
+      datePublished: DateTime.now(),
       dateTime: dateTime,
       description: description,
       ticketImage: ticketImage,
@@ -463,7 +461,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
     );
-
     if (pickedFile != null) {
       TradeItemImage = File(pickedFile.path);
       print(pickedFile.path);
@@ -484,7 +481,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? image,
     String? tradeItemImage,
     String? titel,
-    String? dateTime,
     String? description,
     String? price,
   }) {
@@ -494,10 +490,12 @@ class AuctionCubit extends Cubit<AuctionStates> {
       name: model.name,
       image: model.image,
       uid: model.uid,
+      datePublished: DateTime.now(),
       description: description,
       tradeItemImage: tradeItemImage,
       tradeItemId: tradeItemId,
       titel: titel,
+      isEnd: false,
     );
     FirebaseFirestore.instance
         .collection('tradeitem')
@@ -512,13 +510,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   void uploadTradeItemImage({
     String? titel,
-    String? dateTime,
     String? category,
     String? description,
     String? price,
   }) {
     emit(AuctionCreateTradeItemLoadingState());
-
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child('tradeItems/${Uri.file(TradeItemImage!.path).pathSegments.last}')
@@ -528,7 +524,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
         emit(AuctionUploadProfileImageSuccessState());
         print(value);
         createTradeItem(
-          dateTime: dateTime,
           description: description,
           tradeItemImage: value,
           titel: titel,
@@ -572,15 +567,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String s,
   ) {
     search.clear();
-    // emit(AuctionGetSearchLoadingState());
-    // FirebaseFirestore.instance
-    //     .collection('posts')
-    //     .where(
-    //       'titel',
-    //       isEqualTo: s,
-    //     )
-    //     .snapshots()
-
     searchKey = s;
     FirebaseFirestore.instance
         .collection('posts')
@@ -598,42 +584,331 @@ class AuctionCubit extends Cubit<AuctionStates> {
       });
       emit(AuctionGetCommentSuccessState());
     });
+  }
 
-// TextField(
-//               onChanged: (value){
-//                   setState(() {
-//                     searchKey = value;
-//                     streamQuery = _firestore.collection('Col-Name')
-//                         .where('fieldName', isGreaterThanOrEqualTo: searchKey)
-//                         .where('fieldName', isLessThan: searchKey +'z')
-//                         .snapshots();
-//                   });
-//     }),
+  void encreasePrice(
+    String collection,
+    String postId, {
+    String? name,
+    String? image,
+    String? dateTime,
+    required int? price,
+  }) {
+    emit(AuctionWritePricesLoadingState());
+    String encreasePriceId = const Uuid().v1();
+    EventModel emodel = EventModel(
+        name: model.name,
+        image: model.image,
+        uid: model.uid,
+        dateTime: dateTime,
+        price: price,
+        encreasePriceId: encreasePriceId,
+        postId: postId);
+    FirebaseFirestore.instance
+        .collection(collection)
+        .doc(postId)
+        .collection('prices')
+        .doc(encreasePriceId)
+        .set(emodel.toMap())
+        .then((value) {
+      emit(AuctionWritePricesSuccessState());
+    }).catchError((error) {
+      emit(AuctionWritePricesErrorState());
+    });
+  }
 
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     element.reference.collection('likes').get().then((value) {
-    //       likes.add(value.docs.length);
-    //       postId.add(element.id);
-    //       // if (element.data()['titel'].containsValue(s)) {
-    //       //   search.add(PostModel.fromMap(
-    //       //     element.data(), ));
-    //       //   print(element.data()['titel']);
-    //       // }
-    //       search.add(PostModel.fromMap(
-    //         element.data(),
-    //       ));
-    //       print(element.data()['titel']);
-    //     }).catchError((error) {});
-    //   });
+  List<EventModel> encreasePrices = [];
+  // List<String> commentId = [];
+  // List<int> comments = [];
+  void getprice(postId, String collection, {String? id}) {
+    emit(AuctionGetPricesLoadingState());
 
-    //   emit(AuctionGetSearchSuccessState());
-    // })
+    FirebaseFirestore.instance
+        .collection(collection)
+        .doc(postId)
+        .collection('prices')
+        .orderBy('price', descending: true)
+        .snapshots()
+        .listen((event) {
+      encreasePrices = [];
+      event.docs.forEach((element) {
+        encreasePrices.add(EventModel.fromMap(
+          element.data(),
+        ));
+      });
+      emit(AuctionGetPricesSuccessState());
+    });
+  }
 
-    // .catchError((error) {
-    //   emit(AuctionGetSearchErrorState(error.toString()));
-    // });
+  void updatePostPrice(
+    int? price,
+  ) {
+    PostModel updatemodel = PostModel(
+      name: postByID.name,
+      image: model.image,
+      uid: postByID.uid,
+      startAuction: postByID.startAuction,
+      postTime: postByID.postTime,
+      description: postByID.description,
+      postImage: postByID.postImage,
+      postId: postByID.postId,
+      category: postByID.category,
+      titel: postByID.titel,
+      price: price,
+      isStarted: postByID.isStarted,
+      isFinish: postByID.isFinish,
+      winner: postByID.winner,
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postByID.postId)
+        .update(updatemodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
+  File? OfferImage;
+  Future<void> getofferImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      OfferImage = File(pickedFile.path);
+      print(pickedFile.path);
+      emit(AuctionMakeAnOfferImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(AuctionMakeAnOfferImagePickedErrorState());
+    }
+  }
+
+  void removeOfferImage() {
+    OfferImage = null;
+    emit(AuctionRemoveTradeItemImageState());
+  }
+
+  void makeAnOffer({
+    required String? uid,
+    required String? name,
+    required String? image,
+    required String? tradeItemImage,
+    required String? titel,
+    required String? description,
+    required DateTime? datePublished,
+    required String? tradeItemId,
+    required String? offerImage,
+    required String? offertitel,
+    required String? offerDescription,
+    required String? offerprice,
+  }) {
+    emit(AuctionMakeAnOfferLoadingState());
+    String offerID = const Uuid().v1();
+    OfferModel omodel = OfferModel(
+      uid: uid,
+      name: name,
+      image: image,
+      offerUsername: model.name,
+      offerUserImage: model.image,
+      offerUserID: model.uid,
+      description: description,
+      tradeItemImage: tradeItemImage,
+      titel: titel,
+      datePublished: datePublished,
+      offerDescription: offerDescription,
+      offerId: offerID,
+      offerImage: offerImage,
+      offerprice: offerprice,
+      offertitel: offerImage,
+      tradeItemId: tradeItemId,
+      offeraccept: 'no one',
+      isEnd: false,
+    );
+    FirebaseFirestore.instance
+        .collection('offers')
+        .doc(offerID)
+        .set(omodel.toMap())
+        .then((value) {
+      emit(AuctionMakeAnOfferSuccessState());
+    }).catchError((error) {
+      emit(AuctionMakeAnOfferErrorState());
+    });
+  }
+
+  Future uploadOfferImage({
+    String? name,
+    String? uid,
+    String? image,
+    String? tradeItemImage,
+    String? titel,
+    String? tradeItemId,
+    String? description,
+    DateTime? datePublished,
+    String? offerImage,
+    String? offertitel,
+    String? offerDescription,
+    String? offerprice,
+    String? offerUsername,
+    String? offerUserImage,
+    String? offerUserID,
+  }) async {
+    emit(AuctionMakeAnOfferLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('tradeItems/${Uri.file(OfferImage!.path).pathSegments.last}')
+        .putFile(OfferImage!)
+        .then((p0) {
+      p0.ref.getDownloadURL().then((value) {
+        emit(AuctionUploadofferImageSuccessState());
+        print(value);
+        makeAnOffer(
+            description: description,
+            tradeItemImage: tradeItemImage,
+            titel: titel,
+            image: image,
+            name: name,
+            uid: uid,
+            offerDescription: offerDescription,
+            offerImage: value,
+            offerprice: offerprice,
+            offertitel: offertitel,
+            tradeItemId: tradeItemId,
+            datePublished: datePublished);
+      }).catchError((error) {
+        emit(AuctionMakeAnOfferErrorState());
+      });
+    }).catchError((error) {
+      emit(AuctionMakeAnOfferErrorState());
+    });
+  }
+
+  void acceptOffer({
+    required String? uid,
+    required String? name,
+    required String? offerID,
+    required String? image,
+    required String? tradeItemImage,
+    required String? titel,
+    required String? description,
+    required String? tradeItemId,
+    required String? offerImage,
+    required String? offertitel,
+    required String? offerDescription,
+    required String? offerprice,
+    required DateTime? datePublished,
+  }) {
+    OfferModel offermodel = OfferModel(
+      uid: uid,
+      name: name,
+      image: image,
+      offerUsername: model.name,
+      offerUserImage: model.image,
+      offerUserID: model.uid,
+      description: description,
+      tradeItemImage: tradeItemImage,
+      titel: titel,
+      offerDescription: offerDescription,
+      offerId: offerID,
+      offerImage: offerImage,
+      offerprice: offerprice,
+      offertitel: offerImage,
+      tradeItemId: tradeItemId,
+      offeraccept: model.uid,
+      isEnd: true,
+    );
+    endTrade(
+        uid: uid,
+        name: name,
+        image: image,
+        tradeItemImage: tradeItemImage,
+        titel: titel,
+        description: description,
+        tradeItemId: tradeItemId,
+        datePublished: datePublished);
+    FirebaseFirestore.instance
+        .collection('offers')
+        .doc(offerID)
+        .update(offermodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
+  void endTrade({
+    required String? uid,
+    required String? name,
+    required String? image,
+    required String? tradeItemImage,
+    required String? titel,
+    required String? description,
+    required String? tradeItemId,
+    required DateTime? datePublished,
+  }) {
+    TradeItemModel ixmodel = TradeItemModel(
+      name: name,
+      image: image,
+      uid: uid,
+      datePublished: datePublished,
+      description: description,
+      tradeItemImage: tradeItemImage,
+      tradeItemId: tradeItemId,
+      titel: titel,
+      isEnd: true,
+    );
+    FirebaseFirestore.instance
+        .collection('tradeitem')
+        .doc(tradeItemId)
+        .update(ixmodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
+  void cancelOffer({
+    required String? uid,
+    required String? name,
+    required String? offerID,
+    required String? image,
+    required String? tradeItemImage,
+    required String? titel,
+    required String? description,
+    required String? tradeItemId,
+    required String? offerImage,
+    required String? offertitel,
+    required String? offerDescription,
+    required String? offerprice,
+  }) {
+    OfferModel offermodel = OfferModel(
+      uid: uid,
+      name: name,
+      image: image,
+      offerUsername: model.name,
+      offerUserImage: model.image,
+      offerUserID: model.uid,
+      description: description,
+      tradeItemImage: tradeItemImage,
+      titel: titel,
+      offerDescription: offerDescription,
+      offerId: offerID,
+      offerImage: offerImage,
+      offerprice: offerprice,
+      offertitel: offerImage,
+      tradeItemId: tradeItemId,
+      offeraccept: 'no one',
+      isEnd: true,
+    );
+    FirebaseFirestore.instance
+        .collection('offers')
+        .doc(offerID)
+        .update(offermodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
   }
 
   //

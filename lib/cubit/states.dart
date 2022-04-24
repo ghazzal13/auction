@@ -147,3 +147,35 @@ class AuctionGetSearchErrorState extends AuctionStates {
 
   AuctionGetSearchErrorState(this.error);
 }
+
+class AuctionWritePricesLoadingState extends AuctionStates {}
+
+class AuctionWritePricesSuccessState extends AuctionStates {}
+
+class AuctionWritePricesErrorState extends AuctionStates {}
+
+class AuctionGetPricesLoadingState extends AuctionStates {}
+
+class AuctionGetPricesSuccessState extends AuctionStates {}
+
+class AuctionGetPricesErrorState extends AuctionStates {
+  final String error;
+
+  AuctionGetPricesErrorState(this.error);
+}
+
+class AuctionMakeAnOfferImagePickedSuccessState extends AuctionStates {}
+
+class AuctionMakeAnOfferImagePickedErrorState extends AuctionStates {}
+
+class AuctionMakeAnOfferImageState extends AuctionStates {}
+
+class AuctionMakeAnOfferLoadingState extends AuctionStates {}
+
+class AuctionMakeAnOfferSuccessState extends AuctionStates {}
+
+class AuctionMakeAnOfferErrorState extends AuctionStates {}
+
+class AuctionUploadofferImageSuccessState extends AuctionStates {}
+
+class AuctionUploadofferImageErrorState extends AuctionStates {}

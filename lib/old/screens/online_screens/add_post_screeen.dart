@@ -51,11 +51,11 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
                   DateTime now = DateTime.now();
                   AuctionCubit.get(context).uploadPostImage(
                     category: _catigoryController.text,
-                    dateTime: postdate,
+                    startAuction: postdate,
                     postTime: now,
                     description: _describtionController.text,
                     titel: _titleController.text,
-                    price: _priceController.text,
+                    price: int.parse(_priceController.text),
                   );
                 },
                 child: const Text(

@@ -18,12 +18,6 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  // @override
-  // void setState(VoidCallback fn) {
-  //   // TODO: implement setState
-  //   AuctionCubit.get(context).getSearch(_searchController.text);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
@@ -153,7 +147,7 @@ Widget buildSearchCard(PostModel postmodel, context, index) => GestureDetector(
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '${postmodel.dateTime}',
+                          '${postmodel.startAuction}',
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.teal[600],

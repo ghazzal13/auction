@@ -44,7 +44,6 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                 onPressed: () {
                   AuctionCubit.get(context).uploadTradeItemImage(
                     category: _catigoryController.text,
-                    dateTime: TradeItemdate.toString(),
                     description: _describtionController.text,
                     titel: _titleController.text,
                     price: _priceController.text,
@@ -157,27 +156,27 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                               ],
                             ),
                           ),
-                    TextButton(
-                        onPressed: () {
-                          DatePicker.showDateTimePicker(context,
-                              showTitleActions: true, onChanged: (date) {
-                            TradeItemdate = date;
-                            print('change $date in time zone ' +
-                                date.timeZoneOffset.inHours.toString());
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            setState(() {
-                              TradeItemdate = date;
-                            });
-                          },
-                              currentTime: TradeItemdate ??
-                                  DateTime(2022, 04, 10, 23, 12, 34));
-                        },
-                        child: TradeItemdate != null
-                            ? Text('${TradeItemdate}',
-                                style: TextStyle(color: Colors.blue))
-                            : const Text('select date',
-                                style: TextStyle(color: Colors.blue))),
+                    // TextButton(
+                    //     onPressed: () {
+                    //       DatePicker.showDateTimePicker(context,
+                    //           showTitleActions: true, onChanged: (date) {
+                    //         TradeItemdate = date;
+                    //         print('change $date in time zone ' +
+                    //             date.timeZoneOffset.inHours.toString());
+                    //       }, onConfirm: (date) {
+                    //         print('confirm $date');
+                    //         setState(() {
+                    //           TradeItemdate = date;
+                    //         });
+                    //       },
+                    //           currentTime: TradeItemdate ??
+                    //               DateTime(2022, 04, 10, 23, 12, 34));
+                    //     },
+                    //     child: TradeItemdate != null
+                    //         ? Text('${TradeItemdate}',
+                    //             style: TextStyle(color: Colors.blue))
+                    //         : const Text('select date',
+                    //             style: TextStyle(color: Colors.blue))),
                   ],
                 ),
               ),

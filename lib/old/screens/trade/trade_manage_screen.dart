@@ -3,6 +3,7 @@ import 'package:auction/old/screens/offline_screens/offline_home_screen.dart';
 import 'package:auction/old/screens/profiles/user_profile_screen.dart';
 import 'package:auction/old/screens/trade/add_item_trade_screen.dart';
 import 'package:auction/old/screens/trade/trade_home_screen.dart';
+import 'package:auction/old/screens/trade/user_offers_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,8 @@ class _TradeMangScreenState extends State<TradeMangScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
     TradeHomeScreen(),
     AddItemTradeScreen(),
-    ProfileScreen()
+    UserOffersScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -42,6 +44,11 @@ class _TradeMangScreenState extends State<TradeMangScreen> {
             backgroundColor: primaryColor,
             icon: Icon(Icons.add),
             label: 'Add Item',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: primaryColor,
+            icon: Icon(Icons.check_box_outlined),
+            label: 'Offers',
           ),
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
