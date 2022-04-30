@@ -59,7 +59,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
+                        builder: (context) => const SearchOnlineScreen(),
                       ),
                     );
                   },

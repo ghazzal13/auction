@@ -221,41 +221,29 @@ class _SignupScreenState extends State<SignupScreen> {
                     textEditingController: _creditcardController,
                   ),
                 ),
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Container(
-                      child: !_isLoading
-                          ? const Text(
-                              'Sign up',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            )
-                          : const CircularProgressIndicator(
-                              color: (Colors.white),
-                            ),
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(colors: [
-                            Colors.teal.shade300,
-                            Colors.greenAccent.shade200
-                          ])),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*0.7,
+                    decoration:
+                    BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
                     ),
-                  ),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreeen(),
-                    ),
+                    child: TextButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreeen(),
+                      ),
+                      );
+                    },
+                        child:Text('Sign Up',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white
+                          ),)),
                   ),
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
+
                 /* Flexible(
                   child: Container(),
                   flex: 2,

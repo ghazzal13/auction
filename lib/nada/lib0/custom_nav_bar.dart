@@ -42,29 +42,11 @@ class _CustomButtomState extends State<CustomButtom> {
           onDestinationSelected: (index) => setState(() => this.index = index),
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RaderScreen(),
-                    ),
-                  );
-                },
-                child: NavigationDestination(
-                    icon: Icon(Icons.radar), label: 'Radar')),
+            NavigationDestination(
+                icon: Icon(Icons.radar), label: 'Radar'),
             NavigationDestination(icon: Icon(Icons.add), label: 'Add'),
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MessageScreen(),
-                    ),
-                  );
-                },
-                child: NavigationDestination(
-                    icon: Icon(Icons.message), label: 'Message')),
+            NavigationDestination(
+                icon: Icon(Icons.message), label: 'Message'),
             NavigationDestination(
                 icon: Icon(Icons.person_rounded), label: 'Profile'),
           ]),
