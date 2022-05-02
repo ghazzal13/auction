@@ -6,7 +6,6 @@ import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/shopping_cart_screen.dart';
 import 'package:auction/old/screens/trade/item_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';

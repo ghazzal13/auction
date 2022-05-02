@@ -124,163 +124,130 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body:
-
-          // Stack(
-          //   children: [
-          //     Container(
-          //       decoration: const BoxDecoration(
-          //         image: DecorationImage(
-          //             image: AssetImage("assets/222.jpg"), fit: BoxFit.cover),
-          //       ),
-          //     ),
-          //     SingleChildScrollView(
-          //       child: Column(
-
-          Container(
+      //resizeToAvoidBottomInset: false,
+      body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/222.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        child: SafeArea(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            width: double.infinity,
+        child: Center(
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(
-                  child: Container(),
-                  flex: 2,
-                ),
-
-                // const SizedBox(
-                //     height: 150,
-                //     child: Image(
-                //       image: AssetImage('assets/logo1.png'),
-                //     )),
-                // SvgPicture.asset(
-                // // ),
-                // const SizedBox(
-                //   height: 24,
-                // ),
-                Stack(
-                  children: [
-                    _image != null
-                        ? CircleAvatar(
-                            radius: 64,
-                            backgroundImage: MemoryImage(_image!),
-                            backgroundColor: Colors.red,
-                          )
-                        : const CircleAvatar(
-                            radius: 64,
-                            backgroundImage: NetworkImage(
-                                'https://i.stack.imgur.com/l60Hf.png'),
-                            backgroundColor: Colors.red,
-                          ),
-                    Positioned(
-                      bottom: -10,
-                      left: 80,
-                      child: IconButton(
-                        onPressed: () => _selectImage(context),
-                        icon: const Icon(Icons.add_a_photo),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your username',
-                  textInputType: TextInputType.text,
-                  textEditingController: _usernameController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your username',
-                  textInputType: TextInputType.text,
-                  textEditingController: _nameController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your email',
-                  textInputType: TextInputType.emailAddress,
-                  textEditingController: _emailController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your password',
-                  textInputType: TextInputType.text,
-                  textEditingController: _passwordController,
-                  isPass: true,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your address',
-                  textInputType: TextInputType.text,
-                  textEditingController: _addressController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                TextFieldInput(
-                  hintText: 'Enter your national ID',
-                  textInputType: TextInputType.text,
-                  textEditingController: _nationalidController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-
-                TextFieldInput(
-                  hintText: 'Enter your credit card ',
-                  textInputType: TextInputType.number,
-                  textEditingController: _creditcardController,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-
-                InkWell(
-                  child: Container(
-                    child: !_isLoading
-                        ? const Text(
-                            'Sign up',
-                          )
-                        : const CircularProgressIndicator(
-                            color: (Colors.white),
-                          ),
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                      ),
-                      color: primaryColor,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Stack(
+                    children: [
+                      _image != null
+                          ? CircleAvatar(
+                              radius: 64,
+                              backgroundImage: MemoryImage(_image!),
+                              backgroundColor: Colors.red,
+                            )
+                          : const CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(
+                                  'https://i.stack.imgur.com/l60Hf.png'),
+                              backgroundColor: Colors.red,
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 80,
+                        child: IconButton(
+                          onPressed: () => _selectImage(context),
+                          icon: const Icon(Icons.add_a_photo),
+                        ),
+                      )
+                    ],
                   ),
-                  onTap: signUpUser,
                 ),
-                const SizedBox(
-                  height: 12,
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your Name',
+                    textInputType: TextInputType.text,
+                    textEditingController: _usernameController,
+                  ),
                 ),
-                Flexible(
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your UserName',
+                    textInputType: TextInputType.text,
+                    textEditingController: _nameController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your email',
+                    textInputType: TextInputType.emailAddress,
+                    textEditingController: _emailController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your password',
+                    textInputType: TextInputType.text,
+                    textEditingController: _passwordController,
+                    isPass: true,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your address',
+                    textInputType: TextInputType.text,
+                    textEditingController: _addressController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your national ID',
+                    textInputType: TextInputType.text,
+                    textEditingController: _nationalidController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFieldInput(
+                    hintText: 'Enter your credit card ',
+                    textInputType: TextInputType.number,
+                    textEditingController: _creditcardController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*0.7,
+                    decoration:
+                    BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
+                    ),
+                    child: TextButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreeen(),
+                      ),
+                      );
+                    },
+                        child:Text('Sign Up',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white
+                          ),)),
+                  ),
+                ),
+
+                /* Flexible(
                   child: Container(),
                   flex: 2,
-                ),
+                ),*/
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

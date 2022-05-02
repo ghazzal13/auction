@@ -4,7 +4,6 @@ import 'package:auction/old/screens/online_screens/online_auction_event_screen.d
 import 'package:auction/old/screens/search_screen.dart';
 import 'package:auction/old/screens/shopping_cart_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:conditional_builder/conditional_builder.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,7 +59,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
+                        builder: (context) => const SearchOnlineScreen(),
                       ),
                     );
                   },

@@ -1,21 +1,19 @@
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
-import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubit/cubit.dart';
 import '../../cubit/states.dart';
 import '../resources/reuse_component.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+class SearchOnlineScreen extends StatefulWidget {
+  const SearchOnlineScreen({Key? key}) : super(key: key);
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  State<SearchOnlineScreen> createState() => _SearchOnlineScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchOnlineScreenState extends State<SearchOnlineScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -27,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
           appBar: AppBar(
             backgroundColor: Colors.teal,
             title: const Text(
-              'Trade Items',
+              'Search',
               style: TextStyle(
                   fontSize: 25,
                   color: Colors.white,
@@ -55,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  ConditionalBuilder(
+                  /*ConditionalBuilder(
                     condition: state is! AuctionGetTicketLoadingState,
                     builder: (context) => SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -72,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     fallback: (context) =>
                         const Center(child: CircularProgressIndicator()),
-                  ),
+                  ),*/
                 ],
               ),
             ),

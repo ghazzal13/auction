@@ -6,7 +6,7 @@ const auction = Color.fromARGB(250, 17, 175, 141);
 const blueColor = Color.fromRGBO(0, 149, 246, 1);
 const primaryColor = Colors.teal;
 const secondaryColor = Color.fromARGB(255, 255, 255, 255);
-
+const backgroundColor = Color.fromARGB(255, 255, 255, 255);
 /*
 V/ActivityThread(31445): scheduleReceiver info = 
 ActivityInfo{8adcd6 io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver} 
