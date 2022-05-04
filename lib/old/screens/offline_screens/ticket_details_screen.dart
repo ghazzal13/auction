@@ -4,6 +4,7 @@ import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
@@ -65,118 +66,217 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.teal,
-                          backgroundImage: NetworkImage('${ticket1['image']}'),
-                        ),
-                      ),
-                      Column(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      child: Row(
                         children: [
-                          Text(
-                            '${ticket1['name']}',
-                            style: TextStyle(
-                              color: Colors.teal[600],
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
+                          SizedBox(
+                            height: 40,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.teal,
+                              backgroundImage:
+                                  NetworkImage('${ticket1['image']}'),
                             ),
                           ),
-                          Text(
-                            '${ticket1['datePublished']}',
-                            style: TextStyle(
-                              color: Colors.teal[600],
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${ticket1['name']}',
+                                style: TextStyle(
+                                  color: Colors.teal[600],
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                DateFormat.yMd()
+                                    .add_jm()
+                                    .format(ticket1['datePublished'].toDate()),
+                                style: TextStyle(
+                                  color: Colors.teal[600],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.99,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage('${ticket1['ticketImage']}'),
                     ),
-                  ),
-                ),
-                Countdown(
-                  seconds: duration,
-                  build: (BuildContext context, double time) => Text(
-                    '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  interval: Duration(seconds: 1),
-                  onFinished: () {
-                    print('Timer is done!');
-                    // AuctionCubit.get(context)
-                    //     .updatePostState(isStarted: true);
-
-                    Navigator.pop(context);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => OnlineHome(),
-                    //   ),
-                    // );
-                  },
-                ),
-                Container(
-                  height: 300,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(15.0),
-                    itemBuilder: (context, index) => buildCommentItem(
-                        AuctionCubit.get(context).comments1[index], index),
-                    itemCount: AuctionCubit.get(context).comments1.length,
-                  ),
-                ),
-                SizedBox(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _cccController,
-                          keyboardType: TextInputType.text,
-                          decoration: const InputDecoration(
-                            hintText: 'comment',
-                            border: OutlineInputBorder(),
-                          ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.99,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage('${ticket1['ticketImage']}'),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Titel:  ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              '${ticket1['titel']}',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.teal[600],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              'Date:  ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              DateFormat.yMd()
+                                  .add_jm()
+                                  .format(ticket1['dateTime'].toDate()),
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.teal[600],
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text(
+                          'Description:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          child: Text(
+                            '${ticket1['description']}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.teal[600],
+                              fontWeight: FontWeight.w600,
+                            ),
+                            // maxLines: 5,
+                            // overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Countdown(
+                      seconds: duration,
+                      build: (BuildContext context, double time) => Text(
+                        '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            AuctionCubit.get(context).writeComment(
-                              'tickets',
-                              ticketId,
-                              comment: _cccController.text,
-                            );
-                          },
-                          icon: const Icon(Icons.add_circle_sharp)),
-                    ],
-                  ),
+                      interval: Duration(seconds: 1),
+                      onFinished: () {
+                        print('Timer is done!');
+                        // AuctionCubit.get(context)
+                        //     .updatePostState(isStarted: true);
+
+                        Navigator.pop(context);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => OnlineHome(),
+                        //   ),
+                        // );
+                      },
+                    ),
+                    Container(
+                      height: 180,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(15.0),
+                        itemBuilder: (context, index) => buildCommentItem(
+                            AuctionCubit.get(context).comments1[index], index),
+                        itemCount: AuctionCubit.get(context).comments1.length,
+                      ),
+                    ),
+                    SizedBox(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _cccController,
+                              keyboardType: TextInputType.text,
+                              decoration: const InputDecoration(
+                                hintText: 'comment',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                AuctionCubit.get(context).writeComment(
+                                  'tickets',
+                                  ticketId,
+                                  comment: _cccController.text,
+                                );
+                              },
+                              icon: const Icon(Icons.add_circle_sharp)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    FloatingActionButton.extended(
+                      onPressed: () {},
+                      backgroundColor: Colors.teal,
+                      icon: const Icon(Icons.add),
+                      label: const Text(
+                        'Buy Ticket',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-              onPressed: () {}, child: const Text('Buy Ticket')),
         );
       },
     );

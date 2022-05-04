@@ -57,12 +57,11 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => AuctionCubit()
-            //..getUserData()
+            create: (BuildContext context) => AuctionCubit()..getUserData()
             // ..getPosts()
-            ..getTickets()
-            ..getTradeItems(),
-        ),
+            // ..getTickets()
+            // ..getTradeItems(),
+            ),
       ],
       child: BlocConsumer<AuctionCubit, AuctionStates>(
           listener: (context, state) {},
@@ -75,6 +74,7 @@ class MyApp extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
                     if (snapshot.hasData) {
+                      // AuctionCubit.get(context).getUserData();
                       return const HomeScreeen();
                     } else if (snapshot.hasError) {
                       return Center(

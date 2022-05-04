@@ -1,5 +1,3 @@
-import 'package:auction/old/screens/shopping_cart_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'notification_screen.dart';
@@ -31,17 +29,17 @@ class _CommentsScreenState extends State<CommentsScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShoppingCartScreen(),
-                ),
-              );
-            },
-            icon: Icon(Icons.shopping_cart_rounded),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ShoppingCartScreen(),
+          //       ),
+          //     );
+          //   },
+          //   icon: Icon(Icons.shopping_cart_rounded),
+          // ),
           IconButton(
             onPressed: () {
               Navigator.push(

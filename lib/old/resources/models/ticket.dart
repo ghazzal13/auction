@@ -7,7 +7,6 @@ class TicketModel {
   String? titel;
   DateTime? datePublished;
   DateTime? dateTime;
-  String? category;
   String? address;
   String? description;
 
@@ -17,7 +16,6 @@ class TicketModel {
     this.image,
     this.ticketImage,
     this.ticketId,
-    this.category,
     this.address,
     this.datePublished,
     this.dateTime,
@@ -32,7 +30,6 @@ class TicketModel {
       image: map['image'],
       ticketImage: map['ticketImage'],
       ticketId: map['ticketId'],
-      category: map['category'],
       address: map['address'],
       datePublished: map['datePublished'],
       dateTime: map['dateTime'],
@@ -47,7 +44,6 @@ class TicketModel {
         'image': image,
         'ticketImage': ticketImage,
         'ticketId': ticketId,
-        'category': category,
         'address': address,
         'datePublished': datePublished,
         'dateTime': dateTime,

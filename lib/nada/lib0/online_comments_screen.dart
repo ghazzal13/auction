@@ -1,9 +1,9 @@
 import 'package:auction/nada/lib0/search_screen.dart';
-import 'package:auction/old/screens/shopping_cart_screen.dart';
-import 'package:auction/nada/lib0/sort_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../old/app_bar_screens/shopping_cart_screen.dart';
+import '../../old/app_bar_screens/sort_screen.dart';
 import 'categories_screen.dart';
 import 'custom_nav_bar.dart';
 import 'notification_screen.dart';

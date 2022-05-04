@@ -179,3 +179,7 @@ class AuctionMakeAnOfferErrorState extends AuctionStates {}
 class AuctionUploadofferImageSuccessState extends AuctionStates {}
 
 class AuctionUploadofferImageErrorState extends AuctionStates {}
+
+class AuctionReportPostSuccessState extends AuctionStates {}
+
+class AuctionReportPostErrorState extends AuctionStates {}

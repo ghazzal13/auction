@@ -4,6 +4,7 @@ import 'package:auction/nada/lib0/theme.dart';
 import 'package:auction/old/resources/reuse_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_validator/form_validator.dart';
 
 class MakeOfferScreem extends StatefulWidget {
   final Map tradeitem1;
@@ -64,60 +65,142 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                             const SizedBox(
                               height: 10.0,
                             ),
-                          defaultFormField(
+                          TextFormField(
                             controller: titleController,
-                            type: TextInputType.text,
-                            validate: (String value) {
-                              if (value.isEmpty) {
-                                return 'title must not be empty';
-                              }
-                              return null;
-                            },
-                            label: 'Title',
-                            prefix: Icons.title,
+                            validator: ValidationBuilder(
+                                    requiredMessage: 'title must not be empty')
+                                .minLength(4)
+                                .maxLength(50)
+                                .build(),
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.title),
+                              hintText: ' titel ',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              contentPadding: const EdgeInsets.all(8),
+                            ),
+                            keyboardType: TextInputType.text,
                           ),
                           const SizedBox(
-                            height: 15.0,
+                            height: 20,
                           ),
-                          defaultFormField(
+                          TextFormField(
+                            maxLines: 5,
+                            minLines: 4,
                             controller: descriptionController,
-                            type: TextInputType.text,
-                            validate: (String value) {
-                              if (value.isEmpty) {
-                                return 'title must not be empty';
-                              }
-                              return null;
-                            },
-                            label: 'description',
-                            prefix: Icons.description,
+                            validator: ValidationBuilder()
+                                .minLength(120)
+                                .maxLength(250)
+                                .build(),
+                            decoration: InputDecoration(
+                              hintText: 'Enter description',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              contentPadding: const EdgeInsets.all(8),
+                            ),
+                            keyboardType: TextInputType.text,
                           ),
                           const SizedBox(
-                            height: 15.0,
+                            height: 20,
                           ),
-                          defaultFormField(
+
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: TextFormField(
                               controller: priceController,
-                              type: TextInputType.number,
-                              validate: (String value) {
-                                if (value.isEmpty) {
-                                  return 'title must not be empty';
-                                }
-                                return null;
-                              },
-                              label: 'price',
-                              prefix: Icons.money),
-                          const SizedBox(
-                            height: 15.0,
+                              validator: ValidationBuilder(
+                                      requiredMessage:
+                                          'price must not be empty')
+                                  .maxLength(10)
+                                  .build(),
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.paid),
+                                hintText: ' price ',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                contentPadding: const EdgeInsets.all(8),
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
                           ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          // defaultFormField(
+                          //   controller: titleController,
+                          //   type: TextInputType.text,
+                          //   validate: (String value) {
+                          //     if (value.isEmpty) {
+                          //       return 'title must not be empty';
+                          //     }
+                          //     return null;
+                          //   },
+                          //   label: 'Title',
+                          //   prefix: Icons.title,
+                          // ),
+                          // const SizedBox(
+                          //   height: 15.0,
+                          // ),
+                          // defaultFormField(
+                          //   controller: descriptionController,
+                          //   type: TextInputType.text,
+                          //   validate: (String value) {
+                          //     if (value.isEmpty) {
+                          //       return 'title must not be empty';
+                          //     }
+                          //     return null;
+                          //   },
+                          //   label: 'description',
+                          //   prefix: Icons.description,
+                          // ),
+                          // const SizedBox(
+                          //   height: 15.0,
+                          // ),
+                          // defaultFormField(
+                          //     controller: priceController,
+                          //     type: TextInputType.number,
+                          //     validate: (String value) {
+                          //       if (value.isEmpty) {
+                          //         return 'title must not be empty';
+                          //       }
+                          //       return null;
+                          //     },
+                          //     label: 'price',
+                          //     prefix: Icons.money),
+                          // const SizedBox(
+                          //   height: 15.0,
+                          // ),
                           OfferImage != null
-                              ? SizedBox(
-                                  height: 200.0,
-                                  width: 200.0,
-                                  child: Container(
-                                    child: Image.file(
-                                      OfferImage,
-                                      fit: BoxFit.cover,
+                              ? Stack(
+                                  children: [
+                                    SizedBox(
+                                      height: 200.0,
+                                      width: 200.0,
+                                      child: Container(
+                                        child: Image.file(
+                                          OfferImage,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        //   AspectRatio(
+                                        // aspectRatio: 4 / 451,
+                                      ),
                                     ),
-                                  ),
+                                    Positioned(
+                                      top: 1,
+                                      right: 1,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          AuctionCubit.get(context)
+                                              .removeOfferImage();
+                                        },
+                                        icon: const Icon(Icons.close_rounded,
+                                            size: 25),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               : TextButton(
                                   onPressed: () {
@@ -155,30 +238,32 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                               Expanded(
                                 child: TextButton(
                                   onPressed: () {
-                                    AuctionCubit.get(context).uploadOfferImage(
-                                        uid: tradeitem1['uid'],
-                                        name: tradeitem1['name'],
-                                        image: tradeitem1['image'],
-                                        tradeItemImage:
-                                            tradeitem1['tradeItemImage'],
-                                        titel: tradeitem1['titel'],
-                                        description: tradeitem1['description'],
-                                        datePublished:
-                                            tradeitem1['datePublished'],
-                                        offertitel: titleController.text,
-                                        offerDescription:
-                                            descriptionController.text,
-                                        offerprice: priceController.text,
-                                        tradeItemId: tradeitem1['tradeItemId']);
-                                    Future.delayed(const Duration(seconds: 3),
-                                        () {
-                                      Navigator.pop(context);
-                                    });
-                                    Future.delayed(const Duration(seconds: 15),
-                                        () {
+                                    if (formKey.currentState!.validate()) {
                                       AuctionCubit.get(context)
-                                          .removeOfferImage();
-                                    });
+                                          .uploadOfferImage(
+                                              uid: tradeitem1['uid'],
+                                              name: tradeitem1['name'],
+                                              image: tradeitem1['image'],
+                                              tradeItemImage:
+                                                  tradeitem1['tradeItemImage'],
+                                              titel: tradeitem1['titel'],
+                                              description:
+                                                  tradeitem1['description'],
+                                              datePublished:
+                                                  tradeitem1['datePublished'],
+                                              offertitel: titleController.text,
+                                              offerDescription:
+                                                  descriptionController.text,
+                                              offerprice: priceController.text,
+                                              tradeItemId:
+                                                  tradeitem1['tradeItemId'])
+                                          .then((value) {
+                                        Navigator.pop(context);
+
+                                        AuctionCubit.get(context)
+                                            .removeOfferImage();
+                                      });
+                                    }
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.all(8.0),

@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:auction/cubit/cubit.dart';
 import 'package:auction/old/resources/auth_method.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/signup_screen.dart';
 import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,8 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreeen()));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreeen()),
+          (route) => false);
+      // User currentUser = FirebaseAuth.instance.currentUser!;
+      AuctionCubit.get(context).getUserData();
+
+      // Navigator.of(context).pushReplacement(
+
+      //     MaterialPageRoute(builder: (context) => const HomeScreeen()));
 
       setState(() {
         _isLoading = false;
@@ -72,16 +81,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(),
                   flex: 2,
                 ),
-                Container(
+                const SizedBox(
                     height: 200,
-                    child: const Image(
+                    child: Image(
                       image: AssetImage('assets/logo1.png'),
                     )),
                 // SvgPicture.asset(
                 // ),
 
                 Padding(
-                  padding: const EdgeInsets.only(top: 70,bottom: 8,left: 8,right: 8),
+                  padding: const EdgeInsets.only(
+                      top: 70, bottom: 8, left: 8, right: 8),
                   child: TextFieldInput(
                     hintText: 'Enter your email',
                     textInputType: TextInputType.emailAddress,
@@ -100,32 +110,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: GestureDetector(
-                    onTap:(){
+                    onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const HomeScreeen(),
                         ),
                       );
                     },
-                    child: Container(
-                      decoration:
-                      BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
+                    child: InkWell(
+                      onTap: loginUser,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            gradient: LinearGradient(colors: [
+                              Colors.teal.shade300,
+                              Colors.greenAccent.shade200
+                            ])),
+                        child: !_isLoading
+                            ? const Text(
+                                'Log in',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              )
+                            : const CircularProgressIndicator(
+                                color: (Colors.white),
+                              ),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: !_isLoading
-                          ? const Text(
-                              'Log in',
-                        style: TextStyle(color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25),
-                            )
-                          : const CircularProgressIndicator(
-                              color: (Colors.white),
-                            ),
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),

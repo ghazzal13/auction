@@ -1,117 +1,51 @@
-import 'package:auction/nada/lib0/search_screen.dart';
-import 'package:auction/old/app_bar_screens/categories_screen.dart';
-import 'package:auction/old/app_bar_screens/sort_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
-import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
-
-import 'package:auction/cubit/cubit.dart';
-import 'package:auction/cubit/states.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
-import '../../app_bar_screens/shopping_cart_screen.dart';
+import '../../cubit/cubit.dart';
+import '../../cubit/states.dart';
+import '../screens/online_screens/online_auction_event_screen.dart';
 
-class OnlineHome extends StatefulWidget {
-  const OnlineHome({Key? key}) : super(key: key);
+class CategoriesScreen extends StatefulWidget {
+  const CategoriesScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnlineHome> createState() => _OnlineHomeState();
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
 }
 
-enum SingingCharacter { lafayette, jefferson }
-
-class _OnlineHomeState extends State<OnlineHome> {
-  CollectionReference db = FirebaseFirestore.instance.collection('posts');
-  SingingCharacter? _character = SingingCharacter.lafayette;
-  bool sort = false;
+class _CategoriesScreenState extends State<CategoriesScreen> {
+  get color => Colors.black;
   final TextEditingController _reportController = TextEditingController();
 
+  late bool select;
+  @override
+  void initState() {
+    select = false;
+    super.initState();
+  }
+
+  var category;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
         listener: (context, state) {},
         builder: (context, state) {
           var userModel = AuctionCubit.get(context).model;
-
           return Scaffold(
             appBar: AppBar(
-              automaticallyImplyLeading: false,
               backgroundColor: Colors.teal,
               title: const Text(
-                'Auction',
+                'Categories',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ShoppingCartScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart_rounded),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.search),
-                ),
-                PopupMenuButton(
-                  onSelected: (value) {
-                    if (value.toString() == '/Category') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CategoriesScreen()),
-                      );
-                    }
-                    if (value.toString() == '/low To High') {
-                      setState(() {
-                        sort = true;
-                      });
-                    } else if (value.toString() == '/low To Low') {
-                      setState(() {
-                        sort = false;
-                      });
-                    }
-                  },
-                  itemBuilder: (BuildContext bc) {
-                    return const [
-                      PopupMenuItem(
-                        child: Text("Category"),
-                        value: '/Category',
-                      ),
-                      PopupMenuItem(
-                        child: Text("low To High"),
-                        value: '/low To High',
-                      ),
-                      PopupMenuItem(
-                        child: Text("low To High"),
-                        value: '/high To Low',
-                      ),
-                    ];
-                  },
-                ),
-              ],
             ),
             body: Container(
               decoration: const BoxDecoration(
@@ -120,34 +54,135 @@ class _OnlineHomeState extends State<OnlineHome> {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('posts')
-                    .where('endAuction', isGreaterThan: DateTime.now())
-                    .orderBy('endAuction', descending: sort)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (ctx, index) => Container(
-                      child: PostCard3(
-                          context: context,
-                          snap: snapshot.data!.docs[index].data(),
-                          userid: userModel.uid.toString()),
+              child: select == false
+                  ? StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('Categories')
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (ctx, index) => Container(
+                            child: CategoreCard(
+                                context: context,
+                                snap: snapshot.data!.docs[index].data(),
+                                userid: userModel.uid.toString()),
+                          ),
+                        );
+                      },
+                    )
+                  : StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('posts')
+                          .where('endAuction', isGreaterThan: DateTime.now())
+                          .where('category', isEqualTo: category)
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (ctx, index) => Container(
+                              child: PostCard3(
+                                  context: context,
+                                  snap: snapshot.data!.docs[index].data(),
+                                  userid: userModel.uid.toString()),
+                            ),
+                          );
+                        }
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: Text('sorry no have any items'),
+                          );
+                        }
+                        return const Center(
+                          child: Text('sorry we have a problem'),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           );
         });
+  }
+
+  Widget CategoreCard(
+      {required dynamic snap, context, required String userid}) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          select = true;
+        });
+        category = snap['title'].toString();
+        print(
+          snap['title'].toString(),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 4,
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  ),
+                  child: Image.network(
+                    snap['image'].toString(),
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  right: 10,
+                  child: Container(
+                    width: 300,
+                    color: Colors.black54,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 20,
+                    ),
+                    child: Text(
+                      snap['title'].toString(),
+                      style: const TextStyle(
+                        fontSize: 26,
+                        color: Colors.white,
+                      ),
+                      softWrap: true,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   int duration = 10;
@@ -245,7 +280,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                                 ),
                               ),
                               Text(
-                                  '${DateFormat.yMd().add_jm().format(snap['postTime'].toDate())} '),
+                                  '${DateFormat.yMMMd().format(snap['postTime'].toDate())} --  ${DateFormat.Hm().format(snap['postTime'].toDate())}'),
                             ],
                           ),
                           SizedBox(
@@ -459,7 +494,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                                 Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                      ' ${DateFormat.yMd().add_jm().format(snap['startAuction'].toDate())}  '),
+                                      ' ${DateFormat.yMMMd().format(snap['startAuction'].toDate())} --  ${DateFormat.Hm().format(snap['startAuction'].toDate())} '),
                                 ),
                                 const SizedBox(
                                   height: 5,

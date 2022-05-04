@@ -5,7 +5,7 @@ class EventModel {
   String? postId;
   String? name;
   String? image;
-  String? dateTime;
+  DateTime? dateTime;
   int? price;
   String? encreasePriceId;
 

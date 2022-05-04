@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:auction/cubit/cubit.dart';
 import 'package:auction/old/resources/auth_method.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
@@ -69,9 +70,13 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreeen()),
-      );
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(builder: (context) => const HomeScreeen()),
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreeen()),
+          (route) => false);
+      // User currentUser = FirebaseAuth.instance.currentUser!;
+      AuctionCubit.get(context).getUserData();
     } else {
       setState(() {
         _isLoading = false;
@@ -133,162 +138,196 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
         ),
         child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Stack(
-                    children: [
-                      _image != null
-                          ? CircleAvatar(
-                              radius: 64,
-                              backgroundImage: MemoryImage(_image!),
-                              backgroundColor: Colors.red,
-                            )
-                          : const CircleAvatar(
-                              radius: 64,
-                              backgroundImage: NetworkImage(
-                                  'https://i.stack.imgur.com/l60Hf.png'),
-                              backgroundColor: Colors.red,
-                            ),
-                      Positioned(
-                        bottom: -10,
-                        left: 80,
-                        child: IconButton(
-                          onPressed: () => _selectImage(context),
-                          icon: const Icon(Icons.add_a_photo),
+          child: Column(
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Container(),
+                flex: 2,
+              ),
+              const SizedBox(
+                  height: 200,
+                  child: Image(
+                    image: AssetImage('assets/logo1.png'),
+                  )),
+              // Padding(
+              //   padding: const EdgeInsets.all(10),
+              //   child: Stack(
+              //     children: [
+              //       _image != null
+              //           ? CircleAvatar(
+              //               radius: 64,
+              //               backgroundImage: MemoryImage(_image!),
+              //               backgroundColor: Colors.red,
+              //             )
+              //           : const CircleAvatar(
+              //               radius: 64,
+              //               backgroundImage: NetworkImage(
+              //                   'https://i.stack.imgur.com/l60Hf.png'),
+              //               backgroundColor: Colors.red,
+              //             ),
+              //       Positioned(
+              //         bottom: -10,
+              //         left: 80,
+              //         child: IconButton(
+              //           onPressed: () => _selectImage(context),
+              //           icon: const Icon(Icons.add_a_photo),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFieldInput(
+                  hintText: 'Enter your Name',
+                  textInputType: TextInputType.text,
+                  textEditingController: _usernameController,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFieldInput(
+                  hintText: 'Enter your UserName',
+                  textInputType: TextInputType.text,
+                  textEditingController: _nameController,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFieldInput(
+                  hintText: 'Enter your email',
+                  textInputType: TextInputType.emailAddress,
+                  textEditingController: _emailController,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFieldInput(
+                  hintText: 'Enter your password',
+                  textInputType: TextInputType.text,
+                  textEditingController: _passwordController,
+                  isPass: true,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFieldInput(
+                  hintText: 'Enter your address',
+                  textInputType: TextInputType.text,
+                  textEditingController: _addressController,
+                ),
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(10),
+              //   child: TextFieldInput(
+              //     hintText: 'Enter your national ID',
+              //     textInputType: TextInputType.text,
+              //     textEditingController: _nationalidController,
+              //   ),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.all(10),
+              //   child: TextFieldInput(
+              //     hintText: 'Enter your credit card ',
+              //     textInputType: TextInputType.number,
+              //     textEditingController: _creditcardController,
+              //   ),
+              // ),
+
+              InkWell(
+                child: Container(
+                  child: !_isLoading
+                      ? const Text(
+                          'Sign up',
+                        )
+                      : const CircularProgressIndicator(
+                          color: primaryColor,
                         ),
-                      )
-                    ],
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    color: blueColor,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your Name',
-                    textInputType: TextInputType.text,
-                    textEditingController: _usernameController,
+                onTap: signUpUser,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Flexible(
+                child: Container(),
+                flex: 2,
+              ),
+
+              // InkWell(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(15),
+              //     child: Container(
+              //       child: !_isLoading
+              //           ? const Text(
+              //               'Sign up',
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontWeight: FontWeight.bold,
+              //                   fontSize: 25),
+              //             )
+              //           : const CircularProgressIndicator(
+              //               color: (Colors.white),
+              //             ),
+              //       width: double.infinity,
+              //       alignment: Alignment.center,
+              //       padding: const EdgeInsets.symmetric(vertical: 12),
+              //       decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(30),
+              //           gradient: LinearGradient(colors: [
+              //             Colors.teal.shade300,
+              //             Colors.greenAccent.shade200
+              //           ])),
+              //     ),
+              //   ),
+              //   onTap: () => Navigator.of(context).push(
+              //     MaterialPageRoute(
+              //       builder: (context) => const HomeScreeen(),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 12,
+              // ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: const Text(
+                      'Already have an account?',
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your UserName',
-                    textInputType: TextInputType.text,
-                    textEditingController: _nameController,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your email',
-                    textInputType: TextInputType.emailAddress,
-                    textEditingController: _emailController,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your password',
-                    textInputType: TextInputType.text,
-                    textEditingController: _passwordController,
-                    isPass: true,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your address',
-                    textInputType: TextInputType.text,
-                    textEditingController: _addressController,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your national ID',
-                    textInputType: TextInputType.text,
-                    textEditingController: _nationalidController,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFieldInput(
-                    hintText: 'Enter your credit card ',
-                    textInputType: TextInputType.number,
-                    textEditingController: _creditcardController,
-                  ),
-                ),
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    ),
                     child: Container(
-                      child: !_isLoading
-                          ? const Text(
-                              'Sign up',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            )
-                          : const CircularProgressIndicator(
-                              color: (Colors.white),
-                            ),
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(colors: [
-                            Colors.teal.shade300,
-                            Colors.greenAccent.shade200
-                          ])),
-                    ),
-                  ),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreeen(),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                /* Flexible(
-                  child: Container(),
-                  flex: 2,
-                ),*/
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
                       child: const Text(
-                        'Already have an account?',
+                        ' Login.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      ),
-                      child: Container(
-                        child: const Text(
-                          ' Login.',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -402,9 +441,9 @@ class _SignupScreenState extends State<SignupScreen> {
     //                   color: primaryColor,
     //                 ),
     //               ),
-    //               /*
+    //
 
-    //             */
+    //
     //               onTap: signUpUser),
     //           const SizedBox(
     //             height: 12,

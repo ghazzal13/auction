@@ -5,9 +5,10 @@ import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/event_model.dart';
 import 'package:auction/old/resources/models/offer_model.dart';
 import 'package:auction/old/resources/models/post_model.dart';
+import 'package:auction/old/resources/models/report_model.dart';
 import 'package:auction/old/resources/models/ticket.dart';
 import 'package:auction/old/resources/models/trade_model.dart';
-import 'package:auction/old/resources/models/user.dart';
+import 'package:auction/old/resources/models/user.dart' as model2;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,23 +60,26 @@ class AuctionCubit extends Cubit<AuctionStates> {
     emit(AuctionRemovePostImageState());
   }
 
-  UserModel model = UserModel();
-  void getUserData() {
+  model2.UserModel model = model2.UserModel();
+  Future<model2.UserModel> getUserData() async {
     emit(AuctionGetUserLoadingState());
     String? uid;
     User? user = FirebaseAuth.instance.currentUser;
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .get()
         .then((value) {
       print(value.data());
-      this.model = UserModel.fromMap(value.data());
+
+      this.model = model2.UserModel.fromMap(value.data());
+
       emit(AuctionGetUserSuccessState());
     }).catchError((error) {
       print(error.toString());
       emit(AuctionGetUserErrorState(error.toString()));
     });
+    return model;
   }
 
   String? profileImageUrl;
@@ -102,7 +106,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
   void updateUser({
     String? image,
   }) {
-    UserModel usermodel = UserModel(
+    model2.UserModel usermodel = model2.UserModel(
       name: model.name,
       email: model.email,
       image: image,
@@ -155,16 +159,16 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void uploadPostImage({
+  Future uploadPostImage({
     String? titel,
     DateTime? startAuction,
     DateTime? postTime,
     String? category,
     String? description,
     int? price,
-  }) {
+  }) async {
     emit(AuctionCreatePostLoadingState());
-    firebase_storage.FirebaseStorage.instance
+    await firebase_storage.FirebaseStorage.instance
         .ref()
         .child('posts/${Uri.file(postImage!.path).pathSegments.last}')
         .putFile(postImage!)
@@ -219,7 +223,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
       isFinish: false,
       winner: null,
     );
-
     FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -248,12 +251,15 @@ class AuctionCubit extends Cubit<AuctionStates> {
           ));
         }).catchError((error) {});
       });
-
       emit(AuctionGetPostSuccessState());
     }).catchError((error) {
       emit(AuctionGetPostErrorState(error.toString()));
     });
     return posts;
+  }
+
+  void deletDoc(String colection, String postId) {
+    FirebaseFirestore.instance.collection(colection).doc(postId).delete();
   }
 
   PostModel postByID = PostModel();
@@ -364,13 +370,13 @@ class AuctionCubit extends Cubit<AuctionStates> {
     emit(AuctionRemoveTicketImageState());
   }
 
-  void uploadTicketImage({
+  Future uploadTicketImage({
     String? titel,
     DateTime? dateTime,
-    String? category,
+    String? address,
     String? description,
     String? price,
-  }) {
+  }) async {
     emit(AuctionCreateTicketLoadingState());
 
     firebase_storage.FirebaseStorage.instance
@@ -385,7 +391,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
           dateTime: dateTime,
           description: description,
           ticketImage: value,
-          category: category,
+          address: address,
           titel: titel,
           price: price,
         );
@@ -403,13 +409,14 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? ticketImage,
     String? titel,
     DateTime? dateTime,
-    String? category,
+    String? address,
     String? description,
     String? price,
   }) {
     emit(AuctionCreateTicketLoadingState());
     String ticketId = const Uuid().v1();
     TicketModel tmodel = TicketModel(
+      address: address,
       name: model.name,
       image: model.image,
       uid: model.uid,
@@ -418,7 +425,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
       description: description,
       ticketImage: ticketImage,
       ticketId: ticketId,
-      category: category,
       titel: titel,
     );
 
@@ -508,12 +514,12 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void uploadTradeItemImage({
+  Future uploadTradeItemImage({
     String? titel,
     String? category,
     String? description,
     String? price,
-  }) {
+  }) async {
     emit(AuctionCreateTradeItemLoadingState());
     firebase_storage.FirebaseStorage.instance
         .ref()
@@ -586,21 +592,20 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void encreasePrice(
+  Future encreasePrice(
     String collection,
     String postId, {
     String? name,
     String? image,
-    String? dateTime,
     required int? price,
-  }) {
+  }) async {
     emit(AuctionWritePricesLoadingState());
     String encreasePriceId = const Uuid().v1();
     EventModel emodel = EventModel(
         name: model.name,
         image: model.image,
         uid: model.uid,
-        dateTime: dateTime,
+        dateTime: DateTime.now(),
         price: price,
         encreasePriceId: encreasePriceId,
         postId: postId);
@@ -640,11 +645,13 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void updatePostPrice(
+  void updatePostPrice({
     int? price,
-  ) {
+    String? winner,
+  }) {
     PostModel updatemodel = PostModel(
       name: postByID.name,
+      endAuction: postByID.startAuction!.add(const Duration(hours: 3)),
       image: model.image,
       uid: postByID.uid,
       startAuction: postByID.startAuction,
@@ -657,7 +664,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
       price: price,
       isStarted: postByID.isStarted,
       isFinish: postByID.isFinish,
-      winner: postByID.winner,
+      winner: winner,
     );
 
     FirebaseFirestore.instance
@@ -831,8 +838,18 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .collection('offers')
         .doc(offerID)
         .update(offermodel.toMap())
-        .then((value) {})
-        .catchError((error) {
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('offers')
+          .where('offerId', isNotEqualTo: offerID)
+          .where('tradeItemId', isEqualTo: tradeItemId)
+          .snapshots()
+          .listen((event) {
+        event.docs.forEach((element) {
+          deletDoc('offers', element.data()['offerId']);
+        });
+      });
+    }).catchError((error) {
       emit(AuctionStartPostUpdateUpdateErrorState());
     });
   }
@@ -908,6 +925,82 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .then((value) {})
         .catchError((error) {
       emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
+  Future editPost({
+    String? titel,
+    DateTime? startAuction,
+    String? category,
+    String? description,
+    int? price,
+  }) async {
+    PostModel updatemodel = PostModel(
+      name: postByID.name,
+      image: model.image,
+      uid: postByID.uid,
+      startAuction: startAuction ?? postByID.startAuction,
+      postTime: postByID.postTime,
+      description: description ?? postByID.description,
+      postImage: postByID.postImage,
+      postId: postByID.postId,
+      category: category ?? postByID.category,
+      titel: titel ?? postByID.titel,
+      price: price ?? postByID.price,
+      isStarted: postByID.isStarted,
+      isFinish: postByID.isFinish,
+      winner: postByID.winner,
+      endAuction: postByID.startAuction!.add(const Duration(hours: 3)),
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postByID.postId)
+        .update(updatemodel.toMap())
+        .then((value) {})
+        .catchError((error) {
+      emit(AuctionStartPostUpdateUpdateErrorState());
+    });
+  }
+
+  Future reportPost({
+    String? postUsername,
+    String? postUseruid,
+    String? postUserimage,
+    String? titel,
+    String? reportText,
+    DateTime? startAuction,
+    DateTime? postTime,
+    String? category,
+    String? description,
+    int? price,
+  }) async {
+    emit(AuctionCreatePostLoadingState());
+    String reportId = const Uuid().v1();
+    ReportModel pmodel = ReportModel(
+      reportId: reportId,
+      name: model.name,
+      image: model.image,
+      uid: model.uid,
+      postUseruid: postUseruid,
+      postUsername: postUsername,
+      postUserimage: postUserimage,
+      startAuction: startAuction,
+      postTime: postTime,
+      description: description,
+      category: category,
+      titel: titel,
+      price: price,
+      reportText: reportText,
+    );
+    FirebaseFirestore.instance
+        .collection('report')
+        .doc(reportId)
+        .set(pmodel.toMap())
+        .then((value) {
+      emit(AuctionReportPostSuccessState());
+    }).catchError((error) {
+      emit(AuctionReportPostErrorState());
     });
   }
 

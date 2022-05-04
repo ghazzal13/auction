@@ -2,15 +2,11 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/event_model.dart';
-import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/old/screens/online_screens/online_home_screen1.dart';
 import 'package:auction/theme.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:timer_count_down/timer_controller.dart';
+import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 class OnlineEventScreen extends StatefulWidget {
@@ -97,263 +93,350 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                 ),
               ),
               child: post1['startAuction']!.isBefore(DateTime.now())
-                  ? SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: Colors.teal,
-                                    backgroundImage:
-                                        NetworkImage('${post1['image']}'),
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: Colors.teal,
+                                  backgroundImage:
+                                      NetworkImage('${post1['image']}'),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    '${post1['name']}',
+                                    style: TextStyle(
+                                      color: Colors.teal[600],
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      '${post1['name']}',
-                                      style: TextStyle(
-                                        color: Colors.teal[600],
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                  Text(
+                                    '${DateFormat.yMd().add_jm().format(post1['postdate'])} ',
+                                    // '${post1['postdate']}',
+                                    style: TextStyle(
+                                      color: Colors.teal[600],
+                                      fontSize: 10,
                                     ),
-                                    Text(
-                                      '${post1['postdate']}',
-                                      style: TextStyle(
-                                        color: Colors.teal[600],
-                                        fontSize: 8,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        //
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.99,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage('${postmmm.postImage}'),
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.99,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage('${postmmm.postImage}'),
-                              ),
+                        ),
+                        Countdown(
+                          seconds: duration + 60 * 3 * 60,
+                          build: (BuildContext context, double time) => Text(
+                            '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                            style: const TextStyle(
+                              fontSize: 50,
+                              color: Colors.red,
                             ),
                           ),
-                          Countdown(
-                            seconds: duration + 60 * 3 * 60,
-                            build: (BuildContext context, double time) => Text(
-                              '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                              style: const TextStyle(
-                                fontSize: 50,
-                                color: Colors.red,
-                              ),
-                            ),
-                            interval: Duration(seconds: 1),
-                            onFinished: () {
-                              print('Timer is done!');
+                          interval: Duration(seconds: 1),
+                          onFinished: () {
+                            print('Timer is done!');
 
-                              AuctionCubit.get(context)
-                                  .updatePostState(isFinish: true);
+                            AuctionCubit.get(context)
+                                .updatePostState(isFinish: true);
+                            if (AuctionCubit.get(context)
+                                .encreasePrices
+                                .isNotEmpty) {
+                              AuctionCubit.get(context).updatePostState(
+                                  winner: AuctionCubit.get(context)
+                                      .encreasePrices[0]
+                                      .uid);
+                            }
+
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Container(
+                          height: 300,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(15.0),
+                            itemBuilder: (context, x) => buildPricesItem(
+                                AuctionCubit.get(context).encreasePrices[x]),
+                            itemCount:
+                                AuctionCubit.get(context).encreasePrices.length,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            // AuctionCubit.get(context).updatePostPrice(
+                            //     AuctionCubit.get(context)
+                            //             .encreasePrices[0]
+                            //             .price! +
+                            //         100);
+
+                            setState(() {
                               if (AuctionCubit.get(context)
                                   .encreasePrices
                                   .isNotEmpty) {
-                                AuctionCubit.get(context).updatePostState(
-                                    winner: AuctionCubit.get(context)
+                                newPrice = AuctionCubit.get(context)
                                         .encreasePrices[0]
-                                        .uid);
+                                        .price! +
+                                    100;
+                              } else {
+                                newPrice = postmmm.price!;
                               }
-
-                              Navigator.pop(context);
-                            },
-                          ),
-                          Container(
-                            height: 300,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(15.0),
-                              itemBuilder: (context, x) => buildPricesItem(
-                                  AuctionCubit.get(context).encreasePrices[x]),
-                              itemCount: AuctionCubit.get(context)
+                              // AuctionCubit.get(context).getprice(
+                              //     postId, 'posts',
+                              //     id: postmmm.postId);
+                              AuctionCubit.get(context).encreasePrice(
+                                  'posts', postId,
+                                  price: newPrice);
+                              if (AuctionCubit.get(context)
                                   .encreasePrices
-                                  .length,
+                                  .isNotEmpty) {
+                                AuctionCubit.get(context).updatePostPrice(
+                                    price: AuctionCubit.get(context)
+                                            .encreasePrices[0]
+                                            .price! +
+                                        100,
+                                    winner: userModel.uid);
+                              } else {
+                                AuctionCubit.get(context).updatePostPrice(
+                                    price: postmmm.price,
+                                    winner: userModel.uid);
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: Colors.teal,
                             ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                if (AuctionCubit.get(context)
-                                    .encreasePrices
-                                    .isNotEmpty) {
-                                  newPrice = AuctionCubit.get(context)
-                                          .encreasePrices[0]
-                                          .price! +
-                                      100;
-                                } else {
-                                  newPrice = postmmm.price!;
-                                }
-                                // AuctionCubit.get(context).getprice(
-                                //     postId, 'posts',
-                                //     id: postmmm.postId);
-                                AuctionCubit.get(context).encreasePrice(
-                                    'posts', postId,
-                                    price: newPrice);
-                                if (AuctionCubit.get(context)
-                                    .encreasePrices
-                                    .isNotEmpty) {
-                                  AuctionCubit.get(context).updatePostPrice(
-                                      AuctionCubit.get(context)
-                                              .encreasePrices[0]
-                                              .price! +
-                                          100);
-                                } else {
-                                  AuctionCubit.get(context)
-                                      .updatePostPrice(postmmm.price);
-                                }
-                                AuctionCubit.get(context).updatePostState(
-                                    winner: AuctionCubit.get(context)
-                                        .encreasePrices[0]
-                                        .uid);
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Colors.teal,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Text(
-                                      'add 100',
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Icon(Icons.add, size: 30),
-                                  ],
-                                ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    'add 100',
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Icon(Icons.add, size: 30),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
                                     backgroundColor: Colors.teal,
                                     backgroundImage:
                                         NetworkImage('${post1['image']}'),
                                   ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        '${post1['name']}',
+                                        style: TextStyle(
+                                          color: Colors.teal[600],
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${post1['postdate']}',
+                                        style: TextStyle(
+                                          color: Colors.teal[600],
+                                          fontSize: 8,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.99,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage('${postmmm.postImage}'),
                                 ),
-                                Column(
+                              ),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text(
-                                      '${post1['name']}',
+                                    const Text(
+                                      'Titel: ',
                                       style: TextStyle(
-                                        color: Colors.teal[600],
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      '${post1['postdate']}',
+                                      '${post1['titel']}',
                                       style: TextStyle(
+                                        fontSize: 20,
                                         color: Colors.teal[600],
-                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Text(
+                                      'Category: ',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${post1['category']}',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.teal,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.99,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage('${postmmm.postImage}'),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 300,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(15.0),
-                              itemBuilder: (context, index) => buildCommentItem(
-                                  AuctionCubit.get(context).comments1[index],
-                                  index),
-                              itemCount:
-                                  AuctionCubit.get(context).comments1.length,
-                            ),
-                          ),
-                          Countdown(
-                            seconds: duration,
-                            build: (BuildContext context, double time) => Text(
-                              '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                              style: TextStyle(
-                                fontSize: 50,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            interval: Duration(seconds: 1),
-                            onFinished: () {
-                              print('Timer is done!');
-                              AuctionCubit.get(context)
-                                  .updatePostState(isStarted: true);
-                              Navigator.pop(context);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => OnlineHome(),
-                              //   ),
-                              // );
-                            },
-                          ),
-                          SizedBox(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: _cccController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                      hintText: 'comment',
-                                      border: OutlineInputBorder(),
-                                    ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                /*  Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    DateFormat.yMMMd()
+                                        .format(post1['startAuction'].toDate()),
+                                  ),
+                                ),*/
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                const Text(
+                                  'Description:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
+                                SizedBox(
+                                  child: Text(
+                                    '${post1['description']}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.teal[600],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    // maxLines: 5,
+                                    // overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                IconButton(
-                                    onPressed: () {
-                                      AuctionCubit.get(context).writeComment(
-                                        'posts',
-                                        postId,
-                                        comment: _cccController.text,
-                                      );
-                                    },
-                                    icon: const Icon(Icons.add_circle_sharp)),
                               ],
                             ),
-                          ),
-                        ],
+                            Countdown(
+                              seconds: duration,
+                              build: (BuildContext context, double time) =>
+                                  Text(
+                                '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  fontSize: 50,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              interval: Duration(seconds: 1),
+                              onFinished: () {
+                                print('Timer is done!');
+                                AuctionCubit.get(context)
+                                    .updatePostState(isStarted: true);
+                                Navigator.pop(context);
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => OnlineHome(),
+                                //   ),
+                                // );
+                              },
+                            ),
+                            Container(
+                              height: 200,
+                              child: ListView.builder(
+                                itemBuilder: (context, index) =>
+                                    buildCommentItem(
+                                        AuctionCubit.get(context)
+                                            .comments1[index],
+                                        index),
+                                itemCount:
+                                    AuctionCubit.get(context).comments1.length,
+                              ),
+                            ),
+                            SizedBox(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _cccController,
+                                      keyboardType: TextInputType.text,
+                                      decoration: const InputDecoration(
+                                        hintText: 'comment',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        AuctionCubit.get(context).writeComment(
+                                          'posts',
+                                          postId,
+                                          comment: _cccController.text,
+                                        );
+                                      },
+                                      icon: const Icon(Icons.add_circle_sharp)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
             ),

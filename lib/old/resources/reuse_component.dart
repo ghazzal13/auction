@@ -12,7 +12,7 @@ void showToast({
       timeInSecForIosWeb: 5,
       backgroundColor: chooseToastColor(state),
       textColor: Colors.white,
-      fontSize: 16.0,
+      fontSize: 20.0,
     );
 
 // enum
@@ -65,6 +65,7 @@ Widget defaultFormField({
       enabled: isClickable,
       validator: (s) {
         validate(s);
+        return null;
       },
       decoration: InputDecoration(
         labelText: label,

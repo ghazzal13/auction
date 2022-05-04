@@ -1,6 +1,5 @@
 import 'package:auction/nada/lib0/buy_ticket_screen.dart';
 import 'package:auction/nada/lib0/search_screen.dart';
-import 'package:auction/nada/lib0/sort_screen.dart';
 import 'package:auction/nada/lib0/username_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -109,12 +108,12 @@ class _OfflineCommentScreenState extends State<OfflineCommentScreen> {
                     PopupMenuItem(
                         child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SortScreen(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => SortScreen(),
+                        //   ),
+                        // );
                       },
                       child: Row(
                         children: [

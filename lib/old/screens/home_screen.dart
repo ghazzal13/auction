@@ -8,8 +8,23 @@ import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreeen extends StatelessWidget {
+class HomeScreeen extends StatefulWidget {
   const HomeScreeen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreeen> createState() => _HomeScreeenState();
+}
+
+class _HomeScreeenState extends State<HomeScreeen> {
+  @override
+  // void initState() {
+  //   super.initState();
+  //   getdata();
+  // }
+
+  // void getdata() {
+  //   // AuctionCubit.get(context).getUserData();
+  // }
 
   @override
   Widget build(BuildContext context) =>
@@ -35,6 +50,7 @@ class HomeScreeen extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             // AuctionCubit.get(context).getPosts();
+                            AuctionCubit.get(context).getUserData;
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const OnlineMangScreen(),
@@ -48,18 +64,19 @@ class HomeScreeen extends StatelessWidget {
                               width: double.infinity,
                               height: 60,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
-                              ),
-
+                                  borderRadius: BorderRadius.circular(30),
+                                  gradient: LinearGradient(colors: [
+                                    Colors.teal.shade300,
+                                    Colors.greenAccent.shade200
+                                  ])),
                               child: const Text('Online Auction',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                      fontSize: 20, fontWeight: FontWeight.bold)),
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ),
-
                         InkWell(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -73,15 +90,18 @@ class HomeScreeen extends StatelessWidget {
                               child: const Text(
                                 'Offline Auction',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
                               width: double.infinity,
                               height: 60,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
-                              ),
+                                  gradient: LinearGradient(colors: [
+                                    Colors.teal.shade300,
+                                    Colors.greenAccent.shade200
+                                  ])),
                             ),
                           ),
                         ),
@@ -97,15 +117,18 @@ class HomeScreeen extends StatelessWidget {
                               alignment: Alignment.center,
                               child: const Text('Trade',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                      fontSize: 20, fontWeight: FontWeight.bold)),
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                               width: double.infinity,
-                            //  width: 250,
+                              //  width: 250,
                               height: 60,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  gradient: LinearGradient(colors: [Colors.teal.shade300,Colors.greenAccent.shade200])
-                              ),
+                                  gradient: LinearGradient(colors: [
+                                    Colors.teal.shade300,
+                                    Colors.greenAccent.shade200
+                                  ])),
                             ),
                           ),
                         ),

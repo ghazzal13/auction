@@ -1,7 +1,9 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
+import 'package:auction/old/screens/login_screen.dart';
 import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
 import 'package:auction/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -206,7 +208,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut().then((value) =>
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                              (route) => false));
+                    },
                     child: Container(
                       decoration: const BoxDecoration(
                           color: Colors.black12,

@@ -43,7 +43,7 @@ class _OnlineMangScreenState extends State<OnlineMangScreen> {
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
             icon: Icon(Icons.hail_outlined),
-            label: 'Auctions',
+            label: 'My Auctions',
           ),
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
