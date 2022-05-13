@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:intl/intl.dart';
 
 class EditPostScreen extends StatefulWidget {
   final Map post1;
@@ -95,45 +96,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    final formattedStr = DateTime.now();
-
-                    DateTime now = DateTime.now();
-                    if (formKey.currentState!.validate()) {
-                      if (postdate != DateTime(1, 1, 1, 1)) {
-                        AuctionCubit.get(context)
-                            .editPost(
-                              category: dropdownValue.toString(),
-                              startAuction: postdate,
-                              description: _describtionController.text,
-                              titel: _titleController.text,
-                              price: int.parse(_priceController.text),
-                            )
-                            .whenComplete(() => Navigator.of(context).pop());
-                      } else {
-                        AuctionCubit.get(context)
-                            .editPost(
-                              category: dropdownValue.toString(),
-                              startAuction: postmmm.startAuction,
-                              description: _describtionController.text,
-                              titel: _titleController.text,
-                              price: int.parse(_priceController.text),
-                            )
-                            .whenComplete(() => Navigator.of(context).pop());
-                      }
-                    }
-                  },
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0),
-                  ),
-                )
-              ],
+              backgroundColor: Colors.teal,
             ),
             body: SingleChildScrollView(
               child: Form(
@@ -191,6 +154,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -211,6 +175,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -236,6 +201,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                 contentPadding: const EdgeInsets.all(8),
                               ),
                               keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
                             ),
                           ),
                           const SizedBox(
@@ -259,10 +225,10 @@ class _EditPostScreenState extends State<EditPostScreen> {
                             items: <String>[
                               'Cars',
                               'Mobiles',
-                              'Watches',
-                              'Games',
-                              'electonices',
-                              'books',
+                              'Antiques',
+                              'Paintings',
+                              'Furniture',
+                              'Electrical Devices',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -351,12 +317,53 @@ class _EditPostScreenState extends State<EditPostScreen> {
                           }, currentTime: DateTime.now());
                         },
                         child: postdate != DateTime(1, 1, 1, 1)
-                            ? Text('$postdate',
-                                style: TextStyle(color: Colors.blue))
-                            : Text(
-                                '${post1['postdate']}',
+                            ? Text(
+                                ' ${DateFormat.yMd().add_jm().format(postdate)}',
+                                style: const TextStyle(color: Colors.blue))
+                            : const Text(
+                                'select date',
                                 style: TextStyle(color: Colors.blue),
                               ),
+                      ),
+                      FloatingActionButton.extended(
+                        onPressed: () {
+                          final formattedStr = DateTime.now();
+                          DateTime now = DateTime.now();
+                          if (formKey.currentState!.validate()) {
+                            if (postdate != DateTime(1, 1, 1, 1)) {
+                              AuctionCubit.get(context)
+                                  .editPost(
+                                    category: dropdownValue.toString(),
+                                    startAuction: postdate,
+                                    description: _describtionController.text,
+                                    titel: _titleController.text,
+                                    price: int.parse(_priceController.text),
+                                  )
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            } else {
+                              AuctionCubit.get(context)
+                                  .editPost(
+                                    category: dropdownValue.toString(),
+                                    startAuction: postmmm.startAuction,
+                                    description: _describtionController.text,
+                                    titel: _titleController.text,
+                                    price: int.parse(_priceController.text),
+                                  )
+                                  .whenComplete(
+                                      () => Navigator.of(context).pop());
+                            }
+                          }
+                        },
+                        backgroundColor: Colors.teal,
+                        icon: const Icon(Icons.save),
+                        label: const Text(
+                          "Save",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
                       ),
                     ],
                   ),

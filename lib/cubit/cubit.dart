@@ -21,14 +21,17 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   static AuctionCubit get(context) => BlocProvider.of(context);
 
+  int selectedIndex = 0;
+  void onItemTapped(int index) {
+    selectedIndex = index;
+  }
+
   File? profileImage;
   var picker = ImagePicker();
-
   Future<void> getProfileImage() async {
     final pickedFile = await picker.getImage(
       source: ImageSource.gallery,
     );
-
     if (pickedFile != null) {
       profileImage = File(pickedFile.path);
       print(pickedFile.path);
@@ -103,6 +106,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
+  void removeProfileImage() {
+    profileImage = null;
+    emit(AuctionRemovePostImageState());
+  }
+
   void updateUser({
     String? image,
   }) {
@@ -152,9 +160,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .collection('posts')
         .doc(postByID.postId)
         .update(updatemodel.toMap())
-        .then((value) {
-      getPosts();
-    }).catchError((error) {
+        .then((value) {})
+        .catchError((error) {
       emit(AuctionStartPostUpdateUpdateErrorState());
     });
   }
@@ -234,30 +241,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  List<PostModel> posts = [];
-  List<String> postId = [];
-  List<int> likes = [];
-  Future<List<PostModel>> getPosts() async {
-    posts.clear();
-    emit(AuctionGetPostLoadingState());
-    FirebaseFirestore.instance.collection('posts').get().then((value) {
-      value.docs.forEach((element) {
-        element.reference.collection('likes').get().then((value) {
-          likes.add(value.docs.length);
-          postId.add(element.id);
-          print(element.data()['postImage']);
-          posts.add(PostModel.fromMap(
-            element.data(),
-          ));
-        }).catchError((error) {});
-      });
-      emit(AuctionGetPostSuccessState());
-    }).catchError((error) {
-      emit(AuctionGetPostErrorState(error.toString()));
-    });
-    return posts;
-  }
-
   void deletDoc(String colection, String postId) {
     FirebaseFirestore.instance.collection(colection).doc(postId).delete();
   }
@@ -297,14 +280,14 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  void writeComment(
+  Future writeComment(
     String collection,
     String postId, {
     String? name,
     String? image,
     String? dateTime,
     required String? comment,
-  }) {
+  }) async {
     emit(AuctionWriteCommentLoadingState());
     String commentId = const Uuid().v1();
     CommentModel cmodel = CommentModel(
@@ -439,29 +422,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
-  List<TicketModel> ticket = [];
-  List<String> ticketId = [];
-  List<int> ticketLikes = [];
-  void getTickets() {
-    ticket.clear();
-    emit(AuctionGetTicketLoadingState());
-    FirebaseFirestore.instance.collection('tickets').get().then((value) {
-      value.docs.forEach((element) {
-        element.reference.collection('likes').get().then((value) {
-          ticketLikes.add(value.docs.length);
-          ticketId.add(element.id);
-          ticket.add(TicketModel.fromMap(
-            element.data(),
-          ));
-        }).catchError((error) {});
-      });
-
-      emit(AuctionGetTicketSuccessState());
-    }).catchError((error) {
-      emit(AuctionGetTicketErrorState(error.toString()));
-    });
-  }
-
   File? TradeItemImage;
   Future<void> getTradeItemImage() async {
     final pickedFile = await picker.getImage(
@@ -540,30 +500,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
       });
     }).catchError((error) {
       emit(AuctionCreateTradeItemErrorState());
-    });
-  }
-
-  List<TradeItemModel> TradeItems = [];
-  List<String> TradeItemId = [];
-  List<int> TradeItemsLikes = [];
-  void getTradeItems() {
-    TradeItems.clear();
-    emit(AuctionGetTradeItemLoadingState());
-    FirebaseFirestore.instance.collection('tradeitem').get().then((value) {
-      value.docs.forEach((element) {
-        element.reference.collection('likes').get().then((value) {
-          TradeItemsLikes.add(value.docs.length);
-          TradeItemId.add(element.id);
-
-          TradeItems.add(TradeItemModel.fromMap(
-            element.data(),
-          ));
-        }).catchError((error) {});
-      });
-
-      emit(AuctionGetTradeItemSuccessState());
-    }).catchError((error) {
-      emit(AuctionGetTradeItemErrorState(error.toString()));
     });
   }
 
@@ -646,32 +582,18 @@ class AuctionCubit extends Cubit<AuctionStates> {
   }
 
   void updatePostPrice({
-    int? price,
-    String? winner,
+    required int? price,
+    required String? winner,
+    required String? winnerID,
   }) {
-    PostModel updatemodel = PostModel(
-      name: postByID.name,
-      endAuction: postByID.startAuction!.add(const Duration(hours: 3)),
-      image: model.image,
-      uid: postByID.uid,
-      startAuction: postByID.startAuction,
-      postTime: postByID.postTime,
-      description: postByID.description,
-      postImage: postByID.postImage,
-      postId: postByID.postId,
-      category: postByID.category,
-      titel: postByID.titel,
-      price: price,
-      isStarted: postByID.isStarted,
-      isFinish: postByID.isFinish,
-      winner: winner,
-    );
+    FirebaseFirestore.instance.collection('posts').doc(postByID.postId).set({
+      'winner': winner,
+      'price': price,
+      'winnerID': winnerID,
+    }, SetOptions(merge: true))
 
-    FirebaseFirestore.instance
-        .collection('posts')
-        .doc(postByID.postId)
-        .update(updatemodel.toMap())
-        .then((value) {})
+        //   .update(updatemodel.toMap())
+        // .then((value) {})
         .catchError((error) {
       emit(AuctionStartPostUpdateUpdateErrorState());
     });
@@ -804,7 +726,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
     required String? offertitel,
     required String? offerDescription,
     required String? offerprice,
-    required DateTime? datePublished,
+    DateTime? datePublished,
   }) {
     OfferModel offermodel = OfferModel(
       uid: uid,
@@ -833,7 +755,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         titel: titel,
         description: description,
         tradeItemId: tradeItemId,
-        datePublished: datePublished);
+        datePublished: datePublished ?? DateTime.now());
     FirebaseFirestore.instance
         .collection('offers')
         .doc(offerID)
@@ -1004,5 +926,91 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
+  var postToken;
+  void getPostUserTocken(String post_uid) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(post_uid)
+        .get()
+        .then((value) {
+      this.postToken = value.data()!['token'];
+      // print(value.data());
+      // print(value.data()!['token']);
+    }).catchError((error) {
+      print(error.toString());
+    });
+  }
+
   //
 }
+
+  // List<PostModel> posts = [];
+  // List<String> postId = [];
+  // List<int> likes = [];
+  // Future<List<PostModel>> getPosts() async {
+  //   posts.clear();
+  //   emit(AuctionGetPostLoadingState());
+  //   FirebaseFirestore.instance.collection('posts').get().then((value) {
+  //     value.docs.forEach((element) {
+  //       element.reference.collection('likes').get().then((value) {
+  //         likes.add(value.docs.length);
+  //         postId.add(element.id);
+  //         print(element.data()['postImage']);
+  //         posts.add(PostModel.fromMap(
+  //           element.data(),
+  //         ));
+  //       }).catchError((error) {});
+  //     });
+  //     emit(AuctionGetPostSuccessState());
+  //   }).catchError((error) {
+  //     emit(AuctionGetPostErrorState(error.toString()));
+  //   });
+  //   return posts;
+  // }
+  
+  // List<TicketModel> ticket = [];
+  // List<String> ticketId = [];
+  // List<int> ticketLikes = [];
+  // void getTickets() {
+  //   ticket.clear();
+  //   emit(AuctionGetTicketLoadingState());
+  //   FirebaseFirestore.instance.collection('tickets').get().then((value) {
+  //     value.docs.forEach((element) {
+  //       element.reference.collection('likes').get().then((value) {
+  //         ticketLikes.add(value.docs.length);
+  //         ticketId.add(element.id);
+  //         ticket.add(TicketModel.fromMap(
+  //           element.data(),
+  //         ));
+  //       }).catchError((error) {});
+  //     });
+
+  //     emit(AuctionGetTicketSuccessState());
+  //   }).catchError((error) {
+  //     emit(AuctionGetTicketErrorState(error.toString()));
+  //   });
+  // }
+  
+  // List<TradeItemModel> TradeItems = [];
+  // List<String> TradeItemId = [];
+  // List<int> TradeItemsLikes = [];
+  // void getTradeItems() {
+  //   TradeItems.clear();
+  //   emit(AuctionGetTradeItemLoadingState());
+  //   FirebaseFirestore.instance.collection('tradeitem').get().then((value) {
+  //     value.docs.forEach((element) {
+  //       element.reference.collection('likes').get().then((value) {
+  //         TradeItemsLikes.add(value.docs.length);
+  //         TradeItemId.add(element.id);
+
+  //         TradeItems.add(TradeItemModel.fromMap(
+  //           element.data(),
+  //         ));
+  //       }).catchError((error) {});
+  //     });
+
+  //     emit(AuctionGetTradeItemSuccessState());
+  //   }).catchError((error) {
+  //     emit(AuctionGetTradeItemErrorState(error.toString()));
+  //   });
+  // }

@@ -11,14 +11,14 @@ import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
-class ShoppingCartScreen extends StatefulWidget {
-  const ShoppingCartScreen({Key? key}) : super(key: key);
+class AllMyAuctionsScreen extends StatefulWidget {
+  const AllMyAuctionsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ShoppingCartScreen> createState() => _ShoppingCartScreenState();
+  State<AllMyAuctionsScreen> createState() => _AuctionScreenState();
 }
 
-class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
+class _AuctionScreenState extends State<AllMyAuctionsScreen> {
   CollectionReference db = FirebaseFirestore.instance.collection('posts');
   final TextEditingController _reportController = TextEditingController();
 
@@ -34,7 +34,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
               automaticallyImplyLeading: false,
               backgroundColor: Colors.teal,
               title: const Text(
-                'My Winnerings',
+                'My Auction',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,
@@ -64,7 +64,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('posts')
-                    .where('winnerID', isEqualTo: userModel.uid)
+                    .where('uid', isEqualTo: userModel.uid)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>

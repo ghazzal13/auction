@@ -73,7 +73,7 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
             automaticallyImplyLeading: false,
             backgroundColor: primaryColor,
             title: const Text(
-              'Post to',
+              'Add Post ',
               style: TextStyle(
                   fontSize: 25,
                   color: Colors.white,
@@ -171,33 +171,35 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
                             .build(),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.title),
-                          hintText: ' titel ',
+                          labelText: 'titel ',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       TextFormField(
-                        maxLines: 5,
-                        minLines: 4,
+                        maxLines: 4,
+                        minLines: 3,
                         controller: _describtionController,
                         validator: ValidationBuilder()
-                            .minLength(120)
-                            .maxLength(250)
+                            .minLength(20)
+                            .maxLength(150)
                             .build(),
                         decoration: InputDecoration(
-                          hintText: 'Enter description',
+                          labelText: 'description',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -216,13 +218,14 @@ class _AddPostScreeenState extends State<AddPostScreeen> {
                                   .build(),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.paid),
-                                hintText: ' price ',
+                                labelText: ' price ',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 contentPadding: const EdgeInsets.all(8),
                               ),
                               keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
                             ),
                           ),
                           const SizedBox(

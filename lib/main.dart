@@ -2,6 +2,8 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
+import 'package:auction/service/local_push_notification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,6 +21,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+  // await LocalNotificationService.initialize();
+
   var token = await FirebaseMessaging.instance.getToken();
 
   print(token);
@@ -27,19 +31,11 @@ void main() async {
   FirebaseMessaging.onMessage.listen((event) {
     print('on message');
     print(event.data.toString());
-
-    showToast(text: 'on message', state: ToastStates.SUCCESS);
   });
-
   // when click on notification to open app
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     print('on message opened app');
     print(event.data.toString());
-
-    showToast(
-      text: 'on message opened app',
-      state: ToastStates.SUCCESS,
-    );
   });
 
   // background fcm
@@ -57,11 +53,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (BuildContext context) => AuctionCubit()..getUserData()
-            // ..getPosts()
-            // ..getTickets()
-            // ..getTradeItems(),
-            ),
+            create: (BuildContext context) => AuctionCubit()..getUserData()),
       ],
       child: BlocConsumer<AuctionCubit, AuctionStates>(
           listener: (context, state) {},

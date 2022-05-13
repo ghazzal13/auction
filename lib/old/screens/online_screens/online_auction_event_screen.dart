@@ -1,13 +1,23 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/event_model.dart';
+import 'package:auction/old/screens/online_screens/add_post_screeen.dart';
+import 'package:auction/old/screens/online_screens/auction_screen.dart';
 import 'package:auction/old/screens/online_screens/online_home_screen1.dart';
+import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
+import 'package:auction/old/screens/profiles/user_profile_screen.dart';
 import 'package:auction/theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import 'package:http/http.dart' as http;
 
 class OnlineEventScreen extends StatefulWidget {
   final String postId;
@@ -41,29 +51,117 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
   var duration;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
   final TextEditingController _cccController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
 
   String postId;
   Map post1;
-  // int index;
-
   _OnlineEventScreenState({
     required this.postId,
     // required this.index,
     required this.duration,
     required this.post1,
   });
+  sendNotification(
+      {required String title,
+      required String body,
+      required String userId,
+      required String token}) async {
+    Random random = Random();
+    int id = random.nextInt(1000);
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': id,
+      'status': 'done',
+      'message': title,
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAA_taaElA:APA91bFxaKqEC5HY4x9cwc3VXzJBQbk2LJOHSg1HqjemArliSKTMiV6J9NUV2OPN_n6YFI1UBkPp2Dghd3rSuyTUeoi9hNencecJJieY2x5L4vEnkNs-sC7aTDReMkCu70TseF2Qo-Ia'
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'title': title,
+              'body': body,
+            },
+            'priority': 'high',
+            'data': {
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': id,
+              'status': 'done',
+              'message': title,
+            },
+            'to': '$token'
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("Yeh notificatin is sended");
+      } else {
+        print("Error");
+      }
+    } catch (e) {}
+  }
 
-  // Future<int> _calculateSquare(int num) async {
-  //   await Future.delayed(Duration(seconds: 0));
-  //   return num * num;
-  // }
+  @override
+  void initState() {
+    super.initState();
+    AuctionCubit.get(context).getPostById(id: postId);
+    AuctionCubit.get(context).getComments(postId, 'posts');
+    AuctionCubit.get(context).getprice(postId, 'posts');
+  }
 
-  /////////////////////////////////////
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    if (index == 0) {
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        AuctionCubit.get(context).onItemTapped(index);
+        // .then((value) {
+        //   Future.delayed(const Duration(milliseconds: 1000), () {
+        //     Navigator.pop(context);
+        //   });
+        // });
+        print(index);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const OnlineMangScreen()),
+            (route) => false);
+      });
+    }
+    // if (index == 1) {
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) => const AuctionScreen(),
+    //     ),
+    //   );
+    // }
+    // if (index == 2) {
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) => const AddPostScreeen(),
+    //     ),
+    //   );
+    // }
+    // if (index == 3) {
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(builder: (context) => const ProfileScreen()),
+    //   );
+    // }
+  }
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    OnlineHome(),
+    AuctionScreen(),
+    AddPostScreeen(),
+    ProfileScreen()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +170,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
         builder: (context, state) {
           var userModel = AuctionCubit.get(context).model;
           var postmmm = AuctionCubit.get(context).postByID;
-          //  counter = postmmm[0].price!;
-          // return Center(
-          //     child: FutureBuilder<dynamic>(
-          //   future: _calculateSquare(5),
-          //   //  AuctionCubit.get(context).getPostById(id: postId),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.hasData) {
+          String token = AuctionCubit.get(context).postToken;
           return Scaffold(
             appBar: AppBar(
               backgroundColor: primaryColor,
@@ -92,37 +184,341 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                   fit: BoxFit.cover,
                 ),
               ),
-              child: post1['startAuction']!.isBefore(DateTime.now())
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          child: Row(
+              child: Form(
+                key: formKey,
+                child: post1['startAuction']!.isBefore(DateTime.now())
+                    ? SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.teal,
-                                  backgroundImage:
-                                      NetworkImage('${post1['image']}'),
+                              SizedBox(
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.teal,
+                                      backgroundImage:
+                                          NetworkImage('${post1['image']}'),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '${post1['name']}',
+                                          style: TextStyle(
+                                            color: Colors.teal[600],
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${DateFormat.yMd().add_jm().format(post1['postdate'])} ',
+                                          // '${post1['postdate']}',
+                                          style: TextStyle(
+                                            color: Colors.teal[600],
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.99,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage('${postmmm.postImage}'),
+                                  ),
                                 ),
                               ),
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    '${post1['name']}',
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Titel: ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${post1['titel']}',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.teal[600],
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Category: ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${post1['category']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Price: ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${postmmm.price}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text(
+                                    'Description:',
                                     style: TextStyle(
-                                      color: Colors.teal[600],
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(
-                                    '${DateFormat.yMd().add_jm().format(post1['postdate'])} ',
-                                    // '${post1['postdate']}',
+                                  SizedBox(
+                                    child: Text(
+                                      '${post1['description']}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      // maxLines: 5,
+                                      // overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'remaning time:',
                                     style: TextStyle(
-                                      color: Colors.teal[600],
-                                      fontSize: 10,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Countdown(
+                                    seconds: duration + 60 * 3 * 60,
+                                    build:
+                                        (BuildContext context, double time) =>
+                                            Text(
+                                      '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    interval: Duration(seconds: 1),
+                                    onFinished: () {
+                                      print('Timer is done!');
+
+                                      AuctionCubit.get(context)
+                                          .updatePostState(isFinish: true);
+                                      if (AuctionCubit.get(context)
+                                          .encreasePrices
+                                          .isNotEmpty) {
+                                        AuctionCubit.get(context)
+                                            .updatePostState(
+                                                winner:
+                                                    AuctionCubit.get(context)
+                                                        .encreasePrices[0]
+                                                        .uid);
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 200,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(15.0),
+                                  itemBuilder: (context, x) => buildPricesItem(
+                                      AuctionCubit.get(context)
+                                          .encreasePrices[x]),
+                                  itemCount: AuctionCubit.get(context)
+                                      .encreasePrices
+                                      .length,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.39,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: TextFormField(
+                                        controller: _priceController,
+                                        validator: ValidationBuilder(
+                                                requiredMessage:
+                                                    'cant be empty')
+                                            .maxLength(50)
+                                            .add((value) {
+                                          if (int.parse(value!) <
+                                              AuctionCubit.get(context)
+                                                  .encreasePrices[0]
+                                                  .price!) {
+                                            return "can't be less";
+                                          }
+                                          return null;
+                                        }).build(),
+                                        decoration: InputDecoration(
+                                          labelText: 'Price... ',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.all(12),
+                                          suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                var temp = _priceController;
+                                                if (formKey.currentState!
+                                                    .validate()) {
+                                                  AuctionCubit.get(context)
+                                                      .encreasePrice(
+                                                        'posts',
+                                                        postId,
+                                                        price: int.parse(
+                                                            _priceController
+                                                                .text),
+                                                      )
+                                                      .then((value) =>
+                                                          _priceController
+                                                              .clear());
+                                                  if (AuctionCubit.get(context)
+                                                      .encreasePrices
+                                                      .isNotEmpty) {
+                                                    AuctionCubit.get(context)
+                                                        .updatePostPrice(
+                                                            price: int.parse(
+                                                                temp.text),
+                                                            winner:
+                                                                userModel.name,
+                                                            winnerID:
+                                                                userModel.uid);
+                                                  } else {
+                                                    AuctionCubit.get(context)
+                                                        .updatePostPrice(
+                                                            price: int.parse(
+                                                                temp.text),
+                                                            winnerID:
+                                                                userModel.uid,
+                                                            winner:
+                                                                userModel.name);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            icon: const Icon(Icons.send),
+                                          ),
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        textInputAction: TextInputAction.done,
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        if (AuctionCubit.get(context)
+                                            .encreasePrices
+                                            .isNotEmpty) {
+                                          newPrice = AuctionCubit.get(context)
+                                                  .encreasePrices[0]
+                                                  .price! +
+                                              100;
+                                        } else {
+                                          newPrice = postmmm.price!;
+                                        }
+                                        AuctionCubit.get(context).encreasePrice(
+                                            'posts', postId,
+                                            price: newPrice);
+                                        if (AuctionCubit.get(context)
+                                            .encreasePrices
+                                            .isNotEmpty) {
+                                          AuctionCubit.get(context)
+                                              .updatePostPrice(
+                                                  price:
+                                                      AuctionCubit.get(context)
+                                                              .encreasePrices[0]
+                                                              .price! +
+                                                          100,
+                                                  winner: userModel.name,
+                                                  winnerID: userModel.uid);
+                                        } else {
+                                          AuctionCubit.get(context)
+                                              .updatePostPrice(
+                                                  price: postmmm.price,
+                                                  winnerID: userModel.uid,
+                                                  winner: userModel.name);
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Colors.teal,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'add 100',
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Icon(Icons.add, size: 30),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -130,323 +526,314 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                             ],
                           ),
                         ),
-                        //
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.99,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage('${postmmm.postImage}'),
-                            ),
-                          ),
-                        ),
-                        Countdown(
-                          seconds: duration + 60 * 3 * 60,
-                          build: (BuildContext context, double time) => Text(
-                            '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                              fontSize: 50,
-                              color: Colors.red,
-                            ),
-                          ),
-                          interval: Duration(seconds: 1),
-                          onFinished: () {
-                            print('Timer is done!');
-
-                            AuctionCubit.get(context)
-                                .updatePostState(isFinish: true);
-                            if (AuctionCubit.get(context)
-                                .encreasePrices
-                                .isNotEmpty) {
-                              AuctionCubit.get(context).updatePostState(
-                                  winner: AuctionCubit.get(context)
-                                      .encreasePrices[0]
-                                      .uid);
-                            }
-
-                            Navigator.pop(context);
-                          },
-                        ),
-                        Container(
-                          height: 300,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(15.0),
-                            itemBuilder: (context, x) => buildPricesItem(
-                                AuctionCubit.get(context).encreasePrices[x]),
-                            itemCount:
-                                AuctionCubit.get(context).encreasePrices.length,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            // AuctionCubit.get(context).updatePostPrice(
-                            //     AuctionCubit.get(context)
-                            //             .encreasePrices[0]
-                            //             .price! +
-                            //         100);
-
-                            setState(() {
-                              if (AuctionCubit.get(context)
-                                  .encreasePrices
-                                  .isNotEmpty) {
-                                newPrice = AuctionCubit.get(context)
-                                        .encreasePrices[0]
-                                        .price! +
-                                    100;
-                              } else {
-                                newPrice = postmmm.price!;
-                              }
-                              // AuctionCubit.get(context).getprice(
-                              //     postId, 'posts',
-                              //     id: postmmm.postId);
-                              AuctionCubit.get(context).encreasePrice(
-                                  'posts', postId,
-                                  price: newPrice);
-                              if (AuctionCubit.get(context)
-                                  .encreasePrices
-                                  .isNotEmpty) {
-                                AuctionCubit.get(context).updatePostPrice(
-                                    price: AuctionCubit.get(context)
-                                            .encreasePrices[0]
-                                            .price! +
-                                        100,
-                                    winner: userModel.uid);
-                              } else {
-                                AuctionCubit.get(context).updatePostPrice(
-                                    price: postmmm.price,
-                                    winner: userModel.uid);
-                              }
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.teal,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Text(
-                                    'add 100',
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Icon(Icons.add, size: 30),
-                                ],
+                      )
+                    : SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.teal,
+                                      backgroundImage:
+                                          NetworkImage('${post1['image']}'),
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${post1['name']}',
+                                          style: TextStyle(
+                                            color: Colors.teal[600],
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${DateFormat.yMd().add_jm().format(post1['postdate'])} ',
+                                          style: TextStyle(
+                                            color: Colors.teal[600],
+                                            fontSize: 8,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              child: Row(
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.99,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage('${postmmm.postImage}'),
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Colors.teal,
-                                    backgroundImage:
-                                        NetworkImage('${post1['image']}'),
-                                  ),
                                   const SizedBox(
-                                    width: 5,
+                                    height: 5,
                                   ),
-                                  Column(
+                                  Row(
                                     children: [
-                                      Text(
-                                        '${post1['name']}',
+                                      const Text(
+                                        'Titel: ',
                                         style: TextStyle(
-                                          color: Colors.teal[600],
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        '${post1['postdate']}',
+                                        '${post1['titel']}',
                                         style: TextStyle(
+                                          fontSize: 20,
                                           color: Colors.teal[600],
-                                          fontSize: 8,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.99,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage('${postmmm.postImage}'),
-                                ),
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    const Text(
-                                      'Titel: ',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Category: ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${post1['titel']}',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.teal[600],
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        '${post1['category']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    const Text(
-                                      'Category: ',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Price: ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${post1['category']}',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.teal,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        '${post1['price']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                /*  Container(
+                                    ],
+                                  ),
+
+                                  /*  Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(
                                     DateFormat.yMMMd()
                                         .format(post1['startAuction'].toDate()),
                                   ),
                                 ),*/
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                const Text(
-                                  'Description:',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  child: Text(
-                                    '${post1['description']}',
+
+                                  const Text(
+                                    'Description:',
                                     style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.teal[600],
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    // maxLines: 5,
-                                    // overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Countdown(
-                              seconds: duration,
-                              build: (BuildContext context, double time) =>
-                                  Text(
-                                '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                  fontSize: 50,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                              interval: Duration(seconds: 1),
-                              onFinished: () {
-                                print('Timer is done!');
-                                AuctionCubit.get(context)
-                                    .updatePostState(isStarted: true);
-                                Navigator.pop(context);
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => OnlineHome(),
-                                //   ),
-                                // );
-                              },
-                            ),
-                            Container(
-                              height: 200,
-                              child: ListView.builder(
-                                itemBuilder: (context, index) =>
-                                    buildCommentItem(
-                                        AuctionCubit.get(context)
-                                            .comments1[index],
-                                        index),
-                                itemCount:
-                                    AuctionCubit.get(context).comments1.length,
-                              ),
-                            ),
-                            SizedBox(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _cccController,
-                                      keyboardType: TextInputType.text,
-                                      decoration: const InputDecoration(
-                                        hintText: 'comment',
-                                        border: OutlineInputBorder(),
+                                  SizedBox(
+                                    child: Text(
+                                      '${post1['description']}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.w600,
                                       ),
+                                      // maxLines: 5,
+                                      // overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        AuctionCubit.get(context).writeComment(
-                                          'posts',
-                                          postId,
-                                          comment: _cccController.text,
-                                        );
-                                      },
-                                      icon: const Icon(Icons.add_circle_sharp)),
                                 ],
                               ),
-                            ),
-                          ],
+                              Countdown(
+                                seconds: duration,
+                                build: (BuildContext context, double time) =>
+                                    Text(
+                                  '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontSize: 50,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                interval: Duration(seconds: 1),
+                                onFinished: () {
+                                  print('Timer is done!');
+                                  AuctionCubit.get(context)
+                                      .updatePostState(isStarted: true);
+                                  Navigator.pop(context);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => OnlineHome(),
+                                  //   ),
+                                  // );
+                                },
+                              ),
+                              Container(
+                                height: 200,
+                                child: ListView.builder(
+                                  itemBuilder: (context, index) =>
+                                      buildCommentItem(
+                                          AuctionCubit.get(context)
+                                              .comments1[index],
+                                          index),
+                                  itemCount: AuctionCubit.get(context)
+                                      .comments1
+                                      .length,
+                                ),
+                              ),
+                              // SizedBox(
+                              //   child: Row(
+                              //     children: [
+                              //       Expanded(
+                              //         child: TextField(
+                              //           controller: _cccController,
+                              //           keyboardType: TextInputType.text,
+                              //           decoration: const InputDecoration(
+                              //             hintText: 'comment',
+                              //             border: OutlineInputBorder(),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       const SizedBox(
+                              //         height: 20,
+                              //       ),
+                              //       IconButton(
+                              //           onPressed: () {
+                              //             var temp = _cccController.text;
+                              //             AuctionCubit.get(context)
+                              //                 .writeComment(
+                              //               'posts',
+                              //               postId,
+                              //               comment: _cccController.text,
+                              //             )
+                              //                 .then((value) {
+                              //               _cccController.clear();
+                              //             });
+                              //             sendNotification(
+                              //               '${userModel.name}',
+                              //               temp,
+                              //               '${userModel.token}',
+                              //             );
+                              //           },
+                              //           icon: const Icon(Icons.send)),
+                              //     ],
+                              //   ),
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: TextFormField(
+                                  controller: _cccController,
+                                  validator: ValidationBuilder(
+                                          requiredMessage: 'cant be empty')
+                                      .maxLength(50)
+                                      .build(),
+                                  decoration: InputDecoration(
+                                      hintText: '  write comment... ',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      contentPadding: const EdgeInsets.all(5),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            AuctionCubit.get(context)
+                                                .writeComment(
+                                              'posts',
+                                              postId,
+                                              comment: _cccController.text,
+                                            )
+                                                .then((value) {
+                                              _cccController.clear();
+                                            });
+                                          }
+                                        },
+                                        icon: const Icon(Icons.send),
+                                      )),
+                                  keyboardType: TextInputType.text,
+                                  onFieldSubmitted: (_) {
+                                    if (formKey.currentState!.validate()) {
+                                      AuctionCubit.get(context)
+                                          .writeComment(
+                                        'posts',
+                                        postId,
+                                        comment: _cccController.text,
+                                      )
+                                          .then((value) {
+                                        _cccController.clear();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+              ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.hail_outlined),
+                  label: 'My Auctions',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.add),
+                  label: 'AddPost',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.account_circle),
+                  label: 'profile',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: primaryColor,
+              unselectedItemColor: Colors.white,
             ),
           );
-        }
-
-        // return CircularProgressIndicator();
-        //   },
-        // ),
-        );
+        });
   }
 }
 
@@ -489,44 +876,6 @@ Widget buildCommentItem(CommentModel commentModel, index) => Padding(
         ),
       ),
     );
-
-class Countdownv extends AnimatedWidget {
-  Countdownv({Key? key, required this.animation})
-      : super(key: key, listenable: animation);
-  Animation<int> animation;
-
-  @override
-  build(BuildContext context) {
-    Duration clockTimer = Duration(seconds: animation.value);
-
-    String timerText =
-        '${clockTimer.inDays.remainder(60).toString()}:${clockTimer.inHours.remainder(60).toString()}:${clockTimer.inMinutes.remainder(60).toString()}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
-
-    // print('animation.value  ${animation.value} ');
-    // print('inMinutes ${clockTimer.inMinutes.toString()}');
-    // print('inSeconds ${clockTimer.inSeconds.toString()}');
-    // print(
-    //     'inSeconds.remainder ${clockTimer.inSeconds.remainder(60).toString()}');
-
-    if (clockTimer.inSeconds == 0) {
-      //  AuctionCubit.get(context).updatePostState(index);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OnlineHome(),
-        ),
-      );
-    }
-
-    return Text(
-      "$timerText",
-      style: TextStyle(
-        fontSize: 50,
-        color: Theme.of(context).primaryColor,
-      ),
-    );
-  }
-}
 
 Widget buildPricesItem(EventModel eventModel) => Padding(
       padding: const EdgeInsets.only(left: 5, right: 5, top: 5),

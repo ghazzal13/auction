@@ -22,17 +22,13 @@ class AuthMethods {
   Future<String> signUpUser({
     required String email,
     required String password,
-    required String username,
     required String name,
     required String address,
     // required Uint8List file,
   }) async {
     String res = "Some error Occurred";
     try {
-      if (email.isNotEmpty ||
-          password.isNotEmpty ||
-          username.isNotEmpty ||
-          address.isNotEmpty) {
+      if (email.isNotEmpty || password.isNotEmpty || address.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,

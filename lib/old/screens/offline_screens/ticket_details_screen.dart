@@ -4,6 +4,7 @@ import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -229,23 +230,22 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                         itemCount: AuctionCubit.get(context).comments1.length,
                       ),
                     ),
-                    SizedBox(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _cccController,
-                              keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                hintText: 'comment',
-                                border: OutlineInputBorder(),
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextFormField(
+                        controller: _cccController,
+                        validator:
+                            ValidationBuilder(requiredMessage: 'cant be empty')
+                                .minLength(4)
+                                .maxLength(50)
+                                .build(),
+                        decoration: InputDecoration(
+                            hintText: '  write comment... ',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          IconButton(
+                            contentPadding: const EdgeInsets.all(5),
+                            suffixIcon: IconButton(
                               onPressed: () {
                                 AuctionCubit.get(context).writeComment(
                                   'tickets',
@@ -253,10 +253,40 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                                   comment: _cccController.text,
                                 );
                               },
-                              icon: const Icon(Icons.add_circle_sharp)),
-                        ],
+                              icon: const Icon(Icons.send),
+                            )),
+                        keyboardType: TextInputType.text,
+                        onFieldSubmitted: (_) {},
                       ),
                     ),
+                    // SizedBox(
+                    //   child: Row(
+                    //     children: [
+                    //       Expanded(
+                    //         child: TextField(
+                    //           controller: _cccController,
+                    //           keyboardType: TextInputType.text,
+                    //           decoration: const InputDecoration(
+                    //             hintText: 'comment',
+                    //             border: OutlineInputBorder(),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       const SizedBox(
+                    //         height: 20,
+                    //       ),
+                    //       IconButton(
+                    //           onPressed: () {
+                    //             AuctionCubit.get(context).writeComment(
+                    //               'tickets',
+                    //               ticketId,
+                    //               comment: _cccController.text,
+                    //             );
+                    //           },
+                    //           icon: const Icon(Icons.add_circle_sharp)),
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 5,
                     ),

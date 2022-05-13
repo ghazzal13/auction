@@ -24,7 +24,7 @@ class EventModel {
       uid: map['uid'],
       name: map['name'],
       image: map['image'],
-      dateTime: map['dateTime'],
+      dateTime: map['dateTime'].toDate(),
       postId: map['postId'],
       price: map['price'],
       encreasePriceId: map['encreasePriceId'],

@@ -14,6 +14,7 @@ class PostModel {
   String? category;
   String? description;
   String? winner = 'no one';
+  String? winnerID = 'no one';
   bool? isStarted = false;
   bool? isFinish = false;
 
@@ -31,6 +32,7 @@ class PostModel {
       this.price,
       this.description,
       this.winner,
+      this.winnerID,
       this.isFinish,
       this.isStarted});
 
@@ -51,6 +53,7 @@ class PostModel {
       isStarted: map['isStarted'],
       isFinish: map['isFinish'],
       winner: map['winner'],
+      winnerID: map['winnerID'],
     );
   }
 
@@ -69,6 +72,7 @@ class PostModel {
         'description': description,
         'isStarted': isStarted,
         'winner': winner,
+        'winnerID': winnerID,
         'isFinish': isFinish,
       };
 }

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   String? email;
   String? uid;
+  String? token;
   String? name;
   String? address;
   String? image;
@@ -13,6 +14,7 @@ class UserModel {
     this.name,
     this.address,
     this.image,
+    this.token,
   });
 
   factory UserModel.fromMap(map) {
@@ -22,6 +24,7 @@ class UserModel {
       name: map['name'],
       address: map['address'],
       image: map['image'],
+      token: map['token'],
     );
   }
 
@@ -31,5 +34,6 @@ class UserModel {
         'name': name,
         'address': address,
         'image': image,
+        'token': token,
       };
 }

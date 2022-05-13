@@ -1,5 +1,6 @@
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
+import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../cubit/cubit.dart';
 import '../../cubit/states.dart';
+import '../../theme.dart';
 import '../screens/online_screens/online_auction_event_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -27,6 +29,22 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   void initState() {
     select = false;
     super.initState();
+  }
+
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    if (index == 0) {
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        AuctionCubit.get(context).onItemTapped(index);
+
+        print(index);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const OnlineMangScreen()),
+            (route) => false);
+      });
+    }
   }
 
   var category;
@@ -115,6 +133,36 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         );
                       },
                     ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.hail_outlined),
+                  label: 'My Auctions',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.add),
+                  label: 'AddPost',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.account_circle),
+                  label: 'profile',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: primaryColor,
+              unselectedItemColor: Colors.white,
             ),
           );
         });

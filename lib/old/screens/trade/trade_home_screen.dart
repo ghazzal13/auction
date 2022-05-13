@@ -39,23 +39,6 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ShoppingCartScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart_rounded),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
-              ],
             ),
             body: Container(
               decoration: const BoxDecoration(

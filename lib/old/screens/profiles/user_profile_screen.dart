@@ -1,6 +1,9 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
+import 'package:auction/old/app_bar_screens/shopping_cart_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
+import 'package:auction/old/screens/online_screens/all_my_auctions.dart';
+import 'package:auction/old/screens/online_screens/my_reports_screen.dart';
 import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,8 +38,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.shopping_cart_rounded),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingCartScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.shopping_cart_rounded),
               ),
             ],
           ),
@@ -51,40 +60,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  Container(
-                    child: Stack(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      children: [
-                        Align(
-                          child: Container(
-                            height: 70.0,
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  4.0,
-                                ),
-                                topRight: Radius.circular(
-                                  4.0,
-                                ),
+                  Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      Align(
+                        child: Container(
+                          height: 70.0,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(
+                                4.0,
+                              ),
+                              topRight: Radius.circular(
+                                4.0,
                               ),
                             ),
                           ),
-                          alignment: AlignmentDirectional.topCenter,
                         ),
-                        CircleAvatar(
-                          radius: 64.0,
-                          backgroundColor:
-                              Theme.of(context).scaffoldBackgroundColor,
-                          child: CircleAvatar(
-                            radius: 60.0,
-                            backgroundImage: NetworkImage(
-                              '${userModel.image}',
-                            ),
+                        alignment: AlignmentDirectional.topCenter,
+                      ),
+                      CircleAvatar(
+                        radius: 64.0,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        child: CircleAvatar(
+                          radius: 60.0,
+                          backgroundImage: NetworkImage(
+                            '${userModel.image}',
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 5.0,
@@ -98,8 +105,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     '${userModel.email}',
                     style: Theme.of(context).textTheme.caption,
                   ),
-                  const SizedBox(
-                    height: 5.0,
+                  Flexible(
+                    child: Container(),
+                    flex: 3,
                   ),
                   TextButton(
                     onPressed: () {
@@ -110,102 +118,95 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                     child: Container(
+                      width: MediaQuery.of(context).size.width * 0.52,
                       decoration: const BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(10.0),
                             child: Text(
                               'Edit profile',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             ),
                           ),
                           SizedBox(
-                            width: 25,
+                            width: 15,
                           ),
                           Icon(Icons.edit_sharp),
                         ],
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: 50,
-                            child: const Text('Reviews',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                              ),
-                              color: primaryColor,
-                            ),
-                          ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const MyReportsScreen(),
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        InkWell(
-                          child: Container(
-                            height: 50,
-                            child: const Text(
-                              'Rate',
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.52,
+                      decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              'Reports',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                              ),
-                              color: primaryColor,
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: 50,
-                            child: const Text('Invite Friend',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                              ),
-                              color: primaryColor,
-                            ),
+                          SizedBox(
+                            width: 15,
                           ),
-                        ),
-                      ],
+                          Icon(Icons.edit_sharp),
+                        ],
+                      ),
                     ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const AllMyAuctionsScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              'All My Auctions',
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(Icons.edit_sharp),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Container(),
+                    flex: 1,
                   ),
                   TextButton(
                     onPressed: () {
@@ -216,27 +217,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               (route) => false));
                     },
                     child: Container(
+                      width: MediaQuery.of(context).size.width * 0.52,
                       decoration: const BoxDecoration(
                           color: Colors.black12,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(10.0),
                             child: Text(
                               'Log out',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             ),
                           ),
                           SizedBox(
-                            width: 25,
+                            width: 15,
                           ),
                           Icon(Icons.logout),
                         ],
                       ),
                     ),
+                  ),
+                  Flexible(
+                    child: Container(),
+                    flex: 3,
                   ),
                 ],
               ),

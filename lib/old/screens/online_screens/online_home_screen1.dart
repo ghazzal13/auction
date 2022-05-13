@@ -1,15 +1,11 @@
-import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:auction/old/app_bar_screens/categories_screen.dart';
-import 'package:auction/old/app_bar_screens/sort_screen.dart';
+import 'package:auction/old/app_bar_screens/search_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
@@ -53,23 +49,23 @@ class _OnlineHomeState extends State<OnlineHome> {
                     fontWeight: FontWeight.bold),
               ),
               actions: [
+                // IconButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const ShoppingCartScreen(),
+                //       ),
+                //     );
+                //   },
+                //   icon: const Icon(Icons.shopping_cart_rounded),
+                // ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ShoppingCartScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart_rounded),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
+                        builder: (context) => const SearchPostScreen(),
                       ),
                     );
                   },
@@ -160,43 +156,41 @@ class _OnlineHomeState extends State<OnlineHome> {
     'image': '',
     'postImage': '',
     'isStarted': '',
-    'category': ''
+    'category': '',
+    'token': ''
   };
 
   Widget PostCard3({required dynamic snap, context, required String userid}) {
     return GestureDetector(
         onTap: () {
-          AuctionCubit.get(context)
-              .getComments(snap['postId'].toString(), 'posts');
-          AuctionCubit.get(context)
-              .getprice(snap['postId'].toString(), 'posts');
-          AuctionCubit.get(context)
-              .getPostById(id: snap['postId'])
-              .then((value) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OnlineEventScreen(
-                  snap['postId'].toString(),
-                  doo = (snap['startAuction'].toDate())!
-                      .difference(DateTime.now())
-                      .inSeconds,
-                  duration: doo,
-                  post1: {
-                    'name': snap['name'].toString(),
-                    'titel': snap['titel'].toString(),
-                    'postdate': snap['postTime'].toDate(),
-                    'image': snap['image'].toString(),
-                    'postImage': snap['image'].toString(),
-                    'startAuction': snap['startAuction'].toDate(),
-                    'price': snap['price'].toString(),
-                    'description': snap['description'].toString(),
-                    'category': snap['category'].toString(),
-                  },
-                ),
+          AuctionCubit.get(context).getPostUserTocken(
+            snap['uid'].toString(),
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OnlineEventScreen(
+                snap['postId'].toString(),
+                doo = (snap['startAuction'].toDate())!
+                    .difference(DateTime.now())
+                    .inSeconds,
+                duration: doo,
+                post1: {
+                  'name': snap['name'].toString(),
+                  'uid': snap['uid'].toString(),
+                  'titel': snap['titel'].toString(),
+                  'postdate': snap['postTime'].toDate(),
+                  'image': snap['image'].toString(),
+                  'postImage': snap['image'].toString(),
+                  'startAuction': snap['startAuction'].toDate(),
+                  'price': snap['price'].toString(),
+                  'description': snap['description'].toString(),
+                  'category': snap['category'].toString(),
+                },
               ),
-            );
-          });
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.only(
@@ -542,40 +536,6 @@ class _OnlineHomeState extends State<OnlineHome> {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                // Row(
-                                //   children: [
-                                //     TextButton.icon(
-                                //         onPressed: () {},
-                                //         icon: const Icon(
-                                //           Icons.gpp_good,
-                                //           color: Colors.black,
-                                //           size: 15,
-                                //         ),
-                                //         label: const Text(
-                                //           '10',
-                                //           style: TextStyle(
-                                //             fontSize: 15,
-                                //             color: Colors.teal,
-                                //             fontWeight: FontWeight.w600,
-                                //           ),
-                                //         )),
-                                //     TextButton.icon(
-                                //         onPressed: () {},
-                                //         icon: const Icon(
-                                //           Icons.comment,
-                                //           color: Colors.black,
-                                //           size: 15,
-                                //         ),
-                                //         label: const Text(
-                                //           '0100',
-                                //           style: TextStyle(
-                                //             fontSize: 15,
-                                //             color: Colors.teal,
-                                //             fontWeight: FontWeight.w600,
-                                //           ),
-                                //         ))
-                                //   ],
-                                // )
                               ],
                             ),
                           ),

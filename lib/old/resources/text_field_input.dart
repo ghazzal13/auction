@@ -23,10 +23,20 @@ class TextFieldInput extends StatelessWidget {
     return TextField(
       controller: textEditingController,
       decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.teal,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.teal,
+          ),
+          borderRadius: BorderRadius.circular(25),
+        ),
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
-        focusedBorder: inputBorder,
-        enabledBorder: inputBorder,
         filled: true,
         contentPadding: const EdgeInsets.all(8),
       ),

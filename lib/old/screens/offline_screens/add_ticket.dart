@@ -111,6 +111,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -131,6 +132,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -150,6 +152,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -170,6 +173,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
                       ),
                       const SizedBox(
                         height: 20,

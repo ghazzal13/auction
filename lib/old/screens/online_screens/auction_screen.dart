@@ -37,35 +37,13 @@ class _AuctionScreenState extends State<AuctionScreen> {
               automaticallyImplyLeading: false,
               backgroundColor: Colors.teal,
               title: const Text(
-                'Auction',
+                'My Auction',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
               actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ShoppingCartScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart_rounded),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SortScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.sort_rounded),
-                ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -126,43 +104,41 @@ class _AuctionScreenState extends State<AuctionScreen> {
     'image': '',
     'postImage': '',
     'isStarted': '',
-    'category': ''
+    'category': '',
+    'token': ''
   };
 
   Widget PostCard3({required dynamic snap, context, required String userid}) {
     return GestureDetector(
         onTap: () {
-          AuctionCubit.get(context)
-              .getComments(snap['postId'].toString(), 'posts');
-          AuctionCubit.get(context)
-              .getprice(snap['postId'].toString(), 'posts');
-          AuctionCubit.get(context)
-              .getPostById(id: snap['postId'])
-              .then((value) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OnlineEventScreen(
-                  snap['postId'].toString(),
-                  doo = (snap['startAuction'].toDate())!
-                      .difference(DateTime.now())
-                      .inSeconds,
-                  duration: doo,
-                  post1: {
-                    'name': snap['name'].toString(),
-                    'titel': snap['titel'].toString(),
-                    'postdate': snap['postTime'].toDate(),
-                    'image': snap['image'].toString(),
-                    'postImage': snap['image'].toString(),
-                    'startAuction': snap['startAuction'].toDate(),
-                    'price': snap['price'].toString(),
-                    'description': snap['description'].toString(),
-                    'category': snap['category'].toString(),
-                  },
-                ),
+          AuctionCubit.get(context).getPostUserTocken(
+            snap['uid'].toString(),
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OnlineEventScreen(
+                snap['postId'].toString(),
+                doo = (snap['startAuction'].toDate())!
+                    .difference(DateTime.now())
+                    .inSeconds,
+                duration: doo,
+                post1: {
+                  'name': snap['name'].toString(),
+                  'uid': snap['uid'].toString(),
+                  'titel': snap['titel'].toString(),
+                  'postdate': snap['postTime'].toDate(),
+                  'image': snap['image'].toString(),
+                  'postImage': snap['image'].toString(),
+                  'startAuction': snap['startAuction'].toDate(),
+                  'price': snap['price'].toString(),
+                  'description': snap['description'].toString(),
+                  'category': snap['category'].toString(),
+                },
               ),
-            );
-          });
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.only(
@@ -184,7 +160,6 @@ class _AuctionScreenState extends State<AuctionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Stack(
                             children: [
@@ -198,9 +173,10 @@ class _AuctionScreenState extends State<AuctionScreen> {
                             ],
                           ),
                           const SizedBox(
-                            width: 5,
+                            width: 10,
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 snap['name'].toString(),
@@ -211,13 +187,11 @@ class _AuctionScreenState extends State<AuctionScreen> {
                                 ),
                               ),
                               Text(
-                                DateFormat.yMMMd()
-                                    .format(snap['postTime'].toDate()),
-                              ),
+                                  '${DateFormat.yMd().add_jm().format(snap['postTime'].toDate())} '),
                             ],
                           ),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * .4,
+                            width: MediaQuery.of(context).size.width * 0.32,
                           ),
                           snap['uid'].toString() == userid
                               ? PopupMenuButton(
@@ -399,101 +373,119 @@ class _AuctionScreenState extends State<AuctionScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.40,
-                                child: Text(
-                                  snap['titel'].toString(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.teal[600],
-                                    fontWeight: FontWeight.bold,
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snap['titel'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                      ' ${DateFormat.yMd().add_jm().format(snap['startAuction'].toDate())}  '),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.40,
+                                  child: Text(
+                                    snap['description'].toString(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.teal[600],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  DateFormat.yMMMd()
-                                      .format(snap['startAuction'].toDate()),
+                                const SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.40,
-                                child: Text(
-                                  snap['description'].toString(),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.teal[600],
+                                DateTime.now()
+                                        .isAfter(snap['startAuction'].toDate())
+                                    ? Container(
+                                        alignment: Alignment.topLeft,
+                                        child: Countdown(
+                                          seconds:
+                                              (snap['endAuction'].toDate())!
+                                                  .difference(DateTime.now())
+                                                  .inSeconds,
+                                          build: (BuildContext context,
+                                                  double time) =>
+                                              Text(
+                                            '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          interval: Duration(seconds: 1),
+                                          onFinished: () {
+                                            print('Timer is done!');
+                                            AuctionCubit.get(context)
+                                                .updatePostState(
+                                                    isFinish: true);
+                                          },
+                                        ),
+                                      )
+                                    : Container(
+                                        alignment: Alignment.topLeft,
+                                        child: Countdown(
+                                          seconds:
+                                              (snap['endAuction'].toDate())!
+                                                  .difference(DateTime.now())
+                                                  .inSeconds,
+                                          build: (BuildContext context,
+                                                  double time) =>
+                                              Text(
+                                            '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                          ),
+                                          interval: Duration(seconds: 1),
+                                          onFinished: () {
+                                            print('Timer is done!');
+                                            AuctionCubit.get(context)
+                                                .updatePostState(
+                                                    isStarted: true);
+                                          },
+                                        ),
+                                      ),
+                                Text(
+                                  snap['category'].toString(),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.teal,
                                     fontWeight: FontWeight.w600,
                                   ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              // Container(
-                              //   alignment: Alignment.topLeft,
-                              //   child: Countdown(
-                              //     seconds: (snap['startAuction'].toDate())!
-                              //         .difference(DateTime.now())
-                              //         .inSeconds,
-                              //     build: (BuildContext context, double time) =>
-                              //         Text(
-                              //       '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                              //       style: TextStyle(
-                              //         fontSize: 20,
-                              //         color: Theme.of(context).primaryColor,
-                              //       ),
-                              //     ),
-                              //     interval: Duration(seconds: 1),
-                              //     onFinished: () {
-                              //       print('Timer is done!');
-                              //       AuctionCubit.get(context)
-                              //           .updatePostState(isStarted: true);
-                              //     },
-                              //   ),
-                              // ),
-                              Text(
-                                snap['category'].toString(),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.teal,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  // Text('${AuctionCubit.get(context).likes[index]}'),
-
-                                  IconButton(
-                                    onPressed: () {
-                                      // AuctionCubit.get(context).likePost(
-                                      //     AuctionCubit.get(context).postId[index]);
-                                    },
-                                    icon: const Icon(
-                                      Icons.favorite,
-                                      color: Colors.black,
-                                      size: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.52,
@@ -517,270 +509,3 @@ class _AuctionScreenState extends State<AuctionScreen> {
         ));
   }
 }
-/*
-int duration = 10;
-late int doo;
-late PostModel SelectedPost;
-late Map post1 = {
-  'name': '',
-  'titel': '',
-  'postdate': '',
-  'image': '',
-  'postImage': '',
-  'isStarted': '',
-};
-Widget PostCard({required dynamic snap, context, required String userid}) {
-  return GestureDetector(
-      onTap: () {
-        AuctionCubit.get(context)
-            .getComments(snap['postId'].toString(), 'posts');
-        AuctionCubit.get(context).getprice(snap['postId'].toString(), 'posts');
-        AuctionCubit.get(context).getPostById(id: snap['postId']).then((value) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OnlineEventScreen(
-                snap['postId'].toString(),
-                doo = (snap['startAuction'].toDate())!
-                    .difference(DateTime.now())
-                    .inSeconds,
-                duration: doo,
-                post1: {
-                  'name': snap['name'].toString(),
-                  'titel': snap['titel'].toString(),
-                  'postdate': snap['postTime'].toDate(),
-                  'image': snap['image'].toString(),
-                  'postImage': snap['image'].toString(),
-                  'startAuction': snap['startAuction'].toDate(),
-                },
-              ),
-            ),
-          );
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 5,
-          right: 5,
-          top: 5,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: Colors.teal.withOpacity(0.2),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.teal,
-                                backgroundImage: NetworkImage(
-                                  snap['image'].toString(),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                snap['name'].toString(),
-                                style: TextStyle(
-                                  color: Colors.teal[600],
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                DateFormat.yMMMd()
-                                    .format(snap['postTime'].toDate()),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          snap['titel'].toString(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.teal[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          DateFormat.yMMMd()
-                              .format(snap['startAuction'].toDate()),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Countdown(
-                          seconds: (snap['startAuction'].toDate())!
-                              .difference(DateTime.now())
-                              .inSeconds,
-                          build: (BuildContext context, double time) => Text(
-                            '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          interval: Duration(seconds: 1),
-                          onFinished: () {
-                            print('Timer is done!');
-                            AuctionCubit.get(context)
-                                .updatePostState(isStarted: true);
-                            // Navigator.pop(context);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => OnlineHome(),
-                            //   ),
-                            // );
-                          },
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          // Text('${AuctionCubit.get(context).likes[index]}'),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            height: 40,
-                            width: 40,
-                            child: IconButton(
-                              onPressed: () {
-                                // AuctionCubit.get(context).likePost(
-                                //     AuctionCubit.get(context).postId[index]);
-                              },
-                              icon: const Icon(
-                                Icons.favorite,
-                                color: Colors.black,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const SizedBox(
-                          height: 7,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                  snap['postImage'].toString(),
-                                ),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                          width: 5,
-                        ),
-                        Text(
-                          snap['category'].toString(),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.teal,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              snap['uid'].toString() == userid
-                  ? IconButton(
-                      onPressed: () {
-                        showDialog(
-                          useRootNavigator: false,
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              child: ListView(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                  shrinkWrap: true,
-                                  children: [
-                                    'Delete',
-                                  ]
-                                      .map(
-                                        (e) => InkWell(
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12,
-                                                      horizontal: 16),
-                                              child: Text(e),
-                                            ),
-                                            onTap: () {
-                                              AuctionCubit.get(context)
-                                                  .deletDoc(
-                                                      'posts',
-                                                      snap['postId']
-                                                          .toString());
-
-                                              // remove the dialog box
-                                              Navigator.of(context).pop();
-                                            }),
-                                      )
-                                      .toList()),
-                            );
-                          },
-                        );
-                      },
-                      icon: const Icon(Icons.more_vert),
-                    )
-                  : Container(),
-            ],
-          ),
-        ),
-      ));
-}
-*/

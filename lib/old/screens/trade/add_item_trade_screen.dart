@@ -141,6 +141,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -161,6 +162,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                           contentPadding: const EdgeInsets.all(8),
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(
                         height: 20,
@@ -187,6 +189,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                                 contentPadding: const EdgeInsets.all(8),
                               ),
                               keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
                             ),
                           ),
                           const SizedBox(

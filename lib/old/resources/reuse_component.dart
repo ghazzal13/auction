@@ -68,6 +68,19 @@ Widget defaultFormField({
         return null;
       },
       decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.teal,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.teal,
+          ),
+          borderRadius: BorderRadius.circular(25),
+        ),
         labelText: label,
         prefixIcon: Icon(
           prefix,
@@ -82,8 +95,5 @@ Widget defaultFormField({
                 ),
               )
             : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
       ),
     );

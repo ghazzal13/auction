@@ -48,7 +48,7 @@ class _TradeMangScreenState extends State<TradeMangScreen> {
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
             icon: Icon(Icons.check_box_outlined),
-            label: 'Offers',
+            label: 'My Offers',
           ),
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
