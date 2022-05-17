@@ -5,6 +5,7 @@ import 'package:auction/old/screens/login_screen.dart';
 import 'package:auction/old/screens/online_screens/all_my_auctions.dart';
 import 'package:auction/old/screens/online_screens/my_reports_screen.dart';
 import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
+import 'package:auction/old/screens/profiles/settings_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +42,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const ShoppingCartScreen(),
+                      builder: (context) => const SettingsScreen(),
                     ),
                   );
                 },
-                icon: const Icon(Icons.shopping_cart_rounded),
+                icon: const Icon(Icons.settings),
               ),
             ],
           ),
@@ -113,44 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.52,
-                      decoration: const BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(
-                              'Edit profile',
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Icon(Icons.edit_sharp),
-                        ],
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
                           builder: (context) => const MyReportsScreen(),
                         ),
                       );
                     },
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.52,
                       decoration: const BoxDecoration(
                           color: Colors.black12,
                           borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -200,6 +168,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 15,
                           ),
                           Icon(Icons.edit_sharp),
+                        ],
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ShoppingCartScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              'My Shopping Cart',
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(Icons.shopping_cart_outlined),
                         ],
                       ),
                     ),

@@ -31,7 +31,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     super.initState();
   }
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   void _onItemTapped(int index) {
     if (index == 0) {
       Navigator.pop(context);
@@ -469,24 +469,26 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                                 .text,
                                                         titel: snap['titel']
                                                             .toString(),
-                                                        category:
-                                                            snap['category']
-                                                                .toString(),
                                                         description:
                                                             snap['description']
                                                                 .toString(),
-                                                        postTime:
-                                                            snap['postTime']
+                                                        datePublished:
+                                                            snap['datePublished']
                                                                 .toDate(),
+                                                        postImage:
+                                                            snap['postImage']
+                                                                .toString(),
                                                         postUserimage:
-                                                            snap['image'],
+                                                            snap['image']
+                                                                .toString(),
                                                         postUsername:
                                                             snap['name']
                                                                 .toString(),
                                                         postUseruid:
                                                             snap['uid'],
+                                                        reportType: 'offline',
                                                         startAuction:
-                                                            snap['startAuction']
+                                                            snap['dateTime']
                                                                 .toDate(),
                                                         price: snap['price'])
                                                     .then((value) =>
@@ -514,7 +516,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.40,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -582,7 +584,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               color: Colors.red,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)
@@ -608,7 +610,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                   .primaryColor,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)

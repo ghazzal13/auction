@@ -2,15 +2,11 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
-import 'package:auction/service/local_push_notification.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'old/resources/reuse_component.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('on background message');

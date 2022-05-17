@@ -66,7 +66,7 @@ class _HomeScreeenState extends State<HomeScreeen> {
                 },
                 'priority': 'high',
                 'data': data,
-                'to': '$token'
+                'to': token
               }));
       if (response.statusCode == 200) {
         print("Yeh notificatin is sended");

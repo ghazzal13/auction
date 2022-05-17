@@ -8,6 +8,8 @@ class TradeItemModel {
   String? description;
   bool? isEnd;
   DateTime? datePublished;
+  bool? isaccept;
+  bool? isWaiting;
 
   TradeItemModel({
     this.uid,
@@ -19,6 +21,8 @@ class TradeItemModel {
     this.titel,
     this.isEnd,
     this.description,
+    this.isaccept,
+    this.isWaiting,
   });
 
   factory TradeItemModel.fromMap(map) {
@@ -32,6 +36,8 @@ class TradeItemModel {
       titel: map['titel'],
       isEnd: map['isEnd'],
       description: map['description'],
+      isaccept: map['isaccept'],
+      isWaiting: map['isWaiting'],
     );
   }
 
@@ -45,5 +51,7 @@ class TradeItemModel {
         'titel': titel,
         'isEnd': isEnd,
         'description': description,
+        'isaccept': isaccept,
+        'isWaiting': isWaiting,
       };
 }

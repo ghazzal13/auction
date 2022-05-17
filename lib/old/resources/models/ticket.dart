@@ -9,6 +9,9 @@ class TicketModel {
   DateTime? dateTime;
   String? address;
   String? description;
+  int? price;
+  bool? isaccept;
+  bool? isWaiting;
 
   TicketModel({
     this.uid,
@@ -21,6 +24,9 @@ class TicketModel {
     this.dateTime,
     this.titel,
     this.description,
+    this.price,
+    this.isaccept,
+    this.isWaiting,
   });
 
   factory TicketModel.fromMap(map) {
@@ -34,7 +40,10 @@ class TicketModel {
       datePublished: map['datePublished'],
       dateTime: map['dateTime'],
       titel: map['titel'],
+      price: map['price'],
       description: map['description'],
+      isaccept: map['isaccept'],
+      isWaiting: map['isWaiting'],
     );
   }
 
@@ -48,6 +57,9 @@ class TicketModel {
         'datePublished': datePublished,
         'dateTime': dateTime,
         'titel': titel,
+        'price': price,
         'description': description,
+        'isaccept': isaccept,
+        'isWaiting': isWaiting,
       };
 }

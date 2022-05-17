@@ -1,16 +1,12 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/app_bar_screens/shopping_cart_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/resources/models/trade_model.dart';
-import 'package:auction/old/resources/reuse_component.dart';
 import 'package:auction/old/screens/trade/item_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 class TradeHomeScreen extends StatefulWidget {
   const TradeHomeScreen({Key? key}) : super(key: key);
@@ -50,6 +46,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('tradeitem')
+                    .where('isaccept', isEqualTo: true)
                     // .where('endAuction', isGreaterThan: DateTime.now())
                     .snapshots(),
                 builder: (context,
@@ -244,7 +241,34 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                                           child: const Text('Cancel'),
                                         ),
                                         TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            AuctionCubit.get(context)
+                                                .reportPost(
+                                                  postId: snap['tradeItemId']
+                                                      .toString(),
+                                                  reportText:
+                                                      _reportController.text,
+                                                  titel:
+                                                      snap['titel'].toString(),
+                                                  postImage:
+                                                      snap['tradeItemImage']
+                                                          .toString(),
+                                                  description:
+                                                      snap['description']
+                                                          .toString(),
+                                                  datePublished:
+                                                      snap['datePublished']
+                                                          .toDate(),
+                                                  postUserimage:
+                                                      snap['image'].toString(),
+                                                  postUsername:
+                                                      snap['name'].toString(),
+                                                  postUseruid: snap['uid'],
+                                                  reportType: 'trade',
+                                                )
+                                                .then((value) => Navigator.pop(
+                                                    context, 'Send'));
+                                          },
                                           child: const Text('Send'),
                                         ),
                                       ],
@@ -266,7 +290,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.40,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,

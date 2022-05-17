@@ -121,8 +121,8 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                         minLines: 4,
                         controller: _describtionController,
                         validator: ValidationBuilder()
-                            .minLength(120)
-                            .maxLength(250)
+                            .minLength(40)
+                            .maxLength(120)
                             .build(),
                         decoration: InputDecoration(
                           hintText: 'Enter description',
@@ -245,7 +245,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                         child: ticketdate != DateTime(1, 1, 1, 1)
                             ? Text(
                                 ' ${DateFormat.yMd().add_jm().format(ticketdate)}',
-                                style: TextStyle(color: Colors.blue))
+                                style: const TextStyle(color: Colors.blue))
                             : const Text(
                                 'select date',
                                 style: TextStyle(color: Colors.blue),

@@ -1,6 +1,5 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/resources/models/ticket.dart';
 import 'package:auction/old/screens/offline_screens/ticket_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-
-import '../../app_bar_screens/shopping_cart_screen.dart';
-import '../../resources/reuse_component.dart';
 
 class OfflineHomeScreen extends StatefulWidget {
   const OfflineHomeScreen({Key? key}) : super(key: key);
@@ -50,6 +46,7 @@ class _OfflineHomeScreenState extends State<OfflineHomeScreen> {
                 stream: FirebaseFirestore.instance
                     .collection('tickets')
                     .where('dateTime', isGreaterThan: DateTime.now())
+                    .where('isaccept', isEqualTo: true)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -264,7 +261,41 @@ class _OfflineHomeScreenState extends State<OfflineHomeScreen> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.pop(context, 'Send');
+                                                AuctionCubit.get(context)
+                                                    .reportPost(
+                                                        reportText:
+                                                            _reportController
+                                                                .text,
+                                                        titel: snap['titel']
+                                                            .toString(),
+                                                        description:
+                                                            snap['description']
+                                                                .toString(),
+                                                        datePublished:
+                                                            snap['datePublished']
+                                                                .toDate(),
+                                                        postId: snap['ticketId']
+                                                            .toString(),
+                                                        postImage:
+                                                            snap['ticketImage']
+                                                                .toString(),
+                                                        postUserimage:
+                                                            snap['image']
+                                                                .toString(),
+                                                        postUsername: snap['name']
+                                                            .toString(),
+                                                        postUseruid: snap['uid']
+                                                            .toString(),
+                                                        reportType: 'offline',
+                                                        startAuction:
+                                                            snap['dateTime']
+                                                                .toDate(),
+                                                        address: snap['address']
+                                                            .toString(),
+                                                        price: snap['price'])
+                                                    .then((value) =>
+                                                        Navigator.pop(
+                                                            context, 'Send'));
                                               },
                                               child: const Text('Send'),
                                             ),

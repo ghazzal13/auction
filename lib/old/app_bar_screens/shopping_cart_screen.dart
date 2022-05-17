@@ -4,12 +4,15 @@ import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
+import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+
+import '../../theme.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({Key? key}) : super(key: key);
@@ -21,6 +24,22 @@ class ShoppingCartScreen extends StatefulWidget {
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   CollectionReference db = FirebaseFirestore.instance.collection('posts');
   final TextEditingController _reportController = TextEditingController();
+
+  final int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    if (index == 0) {
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        AuctionCubit.get(context).onItemTapped(index);
+
+        print(index);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const OnlineMangScreen()),
+            (route) => false);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +104,36 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   );
                 },
               ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.hail_outlined),
+                  label: 'My Auctions',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.add),
+                  label: 'AddPost',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.account_circle),
+                  label: 'profile',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: primaryColor,
+              unselectedItemColor: Colors.white,
             ),
           );
         });
@@ -316,38 +365,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                                               child: const Text('Cancel'),
                                             ),
                                             TextButton(
-                                              onPressed: () {
-                                                AuctionCubit.get(context)
-                                                    .reportPost(
-                                                        reportText:
-                                                            _reportController
-                                                                .text,
-                                                        titel: snap['titel']
-                                                            .toString(),
-                                                        category:
-                                                            snap['category']
-                                                                .toString(),
-                                                        description:
-                                                            snap['description']
-                                                                .toString(),
-                                                        postTime:
-                                                            snap['postTime']
-                                                                .toDate(),
-                                                        postUserimage:
-                                                            snap['image'],
-                                                        postUsername:
-                                                            snap['name']
-                                                                .toString(),
-                                                        postUseruid:
-                                                            snap['uid'],
-                                                        startAuction:
-                                                            snap['startAuction']
-                                                                .toDate(),
-                                                        price: snap['price'])
-                                                    .then((value) =>
-                                                        Navigator.pop(
-                                                            context, 'Send'));
-                                              },
+                                              onPressed: () {},
                                               child: const Text('Send'),
                                             ),
                                           ],
@@ -369,7 +387,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.40,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,

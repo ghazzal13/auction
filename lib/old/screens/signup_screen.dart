@@ -1,15 +1,12 @@
-import 'dart:typed_data';
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/old/resources/auth_method.dart';
 import 'package:auction/old/screens/home_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
 import 'package:auction/service/local_push_notification.dart';
-import 'package:auction/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../resources/text_field_input.dart';
 

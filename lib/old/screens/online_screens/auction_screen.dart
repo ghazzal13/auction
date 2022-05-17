@@ -193,187 +193,82 @@ class _AuctionScreenState extends State<AuctionScreen> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.32,
                           ),
-                          snap['uid'].toString() == userid
-                              ? PopupMenuButton(
-                                  onSelected: (value) {
-                                    if (value.toString() == '/Delete') {
-                                      showDialog<String>(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          title:
-                                              const Text('AlertDialog Title'),
-                                          content: const Text(
-                                              'AlertDialog description'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  context, 'Cancel'),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                AuctionCubit.get(context)
-                                                    .deletDoc(
-                                                        'posts',
-                                                        snap['postId']
-                                                            .toString());
-                                                Navigator.pop(context, 'OK');
-                                              },
-                                              child: const Text('OK'),
-                                            ),
-                                          ],
+                          PopupMenuButton(
+                            onSelected: (value) {
+                              if (value.toString() == '/Delete') {
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                    title: const Text('AlertDialog Title'),
+                                    content:
+                                        const Text('AlertDialog description'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'Cancel'),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          AuctionCubit.get(context).deletDoc(
+                                              'posts',
+                                              snap['postId'].toString());
+                                          Navigator.pop(context, 'OK');
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else if (value.toString() == '/Edit') {
+                                AuctionCubit.get(context)
+                                    .getPostById(id: snap['postId'])
+                                    .then((value) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditPostScreen(
+                                          snap['postId'].toString(),
+                                          post1: {
+                                            'name': snap['name'].toString(),
+                                            'image': snap['image'].toString(),
+                                            'postdate':
+                                                snap['postTime'].toDate(),
+                                            'titel': snap['titel'].toString(),
+                                            'price': snap['price'].toString(),
+                                            'description':
+                                                snap['description'].toString(),
+                                            'category':
+                                                snap['category'].toString(),
+                                            'postImage':
+                                                snap['postImage'].toString(),
+                                          },
+                                          postId: snap['postId'].toString(),
                                         ),
-                                      );
-                                    } else if (value.toString() == '/Edit') {
-                                      AuctionCubit.get(context)
-                                          .getPostById(id: snap['postId'])
-                                          .then((value) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditPostScreen(
-                                                snap['postId'].toString(),
-                                                post1: {
-                                                  'name':
-                                                      snap['name'].toString(),
-                                                  'image':
-                                                      snap['image'].toString(),
-                                                  'postdate':
-                                                      snap['postTime'].toDate(),
-                                                  'titel':
-                                                      snap['titel'].toString(),
-                                                  'price':
-                                                      snap['price'].toString(),
-                                                  'description':
-                                                      snap['description']
-                                                          .toString(),
-                                                  'category': snap['category']
-                                                      .toString(),
-                                                  'postImage': snap['postImage']
-                                                      .toString(),
-                                                },
-                                                postId:
-                                                    snap['postId'].toString(),
-                                              ),
-                                            ));
-                                      });
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext bc) {
-                                    return const [
-                                      PopupMenuItem(
-                                        child: Text("Delete"),
-                                        value: '/Delete',
-                                      ),
-                                      PopupMenuItem(
-                                        child: Text("Edit"),
-                                        value: '/Edit',
-                                      ),
-                                    ];
-                                  },
-                                )
-                              : PopupMenuButton(
-                                  onSelected: (value) {
-                                    if (value.toString() == '/Report') {
-                                      showDialog<String>(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          title: const Text('Report Post'),
-                                          content: SizedBox(
-                                            height: 160,
-                                            child: Column(
-                                              children: [
-                                                const Text(
-                                                    ' What is the  problem on with this post?'),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                TextFormField(
-                                                  maxLines: 5,
-                                                  minLines: 4,
-                                                  controller: _reportController,
-                                                  validator: ValidationBuilder()
-                                                      .minLength(50)
-                                                      .maxLength(250)
-                                                      .build(),
-                                                  decoration: InputDecoration(
-                                                    hintText: '....',
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                    ),
-                                                  ),
-                                                  keyboardType:
-                                                      TextInputType.text,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  context, 'Cancel'),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                AuctionCubit.get(context)
-                                                    .reportPost(
-                                                        reportText:
-                                                            _reportController
-                                                                .text,
-                                                        titel: snap['titel']
-                                                            .toString(),
-                                                        category:
-                                                            snap['category']
-                                                                .toString(),
-                                                        description:
-                                                            snap['description']
-                                                                .toString(),
-                                                        postTime:
-                                                            snap['postTime']
-                                                                .toDate(),
-                                                        postUserimage:
-                                                            snap['image'],
-                                                        postUsername:
-                                                            snap['name']
-                                                                .toString(),
-                                                        postUseruid:
-                                                            snap['uid'],
-                                                        startAuction:
-                                                            snap['startAuction']
-                                                                .toDate(),
-                                                        price: snap['price'])
-                                                    .then((value) =>
-                                                        Navigator.pop(
-                                                            context, 'Send'));
-                                              },
-                                              child: const Text('Send'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  itemBuilder: (BuildContext bc) {
-                                    return const [
-                                      PopupMenuItem(
-                                        child: Text("Report"),
-                                        value: '/Report',
-                                      ),
-                                    ];
-                                  },
+                                      ));
+                                });
+                              }
+                            },
+                            itemBuilder: (BuildContext bc) {
+                              return const [
+                                PopupMenuItem(
+                                  child: Text("Delete"),
+                                  value: '/Delete',
                                 ),
+                                PopupMenuItem(
+                                  child: Text("Edit"),
+                                  value: '/Edit',
+                                ),
+                              ];
+                            },
+                          )
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.40,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -441,7 +336,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
                                               color: Colors.red,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)
@@ -467,7 +362,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
                                                   .primaryColor,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)

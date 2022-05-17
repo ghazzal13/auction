@@ -20,7 +20,7 @@ class SearchPostScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchPostScreen> {
-  late TextEditingController _searchController = TextEditingController();
+  late final TextEditingController _searchController = TextEditingController();
   final TextEditingController _reportController = TextEditingController();
 
   @override
@@ -342,8 +342,11 @@ class _SearchScreenState extends State<SearchPostScreen> {
                                                             postUserimage:
                                                                 postmodel
                                                                     .image!,
-                                                            postTime: postmodel
-                                                                .postTime,
+                                                            postImage: postmodel
+                                                                .postImage!,
+                                                            datePublished:
+                                                                postmodel
+                                                                    .postTime,
                                                             titel: postmodel
                                                                 .titel!,
                                                             price: postmodel
@@ -357,6 +360,8 @@ class _SearchScreenState extends State<SearchPostScreen> {
                                                             startAuction:
                                                                 postmodel
                                                                     .startAuction,
+                                                            reportType:
+                                                                'online',
                                                           )
                                                           .then((value) =>
                                                               Navigator.pop(
@@ -384,7 +389,7 @@ class _SearchScreenState extends State<SearchPostScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Container(
+                                SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.40,
                                   child: Column(
@@ -455,7 +460,8 @@ class _SearchScreenState extends State<SearchPostScreen> {
                                                     color: Colors.red,
                                                   ),
                                                 ),
-                                                interval: Duration(seconds: 1),
+                                                interval:
+                                                    const Duration(seconds: 1),
                                                 onFinished: () {
                                                   print('Timer is done!');
                                                   AuctionCubit.get(context)
@@ -480,7 +486,8 @@ class _SearchScreenState extends State<SearchPostScreen> {
                                                         .primaryColor,
                                                   ),
                                                 ),
-                                                interval: Duration(seconds: 1),
+                                                interval:
+                                                    const Duration(seconds: 1),
                                                 onFinished: () {
                                                   print('Timer is done!');
                                                   AuctionCubit.get(context)

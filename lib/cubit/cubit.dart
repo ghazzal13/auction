@@ -75,7 +75,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .then((value) {
       print(value.data());
 
-      this.model = model2.UserModel.fromMap(value.data());
+      model = model2.UserModel.fromMap(value.data());
 
       emit(AuctionGetUserSuccessState());
     }).catchError((error) {
@@ -214,22 +214,23 @@ class AuctionCubit extends Cubit<AuctionStates> {
     emit(AuctionCreatePostLoadingState());
     String postId = const Uuid().v1();
     PostModel pmodel = PostModel(
-      name: model.name,
-      image: model.image,
-      uid: model.uid,
-      startAuction: startAuction,
-      endAuction: startAuction!.add(const Duration(hours: 3)),
-      postTime: postTime,
-      description: description,
-      postImage: postImage,
-      postId: postId,
-      category: category,
-      titel: titel,
-      price: price,
-      isStarted: false,
-      isFinish: false,
-      winner: null,
-    );
+        name: model.name,
+        image: model.image,
+        uid: model.uid,
+        startAuction: startAuction,
+        endAuction: startAuction!.add(const Duration(hours: 3)),
+        postTime: postTime,
+        description: description,
+        postImage: postImage,
+        postId: postId,
+        category: category,
+        titel: titel,
+        price: price,
+        isStarted: false,
+        isFinish: false,
+        winner: null,
+        isWaiting: true,
+        isaccept: false);
     FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -256,7 +257,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
       // print(value.data()!['postImage']);
       // print(value.data()!['image']);
       print(value.data()!['uid']);
-      this.postByID = PostModel.fromMap(value.data());
+      postByID = PostModel.fromMap(value.data());
       // return postByID;
       emit(AuctionGetPostSuccessState());
     }).catchError((error) {
@@ -323,11 +324,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .snapshots()
         .listen((event) {
       comments1 = [];
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         comments1.add(CommentModel.fromMap(
           element.data(),
         ));
-      });
+      }
       emit(AuctionGetCommentSuccessState());
     });
   }
@@ -409,6 +410,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       ticketImage: ticketImage,
       ticketId: ticketId,
       titel: titel,
+      isaccept: false,
+      isWaiting: true,
     );
 
     FirebaseFirestore.instance
@@ -462,6 +465,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       tradeItemId: tradeItemId,
       titel: titel,
       isEnd: false,
+      isaccept: false,
+      isWaiting: true,
     );
     FirebaseFirestore.instance
         .collection('tradeitem')
@@ -517,13 +522,13 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .snapshots()
         .listen((event) {
       // search.clear();
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         search.add(PostModel.fromMap(
           element.data(),
         ));
 
         print(element.data()['titel']);
-      });
+      }
       emit(AuctionGetCommentSuccessState());
     });
   }
@@ -572,11 +577,11 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .snapshots()
         .listen((event) {
       encreasePrices = [];
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         encreasePrices.add(EventModel.fromMap(
           element.data(),
         ));
-      });
+      }
       emit(AuctionGetPricesSuccessState());
     });
   }
@@ -767,9 +772,9 @@ class AuctionCubit extends Cubit<AuctionStates> {
           .where('tradeItemId', isEqualTo: tradeItemId)
           .snapshots()
           .listen((event) {
-        event.docs.forEach((element) {
+        for (var element in event.docs) {
           deletDoc('offers', element.data()['offerId']);
-        });
+        }
       });
     }).catchError((error) {
       emit(AuctionStartPostUpdateUpdateErrorState());
@@ -889,32 +894,41 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? postUsername,
     String? postUseruid,
     String? postUserimage,
+    String? postId,
     String? titel,
     String? reportText,
     DateTime? startAuction,
-    DateTime? postTime,
+    DateTime? datePublished,
     String? category,
     String? description,
+    String? reportType,
+    String? address,
+    String? postImage,
     int? price,
   }) async {
     emit(AuctionCreatePostLoadingState());
     String reportId = const Uuid().v1();
     ReportModel pmodel = ReportModel(
-      reportId: reportId,
-      name: model.name,
-      image: model.image,
-      uid: model.uid,
-      postUseruid: postUseruid,
-      postUsername: postUsername,
-      postUserimage: postUserimage,
-      startAuction: startAuction,
-      postTime: postTime,
-      description: description,
-      category: category,
-      titel: titel,
-      price: price,
-      reportText: reportText,
-    );
+        reportId: reportId,
+        name: model.name,
+        image: model.image,
+        uid: model.uid,
+        postUseruid: postUseruid,
+        postUsername: postUsername,
+        postUserimage: postUserimage,
+        postId: postId,
+        startAuction: startAuction,
+        datePublished: datePublished,
+        description: description,
+        category: category,
+        titel: titel,
+        price: price,
+        reportText: reportText,
+        reportType: reportType,
+        address: address,
+        reportTime: DateTime.now(),
+        cancelReport: false,
+        postImage: postImage);
     FirebaseFirestore.instance
         .collection('report')
         .doc(reportId)
@@ -927,13 +941,13 @@ class AuctionCubit extends Cubit<AuctionStates> {
   }
 
   var postToken;
-  void getPostUserTocken(String post_uid) {
+  void getPostUserTocken(String postUid) {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(post_uid)
+        .doc(postUid)
         .get()
         .then((value) {
-      this.postToken = value.data()!['token'];
+      postToken = value.data()!['token'];
       // print(value.data());
       // print(value.data()!['token']);
     }).catchError((error) {

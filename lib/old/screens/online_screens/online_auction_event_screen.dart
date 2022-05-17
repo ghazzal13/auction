@@ -124,36 +124,12 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
     } else {
       setState(() {
         AuctionCubit.get(context).onItemTapped(index);
-        // .then((value) {
-        //   Future.delayed(const Duration(milliseconds: 1000), () {
-        //     Navigator.pop(context);
-        //   });
-        // });
         print(index);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const OnlineMangScreen()),
             (route) => false);
       });
     }
-    // if (index == 1) {
-    //   Navigator.of(context).push(
-    //     MaterialPageRoute(
-    //       builder: (context) => const AuctionScreen(),
-    //     ),
-    //   );
-    // }
-    // if (index == 2) {
-    //   Navigator.of(context).push(
-    //     MaterialPageRoute(
-    //       builder: (context) => const AddPostScreeen(),
-    //     ),
-    //   );
-    // }
-    // if (index == 3) {
-    //   Navigator.of(context).push(
-    //     MaterialPageRoute(builder: (context) => const ProfileScreen()),
-    //   );
-    // }
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
@@ -162,6 +138,9 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
     AddPostScreeen(),
     ProfileScreen()
   ];
+
+  var _expandedComment = false;
+  var _expandedPrices = false;
 
   @override
   Widget build(BuildContext context) {
@@ -352,177 +331,292 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
 
                                       AuctionCubit.get(context)
                                           .updatePostState(isFinish: true);
-                                      if (AuctionCubit.get(context)
-                                          .encreasePrices
-                                          .isNotEmpty) {
-                                        AuctionCubit.get(context)
-                                            .updatePostState(
-                                                winner:
-                                                    AuctionCubit.get(context)
-                                                        .encreasePrices[0]
-                                                        .uid);
-                                      }
+                                      // if (AuctionCubit.get(context)
+                                      //     .encreasePrices
+                                      //     .isNotEmpty) {
+                                      //   AuctionCubit.get(context)
+                                      //       .updatePostState(
+                                      //           winner:
+                                      //               AuctionCubit.get(context)
+                                      //                   .encreasePrices[0]
+                                      //                   .uid);
+                                      // }
                                       Navigator.pop(context);
                                     },
                                   ),
                                 ],
                               ),
-                              Container(
-                                height: 200,
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.all(15.0),
-                                  itemBuilder: (context, x) => buildPricesItem(
-                                      AuctionCubit.get(context)
-                                          .encreasePrices[x]),
-                                  itemCount: AuctionCubit.get(context)
-                                      .encreasePrices
-                                      .length,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.39,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: TextFormField(
-                                        controller: _priceController,
-                                        validator: ValidationBuilder(
-                                                requiredMessage:
-                                                    'cant be empty')
-                                            .maxLength(50)
-                                            .add((value) {
-                                          if (int.parse(value!) <
-                                              AuctionCubit.get(context)
-                                                  .encreasePrices[0]
-                                                  .price!) {
-                                            return "can't be less";
-                                          }
-                                          return null;
-                                        }).build(),
-                                        decoration: InputDecoration(
-                                          labelText: 'Price... ',
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.all(12),
-                                          suffixIcon: IconButton(
+                              post1['uid'] == userModel.uid
+                                  ? Column(
+                                      children: [
+                                        ListTile(
+                                          title: const Text('Comments'),
+                                          subtitle: (AuctionCubit.get(context)
+                                                  .comments1
+                                                  .isNotEmpty)
+                                              ? Text(
+                                                  'There is ${AuctionCubit.get(context).comments1.length} comments')
+                                              : const Text(
+                                                  'There is no comments'),
+                                          trailing: IconButton(
+                                            icon: Icon(_expandedComment
+                                                ? Icons.expand_less
+                                                : Icons.expand_more),
                                             onPressed: () {
                                               setState(() {
-                                                var temp = _priceController;
-                                                if (formKey.currentState!
-                                                    .validate()) {
-                                                  AuctionCubit.get(context)
-                                                      .encreasePrice(
-                                                        'posts',
-                                                        postId,
-                                                        price: int.parse(
-                                                            _priceController
-                                                                .text),
-                                                      )
-                                                      .then((value) =>
-                                                          _priceController
-                                                              .clear());
-                                                  if (AuctionCubit.get(context)
-                                                      .encreasePrices
-                                                      .isNotEmpty) {
-                                                    AuctionCubit.get(context)
-                                                        .updatePostPrice(
-                                                            price: int.parse(
-                                                                temp.text),
-                                                            winner:
-                                                                userModel.name,
-                                                            winnerID:
-                                                                userModel.uid);
-                                                  } else {
-                                                    AuctionCubit.get(context)
-                                                        .updatePostPrice(
-                                                            price: int.parse(
-                                                                temp.text),
-                                                            winnerID:
-                                                                userModel.uid,
-                                                            winner:
-                                                                userModel.name);
-                                                  }
-                                                }
+                                                _expandedComment =
+                                                    !_expandedComment;
                                               });
                                             },
-                                            icon: const Icon(Icons.send),
                                           ),
                                         ),
-                                        keyboardType: TextInputType.number,
-                                        textInputAction: TextInputAction.done,
-                                      ),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        if (AuctionCubit.get(context)
-                                            .encreasePrices
-                                            .isNotEmpty) {
-                                          newPrice = AuctionCubit.get(context)
-                                                  .encreasePrices[0]
-                                                  .price! +
-                                              100;
-                                        } else {
-                                          newPrice = postmmm.price!;
-                                        }
-                                        AuctionCubit.get(context).encreasePrice(
-                                            'posts', postId,
-                                            price: newPrice);
-                                        if (AuctionCubit.get(context)
-                                            .encreasePrices
-                                            .isNotEmpty) {
-                                          AuctionCubit.get(context)
-                                              .updatePostPrice(
-                                                  price:
+                                        if (_expandedComment)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 4),
+                                            height: min(
+                                                AuctionCubit.get(context)
+                                                            .comments1
+                                                            .length *
+                                                        50.0 +
+                                                    10,
+                                                200),
+                                            child: ListView.builder(
+                                              itemBuilder: (context, index) =>
+                                                  buildCommentItem(
                                                       AuctionCubit.get(context)
-                                                              .encreasePrices[0]
-                                                              .price! +
-                                                          100,
-                                                  winner: userModel.name,
-                                                  winnerID: userModel.uid);
-                                        } else {
-                                          AuctionCubit.get(context)
-                                              .updatePostPrice(
-                                                  price: postmmm.price,
-                                                  winnerID: userModel.uid,
-                                                  winner: userModel.name);
-                                        }
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(25),
-                                        color: Colors.teal,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'add 100',
-                                              style: TextStyle(
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.bold),
+                                                          .comments1[index],
+                                                      index),
+                                              itemCount:
+                                                  AuctionCubit.get(context)
+                                                      .comments1
+                                                      .length,
                                             ),
-                                            Icon(Icons.add, size: 30),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                          ),
+                                      ],
+                                    )
+                                  : Container(),
+                              ListTile(
+                                title: const Text('Operations'),
+                                subtitle: (AuctionCubit.get(context)
+                                        .encreasePrices
+                                        .isNotEmpty)
+                                    ? Text(
+                                        'There is ${AuctionCubit.get(context).encreasePrices.length} operation')
+                                    : const Text('There is no operation'),
+                                trailing: IconButton(
+                                  icon: Icon(_expandedPrices
+                                      ? Icons.expand_less
+                                      : Icons.expand_more),
+                                  onPressed: () {
+                                    setState(() {
+                                      _expandedPrices = !_expandedPrices;
+                                    });
+                                  },
+                                ),
                               ),
+                              if (_expandedPrices)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 4),
+                                  height: min(
+                                      AuctionCubit.get(context)
+                                                  .encreasePrices
+                                                  .length *
+                                              50.0 +
+                                          10,
+                                      200),
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.all(15.0),
+                                    itemBuilder: (context, x) =>
+                                        buildPricesItem(
+                                            AuctionCubit.get(context)
+                                                .encreasePrices[x]),
+                                    itemCount: AuctionCubit.get(context)
+                                        .encreasePrices
+                                        .length,
+                                  ),
+                                ),
+                              // Container(
+                              //   height: 200,
+                              //   child: ListView.builder(
+                              //     padding: const EdgeInsets.all(15.0),
+                              //     itemBuilder: (context, x) => buildPricesItem(
+                              //         AuctionCubit.get(context)
+                              //             .encreasePrices[x]),
+                              //     itemCount: AuctionCubit.get(context)
+                              //         .encreasePrices
+                              //         .length,
+                              //   ),
+                              // ),
+                              post1['uid'] != userModel.uid
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.39,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: TextFormField(
+                                              controller: _priceController,
+                                              validator: ValidationBuilder(
+                                                      requiredMessage:
+                                                          'cant be empty')
+                                                  .maxLength(50)
+                                                  .add((value) {
+                                                if (int.parse(value!) <
+                                                    AuctionCubit.get(context)
+                                                        .encreasePrices[0]
+                                                        .price!) {
+                                                  return "can't be less";
+                                                }
+                                                return null;
+                                              }).build(),
+                                              decoration: InputDecoration(
+                                                labelText: 'Price... ',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                contentPadding:
+                                                    const EdgeInsets.all(12),
+                                                suffixIcon: IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      var temp =
+                                                          _priceController;
+                                                      if (formKey.currentState!
+                                                          .validate()) {
+                                                        AuctionCubit.get(
+                                                                context)
+                                                            .encreasePrice(
+                                                              'posts',
+                                                              postId,
+                                                              price: int.parse(
+                                                                  _priceController
+                                                                      .text),
+                                                            )
+                                                            .then((value) =>
+                                                                _priceController
+                                                                    .clear());
+                                                        if (AuctionCubit.get(
+                                                                context)
+                                                            .encreasePrices
+                                                            .isNotEmpty) {
+                                                          AuctionCubit
+                                                                  .get(context)
+                                                              .updatePostPrice(
+                                                                  price: int
+                                                                      .parse(temp
+                                                                          .text),
+                                                                  winner:
+                                                                      userModel
+                                                                          .name,
+                                                                  winnerID:
+                                                                      userModel
+                                                                          .uid);
+                                                        } else {
+                                                          AuctionCubit.get(
+                                                                  context)
+                                                              .updatePostPrice(
+                                                                  price: int
+                                                                      .parse(temp
+                                                                          .text),
+                                                                  winnerID:
+                                                                      userModel
+                                                                          .uid,
+                                                                  winner:
+                                                                      userModel
+                                                                          .name);
+                                                        }
+                                                      }
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.send),
+                                                ),
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              textInputAction:
+                                                  TextInputAction.done,
+                                            ),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              if (AuctionCubit.get(context)
+                                                  .encreasePrices
+                                                  .isNotEmpty) {
+                                                newPrice =
+                                                    AuctionCubit.get(context)
+                                                            .encreasePrices[0]
+                                                            .price! +
+                                                        100;
+                                              } else {
+                                                newPrice = postmmm.price!;
+                                              }
+                                              AuctionCubit.get(context)
+                                                  .encreasePrice(
+                                                      'posts', postId,
+                                                      price: newPrice);
+                                              if (AuctionCubit.get(context)
+                                                  .encreasePrices
+                                                  .isNotEmpty) {
+                                                AuctionCubit.get(context)
+                                                    .updatePostPrice(
+                                                        price: AuctionCubit.get(
+                                                                    context)
+                                                                .encreasePrices[
+                                                                    0]
+                                                                .price! +
+                                                            100,
+                                                        winner: userModel.name,
+                                                        winnerID:
+                                                            userModel.uid);
+                                              } else {
+                                                AuctionCubit.get(context)
+                                                    .updatePostPrice(
+                                                        price: postmmm.price,
+                                                        winnerID: userModel.uid,
+                                                        winner: userModel.name);
+                                              }
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                              color: Colors.teal,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(12.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: const [
+                                                  Text(
+                                                    'add 100',
+                                                    style: TextStyle(
+                                                        fontSize: 30,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Icon(Icons.add, size: 30),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Container()
                             ],
                           ),
                         ),
@@ -644,15 +738,6 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                       ),
                                     ],
                                   ),
-
-                                  /*  Container(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    DateFormat.yMMMd()
-                                        .format(post1['startAuction'].toDate()),
-                                  ),
-                                ),*/
-
                                   const Text(
                                     'Description:',
                                     style: TextStyle(
@@ -674,79 +759,98 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                   ),
                                 ],
                               ),
-                              Countdown(
-                                seconds: duration,
-                                build: (BuildContext context, double time) =>
-                                    Text(
-                                  '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                                  style: TextStyle(
-                                    fontSize: 50,
-                                    color: Theme.of(context).primaryColor,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'remaning time:',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Countdown(
+                                    seconds: duration,
+                                    build:
+                                        (BuildContext context, double time) =>
+                                            Text(
+                                      '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                    interval: Duration(seconds: 1),
+                                    onFinished: () {
+                                      print('Timer is done!');
+                                      AuctionCubit.get(context)
+                                          .updatePostState(isStarted: true);
+                                      Navigator.pop(context);
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => OnlineHome(),
+                                      //   ),
+                                      // );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              ListTile(
+                                title: const Text('Comments'),
+                                subtitle: (AuctionCubit.get(context)
+                                        .comments1
+                                        .isNotEmpty)
+                                    ? Text(
+                                        'There is ${AuctionCubit.get(context).comments1.length} comments')
+                                    : const Text('There is no comments'),
+                                trailing: IconButton(
+                                  icon: Icon(_expandedComment
+                                      ? Icons.expand_less
+                                      : Icons.expand_more),
+                                  onPressed: () {
+                                    setState(() {
+                                      _expandedComment = !_expandedComment;
+                                    });
+                                  },
+                                ),
+                              ),
+                              if (_expandedComment)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 4),
+                                  height: min(
+                                      AuctionCubit.get(context)
+                                                  .comments1
+                                                  .length *
+                                              50.0 +
+                                          10,
+                                      200),
+                                  child: ListView.builder(
+                                    itemBuilder: (context, index) =>
+                                        buildCommentItem(
+                                            AuctionCubit.get(context)
+                                                .comments1[index],
+                                            index),
+                                    itemCount: AuctionCubit.get(context)
+                                        .comments1
+                                        .length,
                                   ),
                                 ),
-                                interval: Duration(seconds: 1),
-                                onFinished: () {
-                                  print('Timer is done!');
-                                  AuctionCubit.get(context)
-                                      .updatePostState(isStarted: true);
-                                  Navigator.pop(context);
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => OnlineHome(),
-                                  //   ),
-                                  // );
-                                },
-                              ),
-                              Container(
-                                height: 200,
-                                child: ListView.builder(
-                                  itemBuilder: (context, index) =>
-                                      buildCommentItem(
-                                          AuctionCubit.get(context)
-                                              .comments1[index],
-                                          index),
-                                  itemCount: AuctionCubit.get(context)
-                                      .comments1
-                                      .length,
-                                ),
-                              ),
-                              // SizedBox(
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         child: TextField(
-                              //           controller: _cccController,
-                              //           keyboardType: TextInputType.text,
-                              //           decoration: const InputDecoration(
-                              //             hintText: 'comment',
-                              //             border: OutlineInputBorder(),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //       const SizedBox(
-                              //         height: 20,
-                              //       ),
-                              //       IconButton(
-                              //           onPressed: () {
-                              //             var temp = _cccController.text;
+                              // Container(
+                              //   height: 200,
+                              //   child: ListView.builder(
+                              //     itemBuilder: (context, index) =>
+                              //         buildCommentItem(
                               //             AuctionCubit.get(context)
-                              //                 .writeComment(
-                              //               'posts',
-                              //               postId,
-                              //               comment: _cccController.text,
-                              //             )
-                              //                 .then((value) {
-                              //               _cccController.clear();
-                              //             });
-                              //             sendNotification(
-                              //               '${userModel.name}',
-                              //               temp,
-                              //               '${userModel.token}',
-                              //             );
-                              //           },
-                              //           icon: const Icon(Icons.send)),
-                              //     ],
+                              //                 .comments1[index],
+                              //             index),
+                              //     itemCount: AuctionCubit.get(context)
+                              //         .comments1
+                              //         .length,
                               //   ),
                               // ),
                               Padding(

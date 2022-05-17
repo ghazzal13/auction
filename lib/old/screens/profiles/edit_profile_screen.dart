@@ -110,7 +110,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 onPressed: () {
                                   AuctionCubit.get(context).getProfileImage();
                                 },
-                                icon: const Icon(Icons.add_a_photo),
+                                icon: const Icon(
+                                  Icons.add_a_photo_outlined,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
                               ),
                             )
                           ],
@@ -160,7 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             label: 'address',
                             prefix: Icons.place),
                         const SizedBox(
-                          height: 150.0,
+                          height: 100.0,
                         ),
                         FloatingActionButton.extended(
                           onPressed: () {

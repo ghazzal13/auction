@@ -2,13 +2,10 @@ import 'dart:typed_data';
 
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AddItemTradeScreen extends StatefulWidget {
   const AddItemTradeScreen({Key? key}) : super(key: key);
@@ -26,6 +23,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
   var TradeItemdate;
   Uint8List? _image;
 
+  @override
   void dispose() {
     super.dispose();
     try {
@@ -151,8 +149,8 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                         minLines: 4,
                         controller: _describtionController,
                         validator: ValidationBuilder()
-                            .minLength(120)
-                            .maxLength(250)
+                            .minLength(40)
+                            .maxLength(120)
                             .build(),
                         decoration: InputDecoration(
                           hintText: 'Enter description',
@@ -203,7 +201,7 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                                 color: Color.fromARGB(255, 9, 87, 65)),
                             underline: Container(
                               height: 2,
-                              color: Color.fromARGB(255, 10, 137, 97),
+                              color: const Color.fromARGB(255, 10, 137, 97),
                             ),
                             onChanged: (String? newValue) {
                               setState(() {
@@ -337,7 +335,6 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                             )
                                 .then((value) {
                               AuctionCubit.get(context).removeTicketImage();
-                              Navigator.of(context).pop();
                             });
                           }
                         },

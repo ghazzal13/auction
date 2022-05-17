@@ -13,8 +13,6 @@ import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
-import '../../app_bar_screens/shopping_cart_screen.dart';
-
 class OnlineHome extends StatefulWidget {
   const OnlineHome({Key? key}) : super(key: key);
 
@@ -26,7 +24,7 @@ enum SingingCharacter { lafayette, jefferson }
 
 class _OnlineHomeState extends State<OnlineHome> {
   CollectionReference db = FirebaseFirestore.instance.collection('posts');
-  SingingCharacter? _character = SingingCharacter.lafayette;
+  final SingingCharacter? _character = SingingCharacter.lafayette;
   bool sort = false;
   final TextEditingController _reportController = TextEditingController();
 
@@ -120,6 +118,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                 stream: FirebaseFirestore.instance
                     .collection('posts')
                     .where('endAuction', isGreaterThan: DateTime.now())
+                    .where('isaccept', isEqualTo: true)
                     .orderBy('endAuction', descending: sort)
                     .snapshots(),
                 builder: (context,
@@ -386,16 +385,23 @@ class _OnlineHomeState extends State<OnlineHome> {
                                                         description:
                                                             snap['description']
                                                                 .toString(),
-                                                        postTime:
+                                                        postImage:
+                                                            snap['postImage']
+                                                                .toString(),
+                                                        postId: snap['postId']
+                                                            .toString(),
+                                                        datePublished:
                                                             snap['postTime']
                                                                 .toDate(),
                                                         postUserimage:
-                                                            snap['image'],
+                                                            snap['image']
+                                                                .toString(),
                                                         postUsername:
                                                             snap['name']
                                                                 .toString(),
                                                         postUseruid:
                                                             snap['uid'],
+                                                        reportType: 'online',
                                                         startAuction:
                                                             snap['startAuction']
                                                                 .toDate(),
@@ -425,7 +431,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.40,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -493,7 +499,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                                               color: Colors.red,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)
@@ -519,7 +525,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                                                   .primaryColor,
                                             ),
                                           ),
-                                          interval: Duration(seconds: 1),
+                                          interval: const Duration(seconds: 1),
                                           onFinished: () {
                                             print('Timer is done!');
                                             AuctionCubit.get(context)

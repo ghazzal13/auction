@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class PostModel {
   String? uid;
   String? name;
@@ -17,6 +15,8 @@ class PostModel {
   String? winnerID = 'no one';
   bool? isStarted = false;
   bool? isFinish = false;
+  bool? isaccept;
+  bool? isWaiting;
 
   PostModel(
       {this.uid,
@@ -34,6 +34,8 @@ class PostModel {
       this.winner,
       this.winnerID,
       this.isFinish,
+      this.isaccept,
+      this.isWaiting,
       this.isStarted});
 
   factory PostModel.fromMap(map) {
@@ -54,6 +56,8 @@ class PostModel {
       isFinish: map['isFinish'],
       winner: map['winner'],
       winnerID: map['winnerID'],
+      isaccept: map['isaccept'],
+      isWaiting: map['isWaiting'],
     );
   }
 
@@ -74,5 +78,7 @@ class PostModel {
         'winner': winner,
         'winnerID': winnerID,
         'isFinish': isFinish,
+        'isaccept': isaccept,
+        'isWaiting': isWaiting,
       };
 }
