@@ -2,8 +2,8 @@ import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../old/app_bar_screens/shopping_cart_screen.dart';
 import '../../old/app_bar_screens/sort_screen.dart';
+import '../../old/screens/profiles/shopping_cart_screen.dart';
 import 'categories_screen.dart';
 import 'custom_nav_bar.dart';
 import 'notification_screen.dart';
@@ -27,7 +27,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Text(
+        title: const Text(
           'Comments',
           style: TextStyle(
             fontSize: 20,
@@ -40,37 +40,37 @@ class _CommentsScreenState extends State<CommentsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ShoppingCartScreen(),
+                  builder: (context) => const ShoppingCartScreen(),
                 ),
               );
             },
-            icon: Icon(Icons.shopping_cart_rounded),
+            icon: const Icon(Icons.shopping_cart_rounded),
           ),
           IconButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NotificationScreen(),
+                  builder: (context) => const NotificationScreen(),
                 ),
               );
             },
-            icon: (Icon(Icons.notifications)),
+            icon: (const Icon(Icons.notifications)),
           ),
           IconButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CategoriesScreen(),
+                  builder: (context) => const CategoriesScreen(),
                 ),
               );
             },
-            icon: (Icon(Icons.category)),
+            icon: (const Icon(Icons.category)),
           ),
           PopupMenuButton(
               tooltip: 'Menu',
-              child: Icon(
+              child: const Icon(
                 Icons.more_vert,
                 size: 28.0,
                 color: Colors.white,
@@ -82,12 +82,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SearchScreen(),
+                            builder: (context) => const SearchScreen(),
                           ),
                         );
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           (Icon(
                             Icons.search,
                             color: Colors.teal,
@@ -113,12 +113,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SortScreen(),
+                            builder: (context) => const SortScreen(),
                           ),
                         );
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           (Icon(
                             Icons.sort,
                             color: Colors.teal,
@@ -141,9 +141,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   ]),
         ],
       ),
-      bottomNavigationBar: CustomButtom(),
+      bottomNavigationBar: const CustomButtom(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
@@ -152,7 +152,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.only(bottom: 460),
+              margin: const EdgeInsets.only(bottom: 460),
               child: Column(
                 //mainAxisAlignment:MainAxisAlignment.start,
                 //crossAxisAlignment:CrossAxisAlignment.start,
@@ -171,9 +171,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               Row(
                                 children: [
                                   Stack(
-                                    children: [
+                                    children: const [
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: EdgeInsets.all(8.0),
                                         child: CircleAvatar(
                                           radius: 30,
                                           backgroundColor: Colors.teal,
@@ -217,7 +217,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 15,
                               ),
                               Container(
@@ -232,7 +232,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 3,
                               ),
                               Container(
@@ -250,7 +250,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               Row(
                                 children: [
                                   Text('$Likes'),
-                                  Container(
+                                  SizedBox(
                                     height: 30,
                                     width: 40,
                                     child: FloatingActionButton(
@@ -263,31 +263,31 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                       heroTag: 'Likes+',
                                       backgroundColor: Colors.teal,
                                       mini: true,
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.favorite,
                                         color: Colors.black,
                                         size: 18,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Container(
+                                  SizedBox(
                                     height: 30,
                                     width: 40,
                                     child: FloatingActionButton(
                                       onPressed: () {},
                                       backgroundColor: Colors.teal,
                                       mini: true,
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.comment,
                                         color: Colors.black,
                                         size: 18,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   /*Container(
@@ -308,7 +308,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                         )),
                                   ),*/
                                   Text('$Add'),
-                                  Container(
+                                  SizedBox(
                                     height: 30,
                                     width: 40,
                                     child: FloatingActionButton(
@@ -321,7 +321,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                       heroTag: 'Add',
                                       backgroundColor: Colors.teal,
                                       mini: true,
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.plus_one,
                                         color: Colors.black,
                                         size: 18,
@@ -332,7 +332,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 35,
                           ),
                           Expanded(
@@ -342,7 +342,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Container(
-                                      child: Text(
+                                      child: const Text(
                                         'First Price',
                                         style: TextStyle(
                                           fontSize: 20,
@@ -351,7 +351,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 7,
                                     ),
                                     Container(
@@ -360,18 +360,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                       height: 140,
                                       //margin: new EdgeInsets.fromLTRB(200,0,0,0),
                                       // color: Colors.black87,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         image: DecorationImage(
                                           image: NetworkImage(
                                               "https://i.pinimg.com/564x/70/f9/dd/70f9dd78e5d27729b98d74cdd4c78484.jpg"),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 5,
                                     ),
                                     Container(
-                                      child: Text(
+                                      child: const Text(
                                         'Category',
                                         style: TextStyle(
                                           fontSize: 20,
@@ -389,7 +389,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                       ),
                                       child: TextButton(
                                         onPressed: () {},
-                                        child: Text(
+                                        child: const Text(
                                           'Rate',
                                           style: TextStyle(
                                             color: Colors.teal,
@@ -412,7 +412,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.teal,
                           backgroundImage: NetworkImage(
@@ -425,8 +425,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                             borderRadius: BorderRadius.circular(25),
                             color: Colors.teal.withOpacity(0.2),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(3.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(3.0),
                             child: Text(
                               'Comment Comment Comment Comment Comment Comment Comment Comment Comment',
                               style: TextStyle(
@@ -441,7 +441,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.teal,
                           backgroundImage: NetworkImage(
@@ -454,8 +454,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                             borderRadius: BorderRadius.circular(25),
                             color: Colors.teal.withOpacity(0.2),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(3.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(3.0),
                             child: Text(
                               'Comment Comment Comment Comment Comment Comment Comment Comment Comment',
                               style: TextStyle(
@@ -491,7 +491,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                       color: Colors.teal,
                                     ),
                                     borderRadius: BorderRadius.circular(25),
@@ -503,9 +503,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         ),
                         Container(
                           //padding: const EdgeInsets.only(left: 18),
-                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          decoration:
+                              const BoxDecoration(shape: BoxShape.circle),
                           child: InkWell(
-                            child: Icon(
+                            child: const Icon(
                               Icons.send,
                               size: 40,
                               color: Colors.teal,

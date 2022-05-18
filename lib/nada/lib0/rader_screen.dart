@@ -6,7 +6,7 @@ import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../old/app_bar_screens/shopping_cart_screen.dart';
+import '../../old/screens/profiles/shopping_cart_screen.dart';
 import '../../old/app_bar_screens/sort_screen.dart';
 import 'notification_screen.dart';
 
@@ -25,7 +25,7 @@ class _RaderScreenState extends State<RaderScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal,
-          title: Text(
+          title: const Text(
             'My Radar',
             style: TextStyle(
               fontSize: 20,
@@ -48,17 +48,17 @@ class _RaderScreenState extends State<RaderScreen> {
                       border: Border.all(color: Colors.white10, width: 1),
                     )),
                     alignment: Alignment.center,
-                    child: Tab(
+                    child: const Tab(
                       text: ('Bidding'),
                     )),
                 Container(
                     alignment: Alignment.center,
-                    child: Tab(
+                    child: const Tab(
                       text: ('Favorite'),
                     )),
                 Container(
                     alignment: Alignment.center,
-                    child: Tab(
+                    child: const Tab(
                       text: ('Lost'),
                     )),
               ]),
@@ -68,28 +68,28 @@ class _RaderScreenState extends State<RaderScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ShoppingCartScreen(),
+                    builder: (context) => const ShoppingCartScreen(),
                   ),
                 );
               },
-              icon: Icon(Icons.shopping_cart_rounded),
+              icon: const Icon(Icons.shopping_cart_rounded),
             ),
             IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NotificationScreen(),
+                    builder: (context) => const NotificationScreen(),
                   ),
                 );
               },
-              icon: (Icon(
+              icon: (const Icon(
                 Icons.notifications,
               )),
             ),
             IconButton(
               onPressed: () {},
-              icon: (Icon(Icons.category)),
+              icon: (const Icon(Icons.category)),
             ),
             /*IconButton(
               onPressed: () {
@@ -101,7 +101,7 @@ class _RaderScreenState extends State<RaderScreen> {
             ),*/
             PopupMenuButton(
                 tooltip: 'Menu',
-                child: Icon(
+                child: const Icon(
                   Icons.more_vert,
                   size: 28.0,
                   color: Colors.white,
@@ -113,12 +113,12 @@ class _RaderScreenState extends State<RaderScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SearchScreen(),
+                              builder: (context) => const SearchScreen(),
                             ),
                           );
                         },
                         child: Row(
-                          children: [
+                          children: const [
                             (Icon(
                               Icons.search,
                               color: Colors.teal,
@@ -144,12 +144,12 @@ class _RaderScreenState extends State<RaderScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SortScreen(),
+                              builder: (context) => const SortScreen(),
                             ),
                           );
                         },
                         child: Row(
-                          children: [
+                          children: const [
                             (Icon(
                               Icons.sort,
                               color: Colors.teal,
@@ -172,15 +172,15 @@ class _RaderScreenState extends State<RaderScreen> {
                     ]),
           ],
         ),
-        bottomNavigationBar: CustomButtom(),
+        bottomNavigationBar: const CustomButtom(),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(
                 'https://i.pinimg.com/564x/0f/c8/7f/0fc87ffeec70af2e12ed01d22f06c2b1.jpg'),
           )),
-          child: Center(
+          child: const Center(
             child: TabBarView(children: [
               BiddingScreen(),
               FavoriteScreen(),

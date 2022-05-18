@@ -1,12 +1,11 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/old/app_bar_screens/shopping_cart_screen.dart';
+import 'package:auction/old/screens/profiles/shopping_cart_screen.dart';
 import 'package:auction/old/screens/login_screen.dart';
-import 'package:auction/old/screens/online_screens/all_my_auctions.dart';
-import 'package:auction/old/screens/online_screens/my_reports_screen.dart';
-import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
+import 'package:auction/old/screens/profiles/all_my_auctions.dart';
+import 'package:auction/old/screens/profiles/favorite_screen.dart';
+import 'package:auction/old/screens/profiles/my_reports_screen.dart';
 import 'package:auction/old/screens/profiles/settings_screen.dart';
-import 'package:auction/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -137,6 +136,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 15,
                           ),
                           Icon(Icons.edit_sharp),
+                        ],
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const FavoriteScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              'Favorite',
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(Icons.favorite),
                         ],
                       ),
                     ),

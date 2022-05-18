@@ -17,6 +17,7 @@ class PostModel {
   bool? isFinish = false;
   bool? isaccept;
   bool? isWaiting;
+  List? followers = [];
 
   PostModel(
       {this.uid,
@@ -36,6 +37,7 @@ class PostModel {
       this.isFinish,
       this.isaccept,
       this.isWaiting,
+      this.followers,
       this.isStarted});
 
   factory PostModel.fromMap(map) {
@@ -58,6 +60,7 @@ class PostModel {
       winnerID: map['winnerID'],
       isaccept: map['isaccept'],
       isWaiting: map['isWaiting'],
+      followers: map['followers'],
     );
   }
 
@@ -66,6 +69,7 @@ class PostModel {
         'name': name,
         'image': image,
         'postImage': postImage,
+        'followers': followers,
         'postId': postId,
         'price': price,
         'category': category,

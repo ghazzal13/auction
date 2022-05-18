@@ -1,14 +1,9 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/nada/lib0/theme.dart';
-import 'package:auction/old/resources/models/post_model.dart';
-import 'package:auction/old/screens/trade/item_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 class UserOffersScreen extends StatefulWidget {
   const UserOffersScreen({Key? key}) : super(key: key);
@@ -112,6 +107,9 @@ Widget PostCard6({required dynamic snap, context}) {
                               ),
                             ],
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Column(
                             children: [
                               Text(
@@ -122,10 +120,11 @@ Widget PostCard6({required dynamic snap, context}) {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              // Text(
-                              //   DateFormat.yMMMd()
-                              //       .format(snap['datePublished']!.toDate()),
-                              // ),
+                              Text(
+                                DateFormat.yMd()
+                                    .add_jm()
+                                    .format(snap['datePublished']!.toDate()),
+                              ),
                             ],
                           ),
                         ],
@@ -148,7 +147,6 @@ Widget PostCard6({required dynamic snap, context}) {
                         height: 5,
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
                         height: 140,
                         decoration: BoxDecoration(
                           image: DecorationImage(
@@ -162,117 +160,99 @@ Widget PostCard6({required dynamic snap, context}) {
                   ),
                 ),
               ),
-              Center(
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  children: const [
-                    SizedBox(
-                      height: 130,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.teal,
+                              backgroundImage: NetworkImage(
+                                snap['offerUserImage'].toString(),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              snap['offerUsername'].toString(),
+                              style: TextStyle(
+                                color: Colors.teal[600],
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            // Text(
+                            //   DateFormat.yMMMd()
+                            //       .format(snap['datePublished']!.toDate()),
+                            // ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Icon(Icons.repeat_outlined),
-                    SizedBox(
-                      height: 70,
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        snap['offerprice'].toString(),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.teal[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        snap['offerDescription'].toString(),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.teal[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      height: 140,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                              snap['offerImage'].toString(),
+                            ),
+                            fit: BoxFit.cover),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.teal,
-                                backgroundImage: NetworkImage(
-                                  snap['offerUserImage'].toString(),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                snap['offerUsername'].toString(),
-                                style: TextStyle(
-                                  color: Colors.teal[600],
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              // Text(
-                              //   DateFormat.yMMMd()
-                              //       .format(snap['datePublished']!.toDate()),
-                              // ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      // Container(
-                      //   alignment: Alignment.topLeft,
-                      //   child: Text(
-                      //     snap['offertitel'].toString(),
-                      //     style: TextStyle(
-                      //       fontSize: 15,
-                      //       color: Colors.teal[600],
-                      //       fontWeight: FontWeight.w600,
-                      //     ),
-                      //   ),
-                      // ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          snap['offerprice'].toString(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.teal[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          snap['offerDescription'].toString(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.teal[600],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: 140,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                snap['offerImage'].toString(),
-                              ),
-                              fit: BoxFit.cover),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

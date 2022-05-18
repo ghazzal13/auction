@@ -12,6 +12,7 @@ class TicketModel {
   int? price;
   bool? isaccept;
   bool? isWaiting;
+  List? owner = [];
 
   TicketModel({
     this.uid,
@@ -27,6 +28,7 @@ class TicketModel {
     this.price,
     this.isaccept,
     this.isWaiting,
+    this.owner,
   });
 
   factory TicketModel.fromMap(map) {
@@ -44,6 +46,7 @@ class TicketModel {
       description: map['description'],
       isaccept: map['isaccept'],
       isWaiting: map['isWaiting'],
+      owner: map['owner'],
     );
   }
 
@@ -55,6 +58,7 @@ class TicketModel {
         'ticketId': ticketId,
         'address': address,
         'datePublished': datePublished,
+        'owner': owner,
         'dateTime': dateTime,
         'titel': titel,
         'price': price,

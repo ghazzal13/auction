@@ -59,25 +59,6 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                   fontWeight: FontWeight.bold),
             ),
             centerTitle: false,
-            // actions: <Widget>[
-            //   TextButton(
-            //     onPressed: () {
-            //       AuctionCubit.get(context).uploadTradeItemImage(
-            //         category: _catigoryController.text,
-            //         description: _describtionController.text,
-            //         titel: _titleController.text,
-            //         price: _priceController.text,
-            //       );
-            //     },
-            //     child: const Text(
-            //       "Post",
-            //       style: TextStyle(
-            //           color: Colors.white,
-            //           fontWeight: FontWeight.bold,
-            //           fontSize: 16.0),
-            //     ),
-            //   )
-            // ],
           ),
           body: Container(
             decoration: const BoxDecoration(
@@ -165,96 +146,6 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.45,
-                            child: TextFormField(
-                              controller: _priceController,
-                              validator: ValidationBuilder(
-                                      requiredMessage:
-                                          'price must not be empty')
-                                  .maxLength(10)
-                                  .build(),
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.paid),
-                                hintText: ' price ',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                contentPadding: const EdgeInsets.all(8),
-                              ),
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          DropdownButton<String>(
-                            value: dropdownValue,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 9, 87, 65)),
-                            underline: Container(
-                              height: 2,
-                              color: const Color.fromARGB(255, 10, 137, 97),
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                var dropdownValue = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              'Cars',
-                              'Mobiles',
-                              'Antiques',
-                              'Paintings',
-                              'Furniture',
-                              'Electrical Devices',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      // TextFieldInput(
-                      //     textEditingController: _titleController,
-                      //     hintText: 'Enter Title',
-                      //     textInputType: TextInputType.text),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
-                      // TextFieldInput(
-                      //     textEditingController: _priceController,
-                      //     hintText: 'Enter price',
-                      //     textInputType: TextInputType.number),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
-                      // TextFieldInput(
-                      //     textEditingController: _describtionController,
-                      //     hintText: 'Enter description',
-                      //     textInputType: TextInputType.text),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
-                      // TextFieldInput(
-                      //     textEditingController: _catigoryController,
-                      //     hintText: 'Enter catigory',
-                      //     textInputType: TextInputType.text),
-                      // const SizedBox(
-                      //   height: 20,
-                      // ),
                       TradeItemImage != null
                           ? Stack(
                               children: [
@@ -302,27 +193,6 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      // TextButton(
-                      //     onPressed: () {
-                      //       DatePicker.showDateTimePicker(context,
-                      //           showTitleActions: true, onChanged: (date) {
-                      //         TradeItemdate = date;
-                      //         print('change $date in time zone ' +
-                      //             date.timeZoneOffset.inHours.toString());
-                      //       }, onConfirm: (date) {
-                      //         print('confirm $date');
-                      //         setState(() {
-                      //           TradeItemdate = date;
-                      //         });
-                      //       },
-                      //           currentTime: TradeItemdate ??
-                      //               DateTime(2022, 04, 10, 23, 12, 34));
-                      //     },
-                      //     child: TradeItemdate != null
-                      //         ? Text('${TradeItemdate}',
-                      //             style: TextStyle(color: Colors.blue))
-                      //         : const Text('select date',
-                      //             style: TextStyle(color: Colors.blue))),
                       FloatingActionButton.extended(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
@@ -331,10 +201,11 @@ class _AddItemTradeScreenState extends State<AddItemTradeScreen> {
                               category: _catigoryController.text,
                               description: _describtionController.text,
                               titel: _titleController.text,
-                              price: _priceController.text,
                             )
                                 .then((value) {
-                              AuctionCubit.get(context).removeTicketImage();
+                              AuctionCubit.get(context).removeTradeItemImage();
+                              _describtionController.clear();
+                              _titleController.clear();
                             });
                           }
                         },

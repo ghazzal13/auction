@@ -8,6 +8,8 @@ import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
+import '../../resources/reuse_component.dart';
+
 class TicketDetailsScreen extends StatefulWidget {
   final String ticketId;
   final int duration;
@@ -46,7 +48,14 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
-    AuctionCubit.get(context).comments1.length > 0;
+    AuctionCubit.get(context).comments1.isNotEmpty;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AuctionCubit.get(context).getTicketById(id: ticketId);
   }
 
   @override
@@ -206,7 +215,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                      interval: Duration(seconds: 1),
+                      interval: const Duration(seconds: 1),
                       onFinished: () {
                         print('Timer is done!');
                         // AuctionCubit.get(context)
@@ -221,7 +230,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                         // );
                       },
                     ),
-                    Container(
+                    SizedBox(
                       height: 180,
                       child: ListView.builder(
                         padding: const EdgeInsets.all(15.0),
@@ -290,18 +299,26 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                     const SizedBox(
                       height: 5,
                     ),
-                    FloatingActionButton.extended(
-                      onPressed: () {},
-                      backgroundColor: Colors.teal,
-                      icon: const Icon(Icons.add),
-                      label: const Text(
-                        'Buy Ticket',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0),
-                      ),
-                    ),
+                    ticket1['uid'] != userModel.uid
+                        ? FloatingActionButton.extended(
+                            onPressed: () {
+                              AuctionCubit.get(context)
+                                  .buyTicket(ticketId, userModel.uid.toString())
+                                  .then((value) => showToast(
+                                      text: 'Buy Ticket Successfully',
+                                      state: ToastStates.SUCCESS));
+                            },
+                            backgroundColor: Colors.teal,
+                            icon: const Icon(Icons.add),
+                            label: const Text(
+                              'Buy Ticket',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0),
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ),
@@ -324,7 +341,7 @@ Widget buildCommentItem(CommentModel commentModel, index) => Padding(
         child: Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.teal,

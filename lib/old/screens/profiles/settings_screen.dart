@@ -1,4 +1,5 @@
 import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
+import 'package:auction/old/screens/profiles/change_password_screen.dart';
 import 'package:auction/old/screens/profiles/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   void _onItemTapped(int index) {
     if (index == 0) {
       Navigator.pop(context);
@@ -92,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const EditProfileScreen(),
+                        builder: (context) => const ChangePasswordScreen(),
                       ),
                     );
                   },

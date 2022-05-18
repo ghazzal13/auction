@@ -230,6 +230,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
         isFinish: false,
         winner: null,
         isWaiting: true,
+        followers: [],
         isaccept: false);
     FirebaseFirestore.instance
         .collection('posts')
@@ -254,11 +255,9 @@ class AuctionCubit extends Cubit<AuctionStates> {
         .doc(id)
         .get()
         .then((value) {
-      // print(value.data()!['postImage']);
-      // print(value.data()!['image']);
       print(value.data()!['uid']);
       postByID = PostModel.fromMap(value.data());
-      // return postByID;
+
       emit(AuctionGetPostSuccessState());
     }).catchError((error) {
       emit(AuctionGetPostErrorState(error.toString()));
@@ -359,7 +358,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
     DateTime? dateTime,
     String? address,
     String? description,
-    String? price,
+    int? price,
   }) async {
     emit(AuctionCreateTicketLoadingState());
 
@@ -395,7 +394,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
     DateTime? dateTime,
     String? address,
     String? description,
-    String? price,
+    int? price,
   }) {
     emit(AuctionCreateTicketLoadingState());
     String ticketId = const Uuid().v1();
@@ -412,6 +411,8 @@ class AuctionCubit extends Cubit<AuctionStates> {
       titel: titel,
       isaccept: false,
       isWaiting: true,
+      owner: [],
+      price: price,
     );
 
     FirebaseFirestore.instance
@@ -451,7 +452,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? tradeItemImage,
     String? titel,
     String? description,
-    String? price,
   }) {
     emit(AuctionCreateTradeItemLoadingState());
     String tradeItemId = const Uuid().v1();
@@ -483,7 +483,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
     String? titel,
     String? category,
     String? description,
-    String? price,
   }) async {
     emit(AuctionCreateTradeItemLoadingState());
     firebase_storage.FirebaseStorage.instance
@@ -498,7 +497,6 @@ class AuctionCubit extends Cubit<AuctionStates> {
           description: description,
           tradeItemImage: value,
           titel: titel,
-          price: price,
         );
       }).catchError((error) {
         emit(AuctionCreateTradeItemErrorState());
@@ -955,6 +953,33 @@ class AuctionCubit extends Cubit<AuctionStates> {
     });
   }
 
+  TicketModel ticketByID = TicketModel();
+  Future<dynamic> getTicketById({required String id}) async {
+    await FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(id)
+        .get()
+        .then((value) {
+      ticketByID = TicketModel.fromMap(value.data());
+    }).catchError((error) {});
+    return ticketByID;
+  }
+
+  Future followPost(String postId, String uid) async {
+    getPostById(id: postId);
+    if (postByID.followers!.contains(uid)) {
+    } else {
+      FirebaseFirestore.instance.collection('posts').doc(postId).update({
+        'followers': FieldValue.arrayUnion([uid])
+      });
+    }
+  }
+
+  Future buyTicket(String postId, String uid) async {
+    FirebaseFirestore.instance.collection('tickets').doc(postId).update({
+      'owner': FieldValue.arrayUnion([uid])
+    });
+  }
   //
 }
 

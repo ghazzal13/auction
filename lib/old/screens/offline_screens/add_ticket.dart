@@ -1,15 +1,11 @@
-import 'dart:typed_data';
-
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/reuse_component.dart';
-import 'package:auction/old/resources/text_field_input.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddTicketScreen extends StatefulWidget {
@@ -263,7 +259,7 @@ class _AddTicketScreenState extends State<AddTicketScreen> {
                                   dateTime: ticketdate,
                                   description: _describtionController.text,
                                   titel: _titleController.text,
-                                  price: _priceController.text,
+                                  price: int.parse(_priceController.text),
                                 )
                                     .then((value) {
                                   AuctionCubit.get(context).removeTicketImage();

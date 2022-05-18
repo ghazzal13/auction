@@ -4,12 +4,12 @@ import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
+import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
+import 'package:auction/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 class AllMyAuctionsScreen extends StatefulWidget {
   const AllMyAuctionsScreen({Key? key}) : super(key: key);
@@ -21,6 +21,22 @@ class AllMyAuctionsScreen extends StatefulWidget {
 class _AuctionScreenState extends State<AllMyAuctionsScreen> {
   CollectionReference db = FirebaseFirestore.instance.collection('posts');
   final TextEditingController _reportController = TextEditingController();
+
+  final int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    if (index == 3) {
+      Navigator.pop(context);
+    } else {
+      setState(() {
+        AuctionCubit.get(context).onItemTapped(index);
+
+        print(index);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const OnlineMangScreen()),
+            (route) => false);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +101,36 @@ class _AuctionScreenState extends State<AllMyAuctionsScreen> {
                   );
                 },
               ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.hail_outlined),
+                  label: 'My Auctions',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.add),
+                  label: 'AddPost',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.account_circle),
+                  label: 'profile',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.white,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: primaryColor,
+              unselectedItemColor: Colors.white,
             ),
           );
         });
@@ -331,59 +377,6 @@ class _AuctionScreenState extends State<AllMyAuctionsScreen> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                // DateTime.now()
-                                //         .isAfter(snap['startAuction'].toDate())
-                                //     ? Container(
-                                //         alignment: Alignment.topLeft,
-                                //         child: Countdown(
-                                //           seconds:
-                                //               (snap['endAuction'].toDate())!
-                                //                   .difference(DateTime.now())
-                                //                   .inSeconds,
-                                //           build: (BuildContext context,
-                                //                   double time) =>
-                                //               Text(
-                                //             '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                                //             style: const TextStyle(
-                                //               fontSize: 30,
-                                //               color: Colors.red,
-                                //             ),
-                                //           ),
-                                //           interval: Duration(seconds: 1),
-                                //           onFinished: () {
-                                //             print('Timer is done!');
-                                //             AuctionCubit.get(context)
-                                //                 .updatePostState(
-                                //                     isFinish: true);
-                                //           },
-                                //         ),
-                                //       )
-                                //     : Container(
-                                //         alignment: Alignment.topLeft,
-                                //         child: Countdown(
-                                //           seconds:
-                                //               (snap['endAuction'].toDate())!
-                                //                   .difference(DateTime.now())
-                                //                   .inSeconds,
-                                //           build: (BuildContext context,
-                                //                   double time) =>
-                                //               Text(
-                                //             '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                                //             style: TextStyle(
-                                //               fontSize: 25,
-                                //               color: Theme.of(context)
-                                //                   .primaryColor,
-                                //             ),
-                                //           ),
-                                //           interval: Duration(seconds: 1),
-                                //           onFinished: () {
-                                //             print('Timer is done!');
-                                //             AuctionCubit.get(context)
-                                //                 .updatePostState(
-                                //                     isStarted: true);
-                                //           },
-                                //         ),
-                                //       ),
                                 Text(
                                   snap['category'].toString(),
                                   style: const TextStyle(

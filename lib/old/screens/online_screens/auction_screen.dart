@@ -6,13 +6,10 @@ import 'package:auction/old/screens/online_screens/online_auction_event_screen.d
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../nada/lib0/search_screen.dart';
-import '../../app_bar_screens/shopping_cart_screen.dart';
-import '../../app_bar_screens/sort_screen.dart';
 
 class AuctionScreen extends StatefulWidget {
   const AuctionScreen({Key? key}) : super(key: key);

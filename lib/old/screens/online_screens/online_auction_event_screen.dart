@@ -97,7 +97,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
               'status': 'done',
               'message': title,
             },
-            'to': '$token'
+            'to': token
           },
         ),
       );
@@ -117,7 +117,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
     AuctionCubit.get(context).getprice(postId, 'posts');
   }
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   void _onItemTapped(int index) {
     if (index == 0) {
       Navigator.pop(context);
@@ -325,7 +325,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                         color: Colors.red,
                                       ),
                                     ),
-                                    interval: Duration(seconds: 1),
+                                    interval: const Duration(seconds: 1),
                                     onFinished: () {
                                       print('Timer is done!');
 
@@ -535,6 +535,11 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                                         }
                                                       }
                                                     });
+                                                    AuctionCubit.get(context)
+                                                        .followPost(
+                                                            postId,
+                                                            userModel.uid
+                                                                .toString());
                                                   },
                                                   icon: const Icon(Icons.send),
                                                 ),
@@ -586,6 +591,9 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                                         winner: userModel.name);
                                               }
                                             });
+                                            AuctionCubit.get(context)
+                                                .followPost(postId,
+                                                    userModel.uid.toString());
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
@@ -783,7 +791,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                         color: Theme.of(context).primaryColor,
                                       ),
                                     ),
-                                    interval: Duration(seconds: 1),
+                                    interval: const Duration(seconds: 1),
                                     onFinished: () {
                                       print('Timer is done!');
                                       AuctionCubit.get(context)
@@ -880,6 +888,11 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                                 .then((value) {
                                               _cccController.clear();
                                             });
+                                            if (post1['uid'] != userModel.uid) {
+                                              AuctionCubit.get(context)
+                                                  .followPost(postId,
+                                                      userModel.uid.toString());
+                                            }
                                           }
                                         },
                                         icon: const Icon(Icons.send),
@@ -952,7 +965,7 @@ Widget buildCommentItem(CommentModel commentModel, index) => Padding(
         child: Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.teal,
@@ -992,7 +1005,7 @@ Widget buildPricesItem(EventModel eventModel) => Padding(
         child: Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.teal,

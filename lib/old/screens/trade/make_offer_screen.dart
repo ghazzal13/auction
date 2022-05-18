@@ -1,7 +1,6 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/nada/lib0/theme.dart';
-import 'package:auction/old/resources/reuse_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
@@ -105,7 +104,6 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                           const SizedBox(
                             height: 20,
                           ),
-
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.45,
                             child: TextFormField(
@@ -129,50 +127,6 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                           const SizedBox(
                             width: 15,
                           ),
-                          // defaultFormField(
-                          //   controller: titleController,
-                          //   type: TextInputType.text,
-                          //   validate: (String value) {
-                          //     if (value.isEmpty) {
-                          //       return 'title must not be empty';
-                          //     }
-                          //     return null;
-                          //   },
-                          //   label: 'Title',
-                          //   prefix: Icons.title,
-                          // ),
-                          // const SizedBox(
-                          //   height: 15.0,
-                          // ),
-                          // defaultFormField(
-                          //   controller: descriptionController,
-                          //   type: TextInputType.text,
-                          //   validate: (String value) {
-                          //     if (value.isEmpty) {
-                          //       return 'title must not be empty';
-                          //     }
-                          //     return null;
-                          //   },
-                          //   label: 'description',
-                          //   prefix: Icons.description,
-                          // ),
-                          // const SizedBox(
-                          //   height: 15.0,
-                          // ),
-                          // defaultFormField(
-                          //     controller: priceController,
-                          //     type: TextInputType.number,
-                          //     validate: (String value) {
-                          //       if (value.isEmpty) {
-                          //         return 'title must not be empty';
-                          //       }
-                          //       return null;
-                          //     },
-                          //     label: 'price',
-                          //     prefix: Icons.money),
-                          // const SizedBox(
-                          //   height: 15.0,
-                          // ),
                           OfferImage != null
                               ? Stack(
                                   children: [
@@ -217,6 +171,9 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                                     ],
                                   ),
                                 ),
+                          const SizedBox(
+                            width: 15,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

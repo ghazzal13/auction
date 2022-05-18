@@ -23,7 +23,6 @@ class OnlineHome extends StatefulWidget {
 enum SingingCharacter { lafayette, jefferson }
 
 class _OnlineHomeState extends State<OnlineHome> {
-  CollectionReference db = FirebaseFirestore.instance.collection('posts');
   final SingingCharacter? _character = SingingCharacter.lafayette;
   bool sort = false;
   final TextEditingController _reportController = TextEditingController();
@@ -82,7 +81,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                       setState(() {
                         sort = true;
                       });
-                    } else if (value.toString() == '/low To Low') {
+                    } else if (value.toString() == '/high To Low') {
                       setState(() {
                         sort = false;
                       });
@@ -99,7 +98,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                         value: '/low To High',
                       ),
                       PopupMenuItem(
-                        child: Text("low To High"),
+                        child: Text("high To Low"),
                         value: '/high To Low',
                       ),
                     ];

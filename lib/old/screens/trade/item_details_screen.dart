@@ -108,7 +108,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: 280,
                     child: ListView.builder(
                       padding: const EdgeInsets.all(15.0),
@@ -148,29 +148,34 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       ),
                     ),
                   ),
-                  FloatingActionButton.extended(
-                    onPressed: () {
-                      // when clicked on floating action button prompt to create user
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                MakeOfferScreem(tradeitem1: {
-                                  'name': tradeitem1['name'],
-                                  'uid': tradeitem1['uid'],
-                                  'titel': tradeitem1['titel'],
-                                  'image': tradeitem1['image'],
-                                  'tradeItemImage':
-                                      tradeitem1['tradeItemImage'],
-                                  'description': tradeitem1['description'],
-                                  'tradeItemId': tradeitem1['tradeItemId'],
-                                  'datePublished': tradeitem1['datePublished'],
-                                })),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Make An Offer'),
-                  ),
+                  tradeitem1['uid'] != userModel.uid
+                      ? FloatingActionButton.extended(
+                          onPressed: () {
+                            // when clicked on floating action button prompt to create user
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      MakeOfferScreem(tradeitem1: {
+                                        'name': tradeitem1['name'],
+                                        'uid': tradeitem1['uid'],
+                                        'titel': tradeitem1['titel'],
+                                        'image': tradeitem1['image'],
+                                        'tradeItemImage':
+                                            tradeitem1['tradeItemImage'],
+                                        'description':
+                                            tradeitem1['description'],
+                                        'tradeItemId':
+                                            tradeitem1['tradeItemId'],
+                                        'datePublished':
+                                            tradeitem1['datePublished'],
+                                      })),
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                          label: const Text('Make An Offer'),
+                        )
+                      : Container()
                 ],
               ),
             ),
@@ -192,7 +197,7 @@ Widget buildCommentItem(CommentModel commentModel, index) => Padding(
         child: Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.teal,

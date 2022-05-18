@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/screens/online_screens/online_manage_screen.dart';
@@ -8,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../resources/reuse_component.dart';
 
@@ -33,9 +30,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (index == 0) {
+    if (index == 3) {
       Navigator.pop(context);
     } else {
       setState(() {
@@ -112,7 +109,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 },
                                 icon: const Icon(
                                   Icons.add_a_photo_outlined,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   size: 30,
                                 ),
                               ),
