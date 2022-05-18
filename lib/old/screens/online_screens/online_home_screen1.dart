@@ -116,8 +116,8 @@ class _OnlineHomeState extends State<OnlineHome> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('posts')
-                    .where('endAuction', isGreaterThan: DateTime.now())
                     .where('isaccept', isEqualTo: true)
+                    .where('endAuction', isGreaterThan: DateTime.now())
                     .orderBy('endAuction', descending: sort)
                     .snapshots(),
                 builder: (context,
@@ -499,19 +499,14 @@ class _OnlineHomeState extends State<OnlineHome> {
                                             ),
                                           ),
                                           interval: const Duration(seconds: 1),
-                                          onFinished: () {
-                                            print('Timer is done!');
-                                            AuctionCubit.get(context)
-                                                .updatePostState(
-                                                    isFinish: true);
-                                          },
+                                          onFinished: () {},
                                         ),
                                       )
                                     : Container(
                                         alignment: Alignment.topLeft,
                                         child: Countdown(
                                           seconds:
-                                              (snap['endAuction'].toDate())!
+                                              (snap['startAuction'].toDate())!
                                                   .difference(DateTime.now())
                                                   .inSeconds,
                                           build: (BuildContext context,
@@ -525,12 +520,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                                             ),
                                           ),
                                           interval: const Duration(seconds: 1),
-                                          onFinished: () {
-                                            print('Timer is done!');
-                                            AuctionCubit.get(context)
-                                                .updatePostState(
-                                                    isStarted: true);
-                                          },
+                                          onFinished: () {},
                                         ),
                                       ),
                                 Text(
