@@ -165,6 +165,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     'image': snap['image'].toString(),
                     'postImage': snap['image'].toString(),
                     'startAuction': snap['startAuction'].toDate(),
+                    'endAuction': snap['endAuction'].toDate(),
                     'price': snap['price'].toString(),
                     'description': snap['description'].toString(),
                     'category': snap['category'].toString(),

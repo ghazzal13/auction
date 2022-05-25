@@ -85,6 +85,28 @@ class AuctionCubit extends Cubit<AuctionStates> {
     return model;
   }
 
+  model2.UserModel usermodel = model2.UserModel();
+  Future<model2.UserModel> getUserProfile(id) async {
+    emit(AuctionGetUserLoadingState());
+    String? uid;
+    User? user = FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .get()
+        .then((value) {
+      print(value.data());
+
+      usermodel = model2.UserModel.fromMap(value.data());
+
+      emit(AuctionGetUserSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(AuctionGetUserErrorState(error.toString()));
+    });
+    return usermodel;
+  }
+
   String? profileImageUrl;
   void upLoadProfileImage() {
     emit(AuctionUserUpdateLoadingState());

@@ -1,13 +1,14 @@
 import 'package:auction/old/screens/online_screens/add_post_screeen.dart';
 import 'package:auction/old/screens/online_screens/auction_screen.dart';
 import 'package:auction/old/screens/online_screens/online_home_screen1.dart';
-import 'package:auction/old/screens/profiles/user_profile_screen.dart';
+import 'package:auction/old/screens/profiles/my_profile_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubit/cubit.dart';
 import '../../../cubit/states.dart';
+import '../home_screen.dart';
 
 class OnlineMangScreen extends StatefulWidget {
   const OnlineMangScreen({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class OnlineMangScreen extends StatefulWidget {
 
 class _OnlineMangScreenState extends State<OnlineMangScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
+    // GoBackToMenu(context),
     OnlineHome(),
     AuctionScreen(),
     AddPostScreeen(),
@@ -77,4 +79,11 @@ class _OnlineMangScreenState extends State<OnlineMangScreen> {
       },
     );
   }
+}
+
+Widget GoBackToMenu(context) {
+  Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const HomeScreeen()),
+      (route) => false);
+  return Container();
 }

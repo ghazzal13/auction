@@ -174,6 +174,7 @@ class _AuctionScreenState extends State<AllMyAuctionsScreen> {
                   'image': snap['image'].toString(),
                   'postImage': snap['image'].toString(),
                   'startAuction': snap['startAuction'].toDate(),
+                  'endAuction': snap['endAuction'].toDate(),
                   'price': snap['price'].toString(),
                   'description': snap['description'].toString(),
                   'category': snap['category'].toString(),

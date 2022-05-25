@@ -3,6 +3,7 @@ import 'package:auction/old/app_bar_screens/search_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
+import 'package:auction/old/screens/profiles/user_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -182,6 +183,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                   'image': snap['image'].toString(),
                   'postImage': snap['image'].toString(),
                   'startAuction': snap['startAuction'].toDate(),
+                  'endAuction': snap['endAuction'].toDate(),
                   'price': snap['price'].toString(),
                   'description': snap['description'].toString(),
                   'category': snap['category'].toString(),
@@ -211,34 +213,51 @@ class _OnlineHomeState extends State<OnlineHome> {
                     children: [
                       Row(
                         children: [
-                          Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.teal,
-                                backgroundImage: NetworkImage(
-                                  snap['image'].toString(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserProfileScreen(
+                                    name: snap['name'].toString(),
+                                    id: snap['uid'].toString(),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                snap['name'].toString(),
-                                style: TextStyle(
-                                  color: Colors.teal[600],
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.teal,
+                                      backgroundImage: NetworkImage(
+                                        snap['image'].toString(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              Text(
-                                  '${DateFormat.yMd().add_jm().format(snap['postTime'].toDate())} '),
-                            ],
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snap['name'].toString(),
+                                      style: TextStyle(
+                                        color: Colors.teal[600],
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                        '${DateFormat.yMd().add_jm().format(snap['postTime'].toDate())} '),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.32,

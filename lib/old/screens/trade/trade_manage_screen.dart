@@ -1,6 +1,4 @@
-import 'package:auction/old/screens/offline_screens/add_ticket.dart';
-import 'package:auction/old/screens/offline_screens/offline_home_screen.dart';
-import 'package:auction/old/screens/profiles/user_profile_screen.dart';
+import 'package:auction/old/screens/profiles/my_profile_screen.dart';
 import 'package:auction/old/screens/trade/add_item_trade_screen.dart';
 import 'package:auction/old/screens/trade/trade_home_screen.dart';
 import 'package:auction/old/screens/trade/user_offers_screen.dart';

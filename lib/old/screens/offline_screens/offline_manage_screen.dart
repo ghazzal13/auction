@@ -1,6 +1,6 @@
 import 'package:auction/old/screens/offline_screens/add_ticket.dart';
 import 'package:auction/old/screens/offline_screens/offline_home_screen.dart';
-import 'package:auction/old/screens/profiles/user_profile_screen.dart';
+import 'package:auction/old/screens/profiles/my_profile_screen.dart';
 import 'package:auction/theme.dart';
 import 'package:flutter/material.dart';
 

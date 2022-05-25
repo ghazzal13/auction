@@ -221,6 +221,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 'postImage': snap['image'].toString(),
                 'startAuction': snap['startAuction'].toDate(),
                 'price': snap['price'].toString(),
+                'endAuction': snap['endAuction'].toDate(),
                 'description': snap['description'].toString(),
                 'category': snap['category'].toString(),
               },
