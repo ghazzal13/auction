@@ -1,3 +1,4 @@
+import 'package:auction/old/screens/home_menu_bottombar.dart';
 import 'package:auction/old/screens/online_screens/add_post_screeen.dart';
 import 'package:auction/old/screens/online_screens/auction_screen.dart';
 import 'package:auction/old/screens/online_screens/online_home_screen1.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubit/cubit.dart';
 import '../../../cubit/states.dart';
-import '../home_screen.dart';
 
 class OnlineMangScreen extends StatefulWidget {
   const OnlineMangScreen({Key? key}) : super(key: key);
@@ -19,12 +19,13 @@ class OnlineMangScreen extends StatefulWidget {
 
 class _OnlineMangScreenState extends State<OnlineMangScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
-    // GoBackToMenu(context),
+    MenuHomeBottomBar(),
     OnlineHome(),
     AuctionScreen(),
     AddPostScreeen(),
     ProfileScreen()
   ];
+
   void onselect(int x) {
     setState(() {
       AuctionCubit.get(context).onItemTapped(x);
@@ -45,8 +46,14 @@ class _OnlineMangScreenState extends State<OnlineMangScreen> {
         return Scaffold(
           body:
               _widgetOptions.elementAt(AuctionCubit.get(context).selectedIndex),
+          // _widgetOptions.elementAt(cc),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: primaryColor,
+                icon: Icon(Icons.menu),
+                label: 'Menu',
+              ),
               BottomNavigationBarItem(
                 backgroundColor: primaryColor,
                 icon: Icon(Icons.home),
@@ -79,11 +86,4 @@ class _OnlineMangScreenState extends State<OnlineMangScreen> {
       },
     );
   }
-}
-
-Widget GoBackToMenu(context) {
-  Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const HomeScreeen()),
-      (route) => false);
-  return Container();
 }

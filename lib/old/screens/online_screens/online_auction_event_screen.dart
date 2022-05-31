@@ -5,6 +5,7 @@ import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
 import 'package:auction/old/resources/models/comment_model.dart';
 import 'package:auction/old/resources/models/event_model.dart';
+import 'package:auction/old/screens/home_menu_bottombar.dart';
 import 'package:auction/old/screens/online_screens/add_post_screeen.dart';
 import 'package:auction/old/screens/online_screens/auction_screen.dart';
 import 'package:auction/old/screens/online_screens/online_home_screen1.dart';
@@ -119,7 +120,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
 
   final int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (index == 0) {
+    if (index == 1) {
       Navigator.pop(context);
     } else {
       setState(() {
@@ -133,6 +134,7 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
+    MenuHomeBottomBar(),
     OnlineHome(),
     AuctionScreen(),
     AddPostScreeen(),
@@ -1437,6 +1439,11 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                 )),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
+                  icon: Icon(Icons.menu),
+                  label: 'Menu',
+                ),
                 BottomNavigationBarItem(
                   backgroundColor: primaryColor,
                   icon: Icon(Icons.home),

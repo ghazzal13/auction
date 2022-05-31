@@ -31,7 +31,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   final int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (index == 0) {
+    if (index == 1) {
       Navigator.pop(context);
     } else {
       setState(() {
@@ -317,6 +317,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: primaryColor,
+                icon: Icon(Icons.menu),
+                label: 'Menu',
+              ),
               BottomNavigationBarItem(
                 backgroundColor: primaryColor,
                 icon: Icon(Icons.home),

@@ -18,7 +18,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (index == 0) {
+    if (index == 1) {
       Navigator.pop(context);
     } else {
       setState(() {
@@ -125,6 +125,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: primaryColor,
+                icon: Icon(Icons.menu),
+                label: 'Menu',
+              ),
               BottomNavigationBarItem(
                 backgroundColor: primaryColor,
                 icon: Icon(Icons.home),

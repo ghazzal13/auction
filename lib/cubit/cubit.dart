@@ -21,7 +21,7 @@ class AuctionCubit extends Cubit<AuctionStates> {
 
   static AuctionCubit get(context) => BlocProvider.of(context);
 
-  int selectedIndex = 0;
+  int selectedIndex = 1;
   void onItemTapped(int index) {
     selectedIndex = index;
   }

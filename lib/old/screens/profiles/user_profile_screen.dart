@@ -172,6 +172,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   backgroundColor: primaryColor,
+                  icon: Icon(Icons.menu),
+                  label: 'Menu',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: primaryColor,
                   icon: Icon(Icons.home),
                   label: 'Home',
                 ),

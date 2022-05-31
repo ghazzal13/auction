@@ -32,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (index == 3) {
+    if (index == 4) {
       Navigator.pop(context);
     } else {
       setState(() {
@@ -198,6 +198,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: primaryColor,
+                icon: Icon(Icons.menu),
+                label: 'Menu',
+              ),
               BottomNavigationBarItem(
                 backgroundColor: primaryColor,
                 icon: Icon(Icons.home),

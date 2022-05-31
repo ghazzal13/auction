@@ -1,3 +1,4 @@
+import 'package:auction/old/screens/home_menu_bottombar.dart';
 import 'package:auction/old/screens/offline_screens/add_ticket.dart';
 import 'package:auction/old/screens/offline_screens/offline_home_screen.dart';
 import 'package:auction/old/screens/profiles/my_profile_screen.dart';
@@ -12,7 +13,7 @@ class OfflineMangScreen extends StatefulWidget {
 }
 
 class _OfflineMangScreenState extends State<OfflineMangScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -20,6 +21,7 @@ class _OfflineMangScreenState extends State<OfflineMangScreen> {
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
+    MenuHomeBottomBar(),
     OfflineHomeScreen(),
     AddTicketScreen(),
     ProfileScreen()
@@ -31,6 +33,11 @@ class _OfflineMangScreenState extends State<OfflineMangScreen> {
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            backgroundColor: primaryColor,
+            icon: Icon(Icons.menu),
+            label: 'Menu',
+          ),
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
             icon: Icon(Icons.home),

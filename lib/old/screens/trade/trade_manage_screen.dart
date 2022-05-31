@@ -1,3 +1,4 @@
+import 'package:auction/old/screens/home_menu_bottombar.dart';
 import 'package:auction/old/screens/profiles/my_profile_screen.dart';
 import 'package:auction/old/screens/trade/add_item_trade_screen.dart';
 import 'package:auction/old/screens/trade/trade_home_screen.dart';
@@ -13,7 +14,7 @@ class TradeMangScreen extends StatefulWidget {
 }
 
 class _TradeMangScreenState extends State<TradeMangScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -21,6 +22,7 @@ class _TradeMangScreenState extends State<TradeMangScreen> {
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
+    MenuHomeBottomBar(),
     TradeHomeScreen(),
     AddItemTradeScreen(),
     UserOffersScreen(),
@@ -33,6 +35,11 @@ class _TradeMangScreenState extends State<TradeMangScreen> {
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            backgroundColor: primaryColor,
+            icon: Icon(Icons.menu),
+            label: 'Menu',
+          ),
           BottomNavigationBarItem(
             backgroundColor: primaryColor,
             icon: Icon(Icons.home),
