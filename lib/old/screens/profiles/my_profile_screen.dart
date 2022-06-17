@@ -6,6 +6,7 @@ import 'package:auction/old/screens/profiles/all_my_auctions.dart';
 import 'package:auction/old/screens/profiles/favorite_screen.dart';
 import 'package:auction/old/screens/profiles/my_reports_screen.dart';
 import 'package:auction/old/screens/profiles/settings_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -239,6 +240,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .set({'token': '/00'}, SetOptions(merge: true));
+
                       FirebaseAuth.instance.signOut().then((value) =>
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(

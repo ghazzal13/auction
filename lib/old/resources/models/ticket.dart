@@ -12,6 +12,7 @@ class TicketModel {
   int? price;
   bool? isaccept;
   bool? isWaiting;
+  bool? isFinish;
   List? owner = [];
 
   TicketModel({
@@ -28,6 +29,7 @@ class TicketModel {
     this.price,
     this.isaccept,
     this.isWaiting,
+    this.isFinish,
     this.owner,
   });
 
@@ -46,6 +48,7 @@ class TicketModel {
       description: map['description'],
       isaccept: map['isaccept'],
       isWaiting: map['isWaiting'],
+      isFinish: map['isFinish'],
       owner: map['owner'],
     );
   }
@@ -64,6 +67,7 @@ class TicketModel {
         'price': price,
         'description': description,
         'isaccept': isaccept,
+        'isFinish': isFinish,
         'isWaiting': isWaiting,
       };
 }

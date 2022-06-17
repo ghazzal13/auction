@@ -13,6 +13,8 @@ import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 
 import '../../../theme.dart';
+import '../trade/item_details_screen.dart';
+import 'charge_taxes_screen.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({Key? key}) : super(key: key);
@@ -42,7 +44,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   }
 
   bool online = true;
-
+  int feed = 0;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuctionCubit, AuctionStates>(
@@ -66,11 +68,15 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   onSelected: (value) {
                     if (value.toString() == '/Online Auction') {
                       setState(() {
-                        online = true;
+                        feed = 0;
                       });
                     } else if (value.toString() == '/Offline Auction') {
                       setState(() {
-                        online = false;
+                        feed = 1;
+                      });
+                    } else if (value.toString() == '/Trade Items') {
+                      setState(() {
+                        feed = 2;
                       });
                     }
                   },
@@ -84,70 +90,101 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                         child: Text("Offline Auction"),
                         value: '/Offline Auction',
                       ),
+                      PopupMenuItem(
+                        child: Text("Trade Items"),
+                        value: '/Trade Items',
+                      ),
                     ];
                   },
                 ),
               ],
             ),
             body: Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/222.jpg"),
-                    fit: BoxFit.cover,
-                  ),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/222.jpg"),
+                  fit: BoxFit.cover,
                 ),
-                child: online == true
-                    ? StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('posts')
-                            .where('endAuction', isGreaterThan: DateTime.now())
-                            .where('winnerID', isEqualTo: userModel.uid)
-                            .snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return ListView.builder(
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (ctx, index) => Container(
-                              child: PostCard3(
-                                  context: context,
-                                  snap: snapshot.data!.docs[index].data(),
-                                  userid: userModel.uid.toString()),
-                            ),
+              ),
+              child: feed == 0
+                  ? StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('posts')
+                          .where('endAuction', isGreaterThan: DateTime.now())
+                          .where('winnerID', isEqualTo: userModel.uid)
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
-                        },
-                      )
-                    : StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('tickets')
-                            .where('owner', arrayContains: userModel.uid)
-                            .snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                        }
+                        return ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (ctx, index) => Container(
+                            child: PostCard3(
+                                context: context,
+                                snap: snapshot.data!.docs[index].data(),
+                                userid: userModel.uid.toString()),
+                          ),
+                        );
+                      },
+                    )
+                  : (feed == 1)
+                      ? StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('tickets')
+                              .where('owner', arrayContains: userModel.uid)
+                              .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (ctx, index) => Container(
+                                child: PostCard4(
+                                    context: context,
+                                    snap: snapshot.data!.docs[index].data(),
+                                    userid: userModel.uid.toString()),
+                              ),
                             );
-                          }
-                          return ListView.builder(
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (ctx, index) => Container(
-                              child: PostCard4(
-                                  context: context,
-                                  snap: snapshot.data!.docs[index].data(),
-                                  userid: userModel.uid.toString()),
-                            ),
-                          );
-                        },
-                      )),
+                          },
+                        )
+                      : StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('offers')
+                              .where('winners', arrayContains: userModel.uid)
+                              .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return ListView.builder(
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (ctx, index) => Container(
+                                child: PostCard5(
+                                    context: context,
+                                    snap: snapshot.data!.docs[index].data(),
+                                    userid: userModel.uid.toString()),
+                              ),
+                            );
+                          },
+                        ),
+            ),
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -523,6 +560,69 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                         ),
                       ],
                     ),
+                    snap['isFinish'] == false
+                        ? TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChargeDetalis(
+                                    colliction: 'posts',
+                                    postId: snap['uid'].toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'Charging Detalis',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Icon(Icons.check_box_outline_blank),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.black12,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text(
+                                    'Charging Now ',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Icon(
+                                  Icons.done_outline_rounded,
+                                )
+                              ],
+                            ),
+                          ),
                   ],
                 ),
               ],
@@ -850,6 +950,69 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                           ),
                         ],
                       ),
+                      snap['isFinish'] == false
+                          ? TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ChargeDetalis(
+                                      colliction: 'tickets',
+                                      postId: snap['ticketId'].toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Charging Detalis',
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Icon(Icons.check_box_outline_blank),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'Charging Now ',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Icon(
+                                    Icons.done_outline_rounded,
+                                  )
+                                ],
+                              ),
+                            ),
                     ],
                   ),
                 ],
@@ -857,5 +1020,394 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
             ),
           ),
         ));
+  }
+
+  Widget PostCard5({required dynamic snap, context, required String userid}) {
+    return GestureDetector(
+      onTap: () {
+        AuctionCubit.get(context)
+            .getComments(snap['tradeItemId'].toString(), 'tradeitem');
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ItemDetailsScreen(
+                      snap['tradeItemId'].toString(),
+                      tradeitem1: {
+                        'name': snap['name'].toString(),
+                        'uid': snap['uid'].toString(),
+                        'titel': snap['titel'].toString(),
+                        'image': snap['image'].toString(),
+                        'tradeItemImage': snap['tradeItemImage'].toString(),
+                        'description': snap['description'].toString(),
+                        'datePublished': snap['datePublished'].toDate(),
+                        'tradeItemId': snap['tradeItemId'].toString(),
+                      })),
+        );
+      },
+      child: (snap['offerUserID'].toString() == userid)
+          ? Padding(
+              padding: const EdgeInsets.only(
+                left: 5,
+                right: 5,
+                top: 5,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.teal.withOpacity(0.2),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.teal,
+                                backgroundImage: NetworkImage(
+                                  snap['image'].toString(),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                snap['name'].toString(),
+                                style: TextStyle(
+                                  color: Colors.teal[600],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                  '${DateFormat.yMd().add_jm().format(snap['datePublished'].toDate())} '),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snap['titel'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.40,
+                                  child: Text(
+                                    snap['description'].toString(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.teal[600],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.52,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                    snap['tradeItemImage'].toString(),
+                                  ),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                        ],
+                      ),
+                      snap['isFinish'] == false
+                          ? TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ChargeDetalis(
+                                      colliction: 'offers',
+                                      postId: snap['offerId'].toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Charging Detalis',
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Icon(Icons.check_box_outline_blank),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'Charging Now ',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Icon(
+                                    Icons.done_outline_rounded,
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(
+                left: 5,
+                right: 5,
+                top: 5,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.teal.withOpacity(0.2),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.teal,
+                                backgroundImage: NetworkImage(
+                                  snap['offerUserImage'].toString(),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                snap['offerUsername'].toString(),
+                                style: TextStyle(
+                                  color: Colors.teal[600],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                  '${DateFormat.yMd().add_jm().format(snap['datePublished'].toDate())} '),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snap['offertitel'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.40,
+                                  child: Text(
+                                    snap['offerDescription'].toString(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.teal[600],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.52,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                    snap['offerImage'].toString(),
+                                  ),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                        ],
+                      ),
+                      snap['isFinish'] == false
+                          ? TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ChargeDetalis(
+                                      colliction: 'offers',
+                                      postId: snap['offerId'].toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Charging Detalis',
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Icon(Icons.check_box_outline_blank),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text(
+                                      'Charging Now ',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Icon(
+                                    Icons.done_outline_rounded,
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+    );
   }
 }

@@ -174,42 +174,6 @@ Widget reportCard({required dynamic snap, context}) {
                     ],
                   ),
                   const Spacer(),
-                  PopupMenuButton(
-                    onSelected: (value) {
-                      if (value.toString() == '/delete') {
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text("Delete User"),
-                            content: const Text(
-                                "Are you sure you want to Delete This User?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'NO'),
-                                child: const Text('NO'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  AuctionCubit.get(context).deletDoc(
-                                      'users', snap['postUseruid'].toString());
-                                  Navigator.pop(context, 'YES');
-                                },
-                                child: const Text('YES'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext bc) {
-                      return const [
-                        PopupMenuItem(
-                          child: Text("delete"),
-                          value: '/delete',
-                        ),
-                      ];
-                    },
-                  ),
                 ],
               ),
               Column(
@@ -345,44 +309,6 @@ Widget reportCard({required dynamic snap, context}) {
                             ],
                           ),
                           const Spacer(),
-                          PopupMenuButton(
-                            onSelected: (value) {
-                              if (value.toString() == '/delete') {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text("Delete User"),
-                                    content: const Text(
-                                        "Are you sure you want to Delete This User?"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'NO'),
-                                        child: const Text('NO'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          AuctionCubit.get(context).deletDoc(
-                                              'users', snap['uid'].toString());
-                                          Navigator.pop(context, 'YES');
-                                        },
-                                        child: const Text('YES'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            itemBuilder: (BuildContext bc) {
-                              return const [
-                                PopupMenuItem(
-                                  child: Text("delete"),
-                                  value: '/delete',
-                                ),
-                              ];
-                            },
-                          ),
                         ],
                       ),
                       const SizedBox(
@@ -460,42 +386,6 @@ Widget reportCard({required dynamic snap, context}) {
                     ],
                   ),
                   const Spacer(),
-                  PopupMenuButton(
-                    onSelected: (value) {
-                      if (value.toString() == '/delete') {
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text("Delete User"),
-                            content: const Text(
-                                "Are you sure you want to Delete This User?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'NO'),
-                                child: const Text('NO'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  AuctionCubit.get(context).deletDoc(
-                                      'users', snap['postUseruid'].toString());
-                                  Navigator.pop(context, 'YES');
-                                },
-                                child: const Text('YES'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext bc) {
-                      return const [
-                        PopupMenuItem(
-                          child: Text("delete"),
-                          value: '/delete',
-                        ),
-                      ];
-                    },
-                  ),
                 ],
               ),
               Column(
@@ -620,44 +510,6 @@ Widget reportCard({required dynamic snap, context}) {
                             ],
                           ),
                           const Spacer(),
-                          PopupMenuButton(
-                            onSelected: (value) {
-                              if (value.toString() == '/delete') {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text("Delete User"),
-                                    content: const Text(
-                                        "Are you sure you want to Delete This User?"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'NO'),
-                                        child: const Text('NO'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          AuctionCubit.get(context).deletDoc(
-                                              'users', snap['uid'].toString());
-                                          Navigator.pop(context, 'YES');
-                                        },
-                                        child: const Text('YES'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            itemBuilder: (BuildContext bc) {
-                              return const [
-                                PopupMenuItem(
-                                  child: Text("delete"),
-                                  value: '/delete',
-                                ),
-                              ];
-                            },
-                          ),
                         ],
                       ),
                       const SizedBox(
@@ -735,42 +587,6 @@ Widget reportCard({required dynamic snap, context}) {
                     ],
                   ),
                   const Spacer(),
-                  PopupMenuButton(
-                    onSelected: (value) {
-                      if (value.toString() == '/delete') {
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text("Delete User"),
-                            content: const Text(
-                                "Are you sure you want to Delete This User?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'NO'),
-                                child: const Text('NO'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  AuctionCubit.get(context).deletDoc(
-                                      'users', snap['postUseruid'].toString());
-                                  Navigator.pop(context, 'YES');
-                                },
-                                child: const Text('YES'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext bc) {
-                      return const [
-                        PopupMenuItem(
-                          child: Text("delete"),
-                          value: '/delete',
-                        ),
-                      ];
-                    },
-                  ),
                 ],
               ),
               Column(
@@ -882,44 +698,6 @@ Widget reportCard({required dynamic snap, context}) {
                             ],
                           ),
                           const Spacer(),
-                          PopupMenuButton(
-                            onSelected: (value) {
-                              if (value.toString() == '/delete') {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text("Delete User"),
-                                    content: const Text(
-                                        "Are you sure you want to Delete This User?"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'NO'),
-                                        child: const Text('NO'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          AuctionCubit.get(context).deletDoc(
-                                              'users', snap['uid'].toString());
-                                          Navigator.pop(context, 'YES');
-                                        },
-                                        child: const Text('YES'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            itemBuilder: (BuildContext bc) {
-                              return const [
-                                PopupMenuItem(
-                                  child: Text("delete"),
-                                  value: '/delete',
-                                ),
-                              ];
-                            },
-                          ),
                         ],
                       ),
                       const SizedBox(

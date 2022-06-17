@@ -33,13 +33,12 @@ class _HomeScreeenState extends State<HomeScreeen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // AuctionCubit.get(context).getUserData();
     FirebaseMessaging.instance.getInitialMessage();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       LocalNotificationService.display(message);
     });
     storeNotificationToken();
-
-    // FirebaseMessaging.instance.subscribeToTopic('subscription');
   }
 
   sendNotification(String title, String token) async {
@@ -99,7 +98,7 @@ class _HomeScreeenState extends State<HomeScreeen> {
                           onTap: () {
                             AuctionCubit.get(context).onItemTapped(1);
                             // AuctionCubit.get(context).getPosts();
-                            AuctionCubit.get(context).getUserData;
+                            // AuctionCubit.get(context).getUserData;
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const OnlineMangScreen(),
@@ -127,11 +126,14 @@ class _HomeScreeenState extends State<HomeScreeen> {
                           ),
                         ),
                         InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const OfflineMangScreen(),
-                            ),
-                          ),
+                          onTap: () {
+                            // AuctionCubit.get(context).getUserData;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const OfflineMangScreen(),
+                              ),
+                            );
+                          },
                           child: Padding(
                             padding: const EdgeInsets.all(15),
                             child: Container(
@@ -155,11 +157,14 @@ class _HomeScreeenState extends State<HomeScreeen> {
                           ),
                         ),
                         InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const TradeMangScreen(),
-                            ),
-                          ),
+                          onTap: () {
+                            // AuctionCubit.get(context).getUserData;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const TradeMangScreen(),
+                              ),
+                            );
+                          },
                           child: Padding(
                             padding: const EdgeInsets.all(15),
                             child: Container(

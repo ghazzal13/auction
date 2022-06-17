@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class CommentModel {
   String? uid;
   String? postId;
   String? name;
   String? image;
-  String? dateTime;
+  DateTime? dateTime;
   String? comment;
   String? commentId;
 
@@ -24,7 +22,7 @@ class CommentModel {
       uid: map['uid'],
       name: map['name'],
       image: map['image'],
-      dateTime: map['dateTime'],
+      dateTime: DateTime.parse(map['dateTime'].toDate().toString()),
       postId: map['postId'],
       comment: map['comment'],
       commentId: map['commentId'],

@@ -24,9 +24,9 @@ class OnlineEventScreen extends StatefulWidget {
   final String postId;
   final Map post1;
   final int duration;
+
   const OnlineEventScreen(
     this.postId,
-    // this.index,
     int i, {
     Key? key,
     required this.duration,
@@ -67,7 +67,6 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
   sendNotification(
       {required String title,
       required String body,
-      required String userId,
       required String token}) async {
     Random random = Random();
     int id = random.nextInt(1000);
@@ -314,7 +313,8 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                             ),
                           ],
                         ),
-                        (duration + 60 * 3 * 60 > 1)
+
+                        (duration > 0)
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -328,27 +328,77 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                   const SizedBox(
                                     width: 5,
                                   ),
-                                  Countdown(
-                                    seconds: duration + 60 * 3 * 60,
-                                    build:
-                                        (BuildContext context, double time) =>
-                                            Text(
-                                      '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                    interval: const Duration(seconds: 1),
-                                    onFinished: () {
-                                      AuctionCubit.get(context)
-                                          .updatePostState(isFinish: true);
-                                      Navigator.pop(context);
-                                    },
-                                  )
+                                  (duration < 60 * 60 * 24 + 1)
+                                      ? Countdown(
+                                          seconds: duration,
+                                          build: (BuildContext context,
+                                                  double time) =>
+                                              Text(
+                                            '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.teal,
+                                            ),
+                                          ),
+                                          interval: const Duration(seconds: 1),
+                                          onFinished: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      : Countdown(
+                                          seconds: duration,
+                                          build: (BuildContext context,
+                                                  double time) =>
+                                              Text(
+                                            '${Duration(seconds: time.toInt()).inDays.remainder(365).toString()}:${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.teal,
+                                            ),
+                                          ),
+                                          interval: const Duration(seconds: 1),
+                                          onFinished: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
                                 ],
                               )
-                            : Container(),
+                            : (duration + 60 * 3 * 60 > 1 && duration < 0)
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'remaning time:',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Countdown(
+                                        seconds: duration + 60 * 3 * 60,
+                                        build: (BuildContext context,
+                                                double time) =>
+                                            Text(
+                                          '${Duration(seconds: time.toInt()).inHours.remainder(24).toString()}:${Duration(seconds: time.toInt()).inMinutes.remainder(60).toString()}:${Duration(seconds: time.toInt()).inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                                          style: const TextStyle(
+                                            fontSize: 30,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        interval: const Duration(seconds: 1),
+                                        onFinished: () {
+                                          AuctionCubit.get(context)
+                                              .updatePostState(isFinish: true);
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                  )
+                                : Container(),
 
                         ListTile(
                           title: const Text('Comments'),
@@ -387,13 +437,13 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                             ),
                           ),
                         ListTile(
-                          title: const Text('Operations'),
+                          title: const Text('Bids'),
                           subtitle: (AuctionCubit.get(context)
                                   .encreasePrices
                                   .isNotEmpty)
                               ? Text(
-                                  'There is ${AuctionCubit.get(context).encreasePrices.length} operation')
-                              : const Text('There is no operation'),
+                                  'There is ${AuctionCubit.get(context).encreasePrices.length} bids')
+                              : const Text('There is no bids'),
                           trailing: IconButton(
                             icon: Icon(_expandedPrices
                                 ? Icons.expand_less
@@ -426,7 +476,9 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                             ),
                           ),
 
-                        post1['uid'] != userModel.uid
+                        (post1['uid'] != userModel.uid &&
+                                duration < 0 &&
+                                duration + 60 * 3 * 60 > 0)
                             ? Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -521,6 +573,11 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                                   .encreasePrices[0]
                                                   .price! +
                                               100;
+
+                                          AuctionCubit.get(context)
+                                              .getPostLastTocken(
+                                                  AuctionCubit.get(context)
+                                                      .commentsID[0]);
                                         } else {
                                           newPrice = postmmm.price!;
                                         }
@@ -539,6 +596,12 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                                           100,
                                                   winner: userModel.name,
                                                   winnerID: userModel.uid);
+                                          sendNotification(
+                                              title: '${post1['titel']}',
+                                              body:
+                                                  'Someone bid higher than you ',
+                                              token: AuctionCubit.get(context)
+                                                  .LastToken);
                                         } else {
                                           AuctionCubit.get(context)
                                               .updatePostPrice(
@@ -596,6 +659,11 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                         onPressed: () {
                                           if (formKey.currentState!
                                               .validate()) {
+                                            sendNotification(
+                                                title: 'You have a new comment',
+                                                body: _cccController.text,
+                                                token: token);
+
                                             AuctionCubit.get(context)
                                                 .writeComment(
                                               'posts',
@@ -615,19 +683,19 @@ class _OnlineEventScreenState extends State<OnlineEventScreen>
                                         icon: const Icon(Icons.send),
                                       )),
                                   keyboardType: TextInputType.text,
-                                  onFieldSubmitted: (_) {
-                                    if (formKey.currentState!.validate()) {
-                                      AuctionCubit.get(context)
-                                          .writeComment(
-                                        'posts',
-                                        postId,
-                                        comment: _cccController.text,
-                                      )
-                                          .then((value) {
-                                        _cccController.clear();
-                                      });
-                                    }
-                                  },
+                                  // onFieldSubmitted: (_) {
+                                  //   if (formKey.currentState!.validate()) {
+                                  //     AuctionCubit.get(context)
+                                  //         .writeComment(
+                                  //       'posts',
+                                  //       postId,
+                                  //       comment: _cccController.text,
+                                  //     )
+                                  //         .then((value) {
+                                  //       _cccController.clear();
+                                  //     });
+                                  //   }
+                                  // },
                                 ),
                               )
                             : Container(),

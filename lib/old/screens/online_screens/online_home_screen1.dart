@@ -47,17 +47,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                     fontWeight: FontWeight.bold),
               ),
               actions: [
-                // IconButton(
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => const ShoppingCartScreen(),
-                //       ),
-                //     );
-                //   },
-                //   icon: const Icon(Icons.shopping_cart_rounded),
-                // ),
+                 
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -78,15 +68,15 @@ class _OnlineHomeState extends State<OnlineHome> {
                             builder: (context) => const CategoriesScreen()),
                       );
                     }
-                    if (value.toString() == '/low To High') {
-                      setState(() {
-                        sort = true;
-                      });
-                    } else if (value.toString() == '/high To Low') {
-                      setState(() {
-                        sort = false;
-                      });
-                    }
+                    // if (value.toString() == '/low To High') {
+                    //   setState(() {
+                    //     sort = true;
+                    //   });
+                    // } else if (value.toString() == '/high To Low') {
+                    //   setState(() {
+                    //     sort = false;
+                    //   });
+                    // }
                   },
                   itemBuilder: (BuildContext bc) {
                     return const [
@@ -94,14 +84,7 @@ class _OnlineHomeState extends State<OnlineHome> {
                         child: Text("Category"),
                         value: '/Category',
                       ),
-                      PopupMenuItem(
-                        child: Text("low To High"),
-                        value: '/low To High',
-                      ),
-                      PopupMenuItem(
-                        child: Text("high To Low"),
-                        value: '/high To Low',
-                      ),
+                     
                     ];
                   },
                 ),

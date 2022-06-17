@@ -89,8 +89,8 @@ class _MakeOfferScreemState extends State<MakeOfferScreem> {
                             minLines: 4,
                             controller: descriptionController,
                             validator: ValidationBuilder()
-                                .minLength(120)
-                                .maxLength(250)
+                                .minLength(20)
+                                .maxLength(150)
                                 .build(),
                             decoration: InputDecoration(
                               hintText: 'Enter description',

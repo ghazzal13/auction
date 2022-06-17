@@ -17,7 +17,10 @@ class OfferModel {
   String? offerUserImage;
   String? offerUsername;
   bool? isEnd;
+  bool? isFinish;
   String? offeraccept;
+
+  List? winners = [];
 
   OfferModel({
     this.uid,
@@ -38,6 +41,8 @@ class OfferModel {
     this.offerUsername,
     this.isEnd,
     this.offeraccept,
+    this.winners,
+    this.isFinish,
   });
 
   factory OfferModel.fromMap(map) {
@@ -60,6 +65,8 @@ class OfferModel {
       offerUsername: map['offerUsername'],
       isEnd: map['isEnd'],
       offeraccept: map['offeraccept'],
+      winners: map['winners'],
+      isFinish: map['isFinish'],
     );
   }
 
@@ -82,5 +89,7 @@ class OfferModel {
         'offerUserID': offerUserID,
         'isEnd': isEnd,
         'offeraccept': offeraccept,
+        'winners': winners,
+        'isFinish': isFinish,
       };
 }

@@ -47,7 +47,7 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                 stream: FirebaseFirestore.instance
                     .collection('tradeitem')
                     .where('isaccept', isEqualTo: true)
-                    // .where('endAuction', isGreaterThan: DateTime.now())
+                    .where('isEnd', isEqualTo: false)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -315,7 +315,6 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                             const SizedBox(
                               height: 5,
                             ),
-
                             const SizedBox(
                               height: 5,
                             ),
@@ -335,48 +334,6 @@ class _TradeHomeScreenState extends State<TradeHomeScreen> {
                             const SizedBox(
                               height: 5,
                             ),
-                            // Text(
-                            //   snap['category'].toString(),
-                            //   style: const TextStyle(
-                            //     fontSize: 20,
-                            //     color: Colors.teal,
-                            //     fontWeight: FontWeight.w600,
-                            //   ),
-                            // ),
-                            // Row(
-                            //   children: [
-                            //     TextButton.icon(
-                            //         onPressed: () {},
-                            //         icon: const Icon(
-                            //           Icons.gpp_good,
-                            //           color: Colors.black,
-                            //           size: 15,
-                            //         ),
-                            //         label: const Text(
-                            //           '10',
-                            //           style: TextStyle(
-                            //             fontSize: 15,
-                            //             color: Colors.teal,
-                            //             fontWeight: FontWeight.w600,
-                            //           ),
-                            //         )),
-                            //     TextButton.icon(
-                            //         onPressed: () {},
-                            //         icon: const Icon(
-                            //           Icons.comment,
-                            //           color: Colors.black,
-                            //           size: 15,
-                            //         ),
-                            //         label: const Text(
-                            //           '0100',
-                            //           style: TextStyle(
-                            //             fontSize: 15,
-                            //             color: Colors.teal,
-                            //             fontWeight: FontWeight.w600,
-                            //           ),
-                            //         ))
-                            //   ],
-                            // )
                           ],
                         ),
                       ),

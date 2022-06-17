@@ -87,6 +87,7 @@ Widget PostCard6({required dynamic snap, context}) {
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -132,29 +133,59 @@ Widget PostCard6({required dynamic snap, context}) {
                       const SizedBox(
                         height: 5,
                       ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          snap['titel'].toString(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.teal[600],
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.40,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snap['titel'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      snap['description'].toString(),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.teal[600],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        height: 140,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                snap['tradeItemImage'].toString(),
-                              ),
-                              fit: BoxFit.cover),
-                        ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.52,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                    snap['tradeItemImage'].toString(),
+                                  ),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -292,21 +323,27 @@ Widget PostCard6({required dynamic snap, context}) {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                     onPressed: () {
-                      print(snap['uid'].toString());
-                      print(snap['offerId'].toString());
-                      AuctionCubit.get(context).acceptOffer(
-                          uid: snap['uid'].toString(),
-                          name: snap['name'].toString(),
-                          image: snap['image'].toString(),
-                          tradeItemImage: snap['tradeItemImage'].toString(),
-                          titel: snap['titel'].toString(),
-                          description: snap['description'].toString(),
-                          offertitel: snap['offertitel'].toString(),
-                          offerDescription: snap['offerDescription'].toString(),
-                          offerprice: snap['offerprice'].toString(),
-                          tradeItemId: snap['tradeItemId'].toString(),
-                          offerID: snap['offerId'].toString(),
-                          offerImage: snap['offerImage'].toString());
+                      AuctionCubit.get(context)
+                          .tradeWinners(
+                            offerID: snap['offerId'].toString(),
+                            uid_Offeruser: snap['offerUserID'].toString(),
+                            uid_postuser: snap['uid'].toString(),
+                          )
+                          .then(
+                              (value) => AuctionCubit.get(context).acceptOffer(
+                                    // uid: snap['uid'].toString(),
+                                    // name: snap['name'].toString(),
+                                    // image: snap['image'].toString(),
+                                    // tradeItemImage: snap['tradeItemImage'].toString(),
+                                    // titel: snap['titel'].toString(),
+                                    // description: snap['description'].toString(),
+                                    // offertitel: snap['offertitel'].toString(),
+                                    // offerDescription: snap['offerDescription'].toString(),
+                                    // offerprice: snap['offerprice'].toString(),
+                                    tradeItemId: snap['tradeItemId'].toString(),
+                                    offerID: snap['offerId'].toString(),
+                                    // offerImage: snap['offerImage'].toString()
+                                  ));
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -326,297 +363,3 @@ Widget PostCard6({required dynamic snap, context}) {
     ),
   );
 }
-            
-            /*
-             StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('tradeitem')
-                    .where('endAuction', isGreaterThan: DateTime.now())
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (ctx, index) => Container(
-                      child: PostCard5(
-                          context: context,
-                          snap: snapshot.data!.docs[index].data(),
-                          userid: userModel.uid.toString()),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        });
-  }
-
-  int duration = 10;
-  late int doo;
-  late PostModel SelectedPost;
-  late Map tradeitem1 = {
-    'name': '',
-    'titel': '',
-    'image': '',
-    'category': '',
-    'description': '',
-    'tradeItemImage': '',
-    'datePublished': '',
-    'tradeItemId': '',
-    'uid': '',
-  };
-  Widget PostCard5({required dynamic snap, context, required String userid}) {
-    return GestureDetector(
-        onTap: () {
-          AuctionCubit.get(context)
-              .getComments(snap['tradeItemId'].toString(), 'tradeitem');
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ItemDetailsScreen(
-                        snap['tradeItemId'].toString(),
-                        tradeitem1: {
-                          'name': snap['name'].toString(),
-                          'uid': snap['uid'].toString(),
-                          'titel': snap['titel'].toString(),
-                          'image': snap['image'].toString(),
-                          'tradeItemImage': snap['tradeItemImage'].toString(),
-                          'description': snap['description'].toString(),
-                          'datePublished': snap['datePublished'].toDate(),
-                          'tradeItemId': snap['tradeItemId'].toString(),
-                        })),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 5,
-            right: 5,
-            top: 5,
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              color: Colors.teal.withOpacity(0.2),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.teal,
-                            backgroundImage: NetworkImage(
-                              snap['image'].toString(),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            snap['name'].toString(),
-                            style: TextStyle(
-                              color: Colors.teal[600],
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                              '${DateFormat.yMd().add_jm().format(snap['datePublished'].toDate())} '),
-                        ],
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.32,
-                      ),
-                      snap['uid'].toString() == userid
-                          ? PopupMenuButton(
-                              onSelected: (value) {
-                                if (value.toString() == '/Delete') {
-                                  showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                      title: const Text('AlertDialog Title'),
-                                      content:
-                                          const Text('AlertDialog description'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, 'OK');
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                              itemBuilder: (BuildContext bc) {
-                                return const [
-                                  PopupMenuItem(
-                                    child: Text("Delete"),
-                                    value: '/Delete',
-                                  ),
-                                ];
-                              },
-                            )
-                          : PopupMenuButton(
-                              onSelected: (value) {
-                                if (value.toString() == '/Report') {
-                                  showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                      title: const Text('Report Post'),
-                                      content: SizedBox(
-                                        height: 160,
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                                ' What is the  problem on with this post?'),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            TextFormField(
-                                              maxLines: 5,
-                                              minLines: 4,
-                                              controller: _reportController,
-                                              validator: ValidationBuilder()
-                                                  .minLength(50)
-                                                  .maxLength(250)
-                                                  .build(),
-                                              decoration: InputDecoration(
-                                                hintText: '....',
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                              ),
-                                              keyboardType: TextInputType.text,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {},
-                                          child: const Text('Send'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                              itemBuilder: (BuildContext bc) {
-                                return const [
-                                  PopupMenuItem(
-                                    child: Text("Report"),
-                                    value: '/Report',
-                                  ),
-                                ];
-                              },
-                            ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.40,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  snap['titel'].toString(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.teal[600],
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.40,
-                              child: Text(
-                                snap['description'].toString(),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.teal[600],
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 5,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                           
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.52,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                snap['tradeItemImage'].toString(),
-                              ),
-                              fit: BoxFit.cover),
-                        ),
-                      ),
-                    ],
-                  ),
-                  
-                ],
-              ),
-            ),
-          ),
-        ));
-  }
-}
-
-          
-*/

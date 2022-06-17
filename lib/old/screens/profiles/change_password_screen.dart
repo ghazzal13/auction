@@ -147,7 +147,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                             },
                                             icon: const Icon(
                                                 Icons.remove_red_eye_rounded)),
-                                    hintText: ' password',
+                                    hintText: 'New password',
                                     contentPadding: const EdgeInsets.all(8),
                                   ),
                                   keyboardType: TextInputType.text,

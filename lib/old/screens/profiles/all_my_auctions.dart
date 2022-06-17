@@ -1,6 +1,5 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:auction/nada/lib0/search_screen.dart';
 import 'package:auction/old/resources/models/post_model.dart';
 import 'package:auction/old/screens/online_screens/edit_post_Screen.dart';
 import 'package:auction/old/screens/online_screens/online_auction_event_screen.dart';
@@ -56,19 +55,6 @@ class _AuctionScreenState extends State<AllMyAuctionsScreen> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.search),
-                ),
-              ],
             ),
             body: Container(
               decoration: const BoxDecoration(

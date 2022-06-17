@@ -25,9 +25,10 @@ class EditPostScreen extends StatefulWidget {
 }
 
 class _EditPostScreenState extends State<EditPostScreen> {
-  late TextEditingController _titleController = TextEditingController();
-  late TextEditingController _priceController = TextEditingController();
-  late TextEditingController _describtionController = TextEditingController();
+  late final TextEditingController _titleController = TextEditingController();
+  late final TextEditingController _priceController = TextEditingController();
+  late final TextEditingController _describtionController =
+      TextEditingController();
   DateTime postdate = DateTime(1, 1, 1, 1);
 
   late String category;
@@ -59,6 +60,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     }
   }
 
+  @override
   void dispose() {
     super.dispose();
     try {
@@ -114,7 +116,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         const SizedBox(
                           height: 10.0,
                         ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         child: Row(
                           children: [
@@ -215,7 +217,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                 color: Color.fromARGB(255, 9, 87, 65)),
                             underline: Container(
                               height: 2,
-                              color: Color.fromARGB(255, 10, 137, 97),
+                              color: const Color.fromARGB(255, 10, 137, 97),
                             ),
                             onChanged: (String? newValue) {
                               setState(() {
@@ -241,63 +243,6 @@ class _EditPostScreenState extends State<EditPostScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      // postImage != null
-                      //     ? Stack(
-                      //         children: [
-                      //           SizedBox(
-                      //             height: 200.0,
-                      //             width: 200.0,
-                      //             child: Container(
-                      //               child: Image.file(
-                      //                 postImage,
-                      //                 fit: BoxFit.cover,
-                      //               ),
-                      //               //   AspectRatio(
-                      //               // aspectRatio: 4 / 451,
-                      //             ),
-                      //           ),
-                      //           Positioned(
-                      //             top: 1,
-                      //             right: 1,
-                      //             child: IconButton(
-                      //               onPressed: () {
-                      //                 AuctionCubit.get(context)
-                      //                     .removePostImage();
-                      //               },
-                      //               icon: const Icon(Icons.close_rounded,
-                      //                   size: 25),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       )
-                      //     : Stack(
-                      //         children: [
-                      //           Container(
-                      //             width:
-                      //                 MediaQuery.of(context).size.width * 0.99,
-                      //             height: 200,
-                      //             decoration: BoxDecoration(
-                      //               image: DecorationImage(
-                      //                 image: NetworkImage(
-                      //                   '${post1['postImage']}',
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           Positioned(
-                      //             top: 1,
-                      //             right: 1,
-                      //             child: IconButton(
-                      //               onPressed: () {
-                      //                 AuctionCubit.get(context).getPostImage();
-                      //               },
-                      //               icon: const Icon(Icons.close_rounded,
-                      //                   size: 25),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-
                       TextButton(
                         onPressed: () {
                           DatePicker.showDateTimePicker(context,
