@@ -110,7 +110,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ? StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('posts')
-                          .where('endAuction', isGreaterThan: DateTime.now())
+                          .where('endAuction', isLessThan: DateTime.now())
                           .where('winnerID', isEqualTo: userModel.uid)
                           .snapshots(),
                       builder: (context,
@@ -1340,6 +1340,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 15),
                       snap['isFinish'] == false
                           ? TextButton(
                               onPressed: () {

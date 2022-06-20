@@ -83,3 +83,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+
+flutter build apk --build-name=1.00  --build-number=1
+
+
+*/

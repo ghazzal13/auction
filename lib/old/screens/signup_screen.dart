@@ -42,40 +42,32 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signUpUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().signUpUser(
-      email: _emailController.text,
-      password: _passwordController.text,
-      address: _addressController.text,
-      name: _nameController.text,
-    );
-    if (res == "success") {
+    if (formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(builder: (context) => const HomeScreeen()),
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomeScreeen()),
-          (route) => false);
-      // User currentUser = FirebaseAuth.instance.currentUser!;
-      // AuctionCubit.get(context).getUserData().then((value) {
-      //   FirebaseMessaging.instance.getInitialMessage();
-      //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      //     LocalNotificationService.display(message);
-      //   });
-      //   storeNotificationToken();
-
-      //   // FirebaseMessaging.instance.subscribeToTopic('subscription');
-      // });
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      // show the error
-      showSnackBar(context, res);
+      String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        address: _addressController.text,
+        name: _nameController.text,
+      );
+      if (res == "success") {
+        setState(() {
+          _isLoading = false;
+        });
+        // Navigator.of(context).pushReplacement(
+        //   MaterialPageRoute(builder: (context) => const HomeScreeen()),
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreeen()),
+            (route) => false);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        // show the error
+        showSnackBar(context, res);
+      }
     }
   }
 
@@ -214,7 +206,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         contentPadding: const EdgeInsets.all(8),
                       ),
                       keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
+                      textInputAction: TextInputAction.next,
                     ),
                   ),
                   Padding(
@@ -249,7 +241,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(
                     height: 22,
                   ),
-                  InkWell(
+                  TextButton(
+                    onPressed: signUpUser,
                     child: Padding(
                       padding: const EdgeInsets.all(15),
                       child: Container(
@@ -275,12 +268,42 @@ class _SignupScreenState extends State<SignupScreen> {
                             ])),
                       ),
                     ),
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        signUpUser;
-                      }
-                    },
                   ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     // if (formKey.currentState!.validate()) {
+                  //     signUpUser;
+                  //     // }
+                  //   },
+                  //   child: InkWell(
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(15),
+                  //       child: Container(
+                  //         child: !_isLoading
+                  //             ? const Text(
+                  //                 'Sign up',
+                  //                 style: TextStyle(
+                  //                     color: Colors.white,
+                  //                     fontWeight: FontWeight.bold,
+                  //                     fontSize: 25),
+                  //               )
+                  //             : const CircularProgressIndicator(
+                  //                 color: (Colors.white),
+                  //               ),
+                  //         width: double.infinity,
+                  //         alignment: Alignment.center,
+                  //         padding: const EdgeInsets.symmetric(vertical: 12),
+                  //         decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(30),
+                  //             gradient: LinearGradient(colors: [
+                  //               Colors.teal.shade300,
+                  //               Colors.greenAccent.shade200
+                  //             ])),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
                   const SizedBox(
                     height: 50,
                   ),

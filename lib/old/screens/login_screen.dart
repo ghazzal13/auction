@@ -29,24 +29,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().loginUser(
-        email: _emailController.text, password: _passwordController.text);
-    if (res == 'success') {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomeScreeen()),
-          (route) => false);
-      AuctionCubit.get(context).getUserData();
+    if (formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      showSnackBar(context, res);
+      String res = await AuthMethods().loginUser(
+          email: _emailController.text, password: _passwordController.text);
+      if (res == 'success') {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreeen()),
+            (route) => false);
+        AuctionCubit.get(context).getUserData();
+        setState(() {
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(context, res);
+      }
     }
   }
 
@@ -90,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _emailController,
                       validator:
                           ValidationBuilder(requiredMessage: 'can not be empty')
-                              .maxLength(80)
+                              .maxLength(800)
                               .email()
                               .build(),
                       decoration: InputDecoration(

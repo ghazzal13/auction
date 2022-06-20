@@ -178,6 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 'address': addressController.text
                               }, SetOptions(merge: true));
                             }
+                            Navigator.pop(context);
                           },
                           backgroundColor: Colors.teal,
                           icon: const Icon(Icons.save_outlined),

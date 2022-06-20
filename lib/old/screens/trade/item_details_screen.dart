@@ -185,6 +185,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           itemCount: AuctionCubit.get(context).comments1.length,
                         ),
                       ),
+                    const SizedBox(height: 15),
                     Form(
                       key: formKey,
                       child: Padding(
@@ -222,31 +223,36 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       ),
                     ),
                     tradeitem1['uid'] != userModel.uid
-                        ? FloatingActionButton.extended(
-                            onPressed: () {
-                              // when clicked on floating action button prompt to create user
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        MakeOfferScreem(tradeitem1: {
-                                          'name': tradeitem1['name'],
-                                          'uid': tradeitem1['uid'],
-                                          'titel': tradeitem1['titel'],
-                                          'image': tradeitem1['image'],
-                                          'tradeItemImage':
-                                              tradeitem1['tradeItemImage'],
-                                          'description':
-                                              tradeitem1['description'],
-                                          'tradeItemId':
-                                              tradeitem1['tradeItemId'],
-                                          'datePublished':
-                                              tradeitem1['datePublished'],
-                                        })),
-                              );
-                            },
-                            icon: const Icon(Icons.add),
-                            label: const Text('Make An Offer'),
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FloatingActionButton.extended(
+                                onPressed: () {
+                                  // when clicked on floating action button prompt to create user
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MakeOfferScreem(tradeitem1: {
+                                              'name': tradeitem1['name'],
+                                              'uid': tradeitem1['uid'],
+                                              'titel': tradeitem1['titel'],
+                                              'image': tradeitem1['image'],
+                                              'tradeItemImage':
+                                                  tradeitem1['tradeItemImage'],
+                                              'description':
+                                                  tradeitem1['description'],
+                                              'tradeItemId':
+                                                  tradeitem1['tradeItemId'],
+                                              'datePublished':
+                                                  tradeitem1['datePublished'],
+                                            })),
+                                  );
+                                },
+                                icon: const Icon(Icons.add),
+                                label: const Text('Make An Offer'),
+                              ),
+                            ],
                           )
                         : Container()
                   ],

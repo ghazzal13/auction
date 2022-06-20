@@ -1,11 +1,8 @@
 import 'package:auction/cubit/cubit.dart';
 import 'package:auction/cubit/states.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:intl/intl.dart';
 
 class EditPostScreen extends StatefulWidget {
   final Map post1;
@@ -243,33 +240,34 @@ class _EditPostScreenState extends State<EditPostScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextButton(
-                        onPressed: () {
-                          DatePicker.showDateTimePicker(context,
-                              showTitleActions: true, onChanged: (date) {
-                            formatDate(date,
-                                [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
-                            postdate = date;
-                            print('change $date in time zone ' +
-                                date.timeZoneOffset.inHours.toString());
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            // formatDate(
-                            //     date, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
-                            setState(() {
-                              postdate = date;
-                            });
-                          }, currentTime: DateTime.now());
-                        },
-                        child: postdate != DateTime(1, 1, 1, 1)
-                            ? Text(
-                                ' ${DateFormat.yMd().add_jm().format(postdate)}',
-                                style: const TextStyle(color: Colors.blue))
-                            : const Text(
-                                'select date',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                      ),
+                      // TextButton(
+                      //   onPressed: () {
+                      //     DatePicker.showDateTimePicker(context,
+                      //         showTitleActions: true, onChanged: (date) {
+                      //       formatDate(date,
+                      //           [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+                      //       postdate = date;
+                      //       print('change $date in time zone ' +
+                      //           date.timeZoneOffset.inHours.toString());
+                      //     }, onConfirm: (date) {
+                      //       print('confirm $date');
+                      //       // formatDate(
+                      //       //     date, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+                      //       setState(() {
+                      //         postdate = date;
+                      //       });
+                      //     }, currentTime: DateTime.now());
+                      //   },
+                      //   child: postdate != DateTime(1, 1, 1, 1)
+                      //       ? Text(
+                      //           ' ${DateFormat.yMd().add_jm().format(postdate)}',
+                      //           style: const TextStyle(color: Colors.blue))
+                      //       : const Text(
+                      //           'select date',
+                      //           style: TextStyle(color: Colors.blue),
+                      //         ),
+                      // ),
+
                       FloatingActionButton.extended(
                         onPressed: () {
                           final formattedStr = DateTime.now();

@@ -47,7 +47,6 @@ class _OnlineHomeState extends State<OnlineHome> {
                     fontWeight: FontWeight.bold),
               ),
               actions: [
-                 
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -68,15 +67,15 @@ class _OnlineHomeState extends State<OnlineHome> {
                             builder: (context) => const CategoriesScreen()),
                       );
                     }
-                    // if (value.toString() == '/low To High') {
-                    //   setState(() {
-                    //     sort = true;
-                    //   });
-                    // } else if (value.toString() == '/high To Low') {
-                    //   setState(() {
-                    //     sort = false;
-                    //   });
-                    // }
+                    if (value.toString() == '/low To High') {
+                      setState(() {
+                        sort = true;
+                      });
+                    } else if (value.toString() == '/high To Low') {
+                      setState(() {
+                        sort = false;
+                      });
+                    }
                   },
                   itemBuilder: (BuildContext bc) {
                     return const [
@@ -84,7 +83,6 @@ class _OnlineHomeState extends State<OnlineHome> {
                         child: Text("Category"),
                         value: '/Category',
                       ),
-                     
                     ];
                   },
                 ),
